@@ -1,6 +1,6 @@
-import crypto from "node:crypto";
-import bcrypt from "bcryptjs";
-import { Factory } from "@tests/integration/lib/factory";
+// GENERATED CODE - DO NOT MODIFY
+import bcrypt from 'bcryptjs';
+import { Factory } from '@tests/integration/lib/factory';
 
 export function hashPassword(password: string): string {
   const salt = bcrypt.genSaltSync(10);
@@ -24,7 +24,7 @@ export const factories = {
   jobLog: (index: number) => {
     return {
       job: {
-        create: Factory.getBuilder("job")(index),
+        create: Factory.getBuilder('job')(index),
       },
       level: `level_${index}`,
       message: `message_${index}`,

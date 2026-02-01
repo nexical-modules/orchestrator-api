@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY
-import { defineApi } from "@/lib/api/api-docs";
-import { ApiGuard } from "@/lib/api/api-guard";
-import { parseQuery } from "@/lib/api/api-query";
-import { z } from "zod";
-import { JobLogService } from "@modules/orchestrator-api/src/services/job-log-service";
-import { HookSystem } from "@/lib/modules/hooks";
+import { defineApi } from '@/lib/api/api-docs';
+import { ApiGuard } from '@/lib/api/api-guard';
+import { parseQuery } from '@/lib/api/api-query';
+import { z } from 'zod';
+import { JobLogService } from '@modules/orchestrator-api/src/services/job-log-service';
+import { HookSystem } from '@/lib/modules/hooks';
 
 export const GET = defineApi(
   async (context) => {
     const filterOptions = {
       fields: {
-        id: "string",
-        jobId: "string",
-        level: "string",
-        message: "string",
-        timestamp: "date",
+        id: 'string',
+        jobId: 'string',
+        level: 'string',
+        message: 'string',
+        timestamp: 'date',
       },
-      searchFields: ["id", "jobId", "level", "message"],
+      searchFields: ['id', 'jobId', 'level', 'message'],
     } as const;
 
     const { where, take, skip, orderBy } = parseQuery(
@@ -26,13 +26,7 @@ export const GET = defineApi(
 
     // Security Check
     // Pass query params as input to role check
-    await ApiGuard.protect(context, "job-owner", {
-      ...context.params,
-      where,
-      take,
-      skip,
-      orderBy,
-    });
+    await ApiGuard.protect(context, 'job-owner', { ...context.params, where, take, skip, orderBy });
 
     const select = {
       id: true,
@@ -43,350 +37,345 @@ export const GET = defineApi(
       job: true,
     };
 
-    const actor = context.locals?.actor || (context as any).user;
-    const result = await JobLogService.list(
-      { where, take, skip, orderBy, select },
-      actor,
-    );
+    const actor = context.locals.actor;
+    const result = await JobLogService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), {
-        status: 500,
-      });
+      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
 
     const data = result.data || [];
     const total = result.total || 0;
 
     // Analytics Hook
-    await HookSystem.dispatch("jobLog.list.viewed", {
+    await HookSystem.dispatch('jobLog.list.viewed', {
       count: data.length,
-      actorId: actor?.id || "anonymous",
+      actorId: actor?.id || 'anonymous',
     });
 
     return { success: true, data, meta: { total } };
   },
   {
-    summary: "List JobLogs",
-    tags: ["JobLog"],
+    summary: 'List JobLogs',
+    tags: ['JobLog'],
     parameters: [
-      { name: "take", in: "query", schema: { type: "integer" } },
-      { name: "skip", in: "query", schema: { type: "integer" } },
-      { name: "search", in: "query", schema: { type: "string" } },
+      { name: 'take', in: 'query', schema: { type: 'integer' } },
+      { name: 'skip', in: 'query', schema: { type: 'integer' } },
+      { name: 'search', in: 'query', schema: { type: 'string' } },
       {
-        name: "orderBy",
-        in: "query",
-        schema: { type: "string" },
-        description: "Ordering (format: field:asc or field:desc)",
+        name: 'orderBy',
+        in: 'query',
+        schema: { type: 'string' },
+        description: 'Ordering (format: field:asc or field:desc)',
       },
       {
-        name: "id.eq",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id.eq',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (eq)",
+        description: 'Filter by id (eq)',
       },
       {
-        name: "id.ne",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id.ne',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (ne)",
+        description: 'Filter by id (ne)',
       },
       {
-        name: "id.contains",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id.contains',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (contains)",
+        description: 'Filter by id (contains)',
       },
       {
-        name: "id.startsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id.startsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (startsWith)",
+        description: 'Filter by id (startsWith)',
       },
       {
-        name: "id.endsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id.endsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (endsWith)",
+        description: 'Filter by id (endsWith)',
       },
       {
-        name: "id.in",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id.in',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (in)",
+        description: 'Filter by id (in)',
       },
       {
-        name: "id",
-        in: "query",
-        schema: { type: "string" },
+        name: 'id',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by id (eq)",
+        description: 'Filter by id (eq)',
       },
       {
-        name: "jobId.eq",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId.eq',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (eq)",
+        description: 'Filter by jobId (eq)',
       },
       {
-        name: "jobId.ne",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId.ne',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (ne)",
+        description: 'Filter by jobId (ne)',
       },
       {
-        name: "jobId.contains",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId.contains',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (contains)",
+        description: 'Filter by jobId (contains)',
       },
       {
-        name: "jobId.startsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId.startsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (startsWith)",
+        description: 'Filter by jobId (startsWith)',
       },
       {
-        name: "jobId.endsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId.endsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (endsWith)",
+        description: 'Filter by jobId (endsWith)',
       },
       {
-        name: "jobId.in",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId.in',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (in)",
+        description: 'Filter by jobId (in)',
       },
       {
-        name: "jobId",
-        in: "query",
-        schema: { type: "string" },
+        name: 'jobId',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by jobId (eq)",
+        description: 'Filter by jobId (eq)',
       },
       {
-        name: "level.eq",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level.eq',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (eq)",
+        description: 'Filter by level (eq)',
       },
       {
-        name: "level.ne",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level.ne',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (ne)",
+        description: 'Filter by level (ne)',
       },
       {
-        name: "level.contains",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level.contains',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (contains)",
+        description: 'Filter by level (contains)',
       },
       {
-        name: "level.startsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level.startsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (startsWith)",
+        description: 'Filter by level (startsWith)',
       },
       {
-        name: "level.endsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level.endsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (endsWith)",
+        description: 'Filter by level (endsWith)',
       },
       {
-        name: "level.in",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level.in',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (in)",
+        description: 'Filter by level (in)',
       },
       {
-        name: "level",
-        in: "query",
-        schema: { type: "string" },
+        name: 'level',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by level (eq)",
+        description: 'Filter by level (eq)',
       },
       {
-        name: "message.eq",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message.eq',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (eq)",
+        description: 'Filter by message (eq)',
       },
       {
-        name: "message.ne",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message.ne',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (ne)",
+        description: 'Filter by message (ne)',
       },
       {
-        name: "message.contains",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message.contains',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (contains)",
+        description: 'Filter by message (contains)',
       },
       {
-        name: "message.startsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message.startsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (startsWith)",
+        description: 'Filter by message (startsWith)',
       },
       {
-        name: "message.endsWith",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message.endsWith',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (endsWith)",
+        description: 'Filter by message (endsWith)',
       },
       {
-        name: "message.in",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message.in',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (in)",
+        description: 'Filter by message (in)',
       },
       {
-        name: "message",
-        in: "query",
-        schema: { type: "string" },
+        name: 'message',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by message (eq)",
+        description: 'Filter by message (eq)',
       },
       {
-        name: "timestamp.eq",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.eq',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (eq)",
+        description: 'Filter by timestamp (eq)',
       },
       {
-        name: "timestamp.ne",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.ne',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (ne)",
+        description: 'Filter by timestamp (ne)',
       },
       {
-        name: "timestamp.gt",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.gt',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (gt)",
+        description: 'Filter by timestamp (gt)',
       },
       {
-        name: "timestamp.gte",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.gte',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (gte)",
+        description: 'Filter by timestamp (gte)',
       },
       {
-        name: "timestamp.lt",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.lt',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (lt)",
+        description: 'Filter by timestamp (lt)',
       },
       {
-        name: "timestamp.lte",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.lte',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (lte)",
+        description: 'Filter by timestamp (lte)',
       },
       {
-        name: "timestamp.in",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp.in',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (in)",
+        description: 'Filter by timestamp (in)',
       },
       {
-        name: "timestamp",
-        in: "query",
-        schema: { type: "string" },
+        name: 'timestamp',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by timestamp (eq)",
+        description: 'Filter by timestamp (eq)',
       },
       {
-        name: "job.eq",
-        in: "query",
-        schema: { type: "string" },
+        name: 'job.eq',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by job (eq)",
+        description: 'Filter by job (eq)',
       },
       {
-        name: "job.ne",
-        in: "query",
-        schema: { type: "string" },
+        name: 'job.ne',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by job (ne)",
+        description: 'Filter by job (ne)',
       },
       {
-        name: "job.in",
-        in: "query",
-        schema: { type: "string" },
+        name: 'job.in',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by job (in)",
+        description: 'Filter by job (in)',
       },
       {
-        name: "job",
-        in: "query",
-        schema: { type: "string" },
+        name: 'job',
+        in: 'query',
+        schema: { type: 'string' },
         required: false,
-        description: "Filter by job (eq)",
+        description: 'Filter by job (eq)',
       },
     ],
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
                 data: {
-                  type: "array",
+                  type: 'array',
                   items: {
-                    type: "object",
+                    type: 'object',
                     properties: {
-                      id: { type: "string" },
-                      jobId: { type: "string" },
-                      level: { type: "string" },
-                      message: { type: "string" },
-                      timestamp: { type: "string", format: "date-time" },
-                      job: { type: "string" },
+                      id: { type: 'string' },
+                      jobId: { type: 'string' },
+                      level: { type: 'string' },
+                      message: { type: 'string' },
+                      timestamp: { type: 'string', format: 'date-time' },
+                      job: { type: 'string' },
                     },
-                    required: ["jobId", "message", "job"],
+                    required: ['jobId', 'message', 'job'],
                   },
                 },
                 meta: {
-                  type: "object",
+                  type: 'object',
                   properties: {
-                    total: { type: "integer" },
+                    total: { type: 'integer' },
                   },
                 },
               },
@@ -402,10 +391,7 @@ export const POST = defineApi(
     const body = await context.request.json();
 
     // Security Check
-    await ApiGuard.protect(context, "job-owner", {
-      ...context.params,
-      ...body,
-    });
+    await ApiGuard.protect(context, 'job-owner', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z.object({
@@ -424,60 +410,56 @@ export const POST = defineApi(
       timestamp: true,
       job: true,
     };
-    const actor = context.locals?.actor || (context as any).user;
+    const actor = context.locals.actor;
 
     const result = await JobLogService.create(validated, select, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), {
-        status: 400,
-      });
+      return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
 
-    return new Response(JSON.stringify({ success: true, data: result.data }), {
-      status: 201,
-    });
+    return new Response(JSON.stringify({ success: true, data: result.data }), { status: 201 });
   },
   {
-    summary: "Create JobLog",
-    tags: ["JobLog"],
+    summary: 'Create JobLog',
+    tags: ['JobLog'],
     requestBody: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: {
-            type: "object",
+            type: 'object',
             properties: {
-              id: { type: "string" },
-              jobId: { type: "string" },
-              level: { type: "string" },
-              message: { type: "string" },
-              timestamp: { type: "string", format: "date-time" },
-              job: { type: "string" },
+              id: { type: 'string' },
+              jobId: { type: 'string' },
+              level: { type: 'string' },
+              message: { type: 'string' },
+              timestamp: { type: 'string', format: 'date-time' },
+              job: { type: 'string' },
             },
-            required: ["jobId", "message", "job"],
+            required: ['jobId', 'message', 'job'],
           },
         },
       },
     },
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
                 data: {
-                  type: "object",
+                  type: 'object',
                   properties: {
-                    id: { type: "string" },
-                    jobId: { type: "string" },
-                    level: { type: "string" },
-                    message: { type: "string" },
-                    timestamp: { type: "string", format: "date-time" },
-                    job: { type: "string" },
+                    id: { type: 'string' },
+                    jobId: { type: 'string' },
+                    level: { type: 'string' },
+                    message: { type: 'string' },
+                    timestamp: { type: 'string', format: 'date-time' },
+                    job: { type: 'string' },
                   },
-                  required: ["jobId", "message", "job"],
+                  required: ['jobId', 'message', 'job'],
                 },
               },
             },

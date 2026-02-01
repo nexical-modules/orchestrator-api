@@ -1,5 +1,5 @@
 import { HookSystem } from "@/lib/modules/hooks";
-import type { JobLog } from "@prisma/client";
+import type { JobLog } from "../sdk/types";
 
 export async function init() {
     HookSystem.on('jobLog.created', async (log: JobLog) => {
@@ -10,7 +10,7 @@ export async function init() {
     });
 
     // Security: Assign Job Ownership on Create & Sanitize
-    HookSystem.on('job.beforeCreate', async (data: any, context: any) => {
+    HookSystem.on('job.beforeCreate', async (data: Record<string, unknown>, context?: { actor?: { id: string, type: string, [key: string]: unknown } }) => {
         const actor = context?.actor;
 
         // 1. Force Defaults & Sanitize
@@ -24,7 +24,7 @@ export async function init() {
 
         // 2. Assign Ownership
         if (actor) {
-            console.log('[DEBUG Hook] job.beforeCreate actor:', {
+            console.info('[DEBUG Hook] job.beforeCreate actor:', {
                 id: actor.id,
                 type: actor.type,
                 dataActorId: data.actorId
@@ -36,7 +36,8 @@ export async function init() {
             if (actor.type === 'user' || !data.userId) {
                 // Best effort map to userId if actor is a user (or we treat actorId as userId for users)
                 // If actor is agent, userId remains null unless passed?
-                if (actor.type === 'user' || (actor.startWith && actor.startsWith('usr'))) {
+                const actorIdStr = String(actor.id);
+                if (actor.type === 'user' || actorIdStr.startsWith('usr')) {
                     data.userId = actor.id;
                 }
             }
@@ -45,7 +46,7 @@ export async function init() {
     });
 
     // Security: Filter Lists by Ownership
-    HookSystem.on('job.beforeList', async (params: any, context: any) => {
+    HookSystem.on('job.beforeList', async (params: { actor?: { id: string, role?: string }, where?: Record<string, unknown> }, context?: { actor?: { id: string, role?: string } }) => {
         // JobService.list passes actor inside params
         const actor = params.actor || context?.actor;
 
@@ -53,7 +54,7 @@ export async function init() {
             // Enforce that users only see their own jobs
             const actorId = actor.id;
             params.where = {
-                ...params.where,
+                ...(params.where || {}),
                 OR: [
                     { actorId: actorId },
                     { userId: actorId }
@@ -64,9 +65,7 @@ export async function init() {
     });
 
     // Security: Protect Update Integrity
-    HookSystem.on('job.beforeUpdate', async (data: any, context: any) => {
-        const actor = context?.actor;
-
+    HookSystem.on('job.beforeUpdate', async (data: Record<string, unknown>) => {
         // 1. Prevent changing critical immutable fields
         delete data.id;
         delete data.createdAt;
@@ -81,7 +80,8 @@ export async function init() {
         // 3. State Transitions
         // Users cannot set status to RUNNING/COMPLETED/FAILED directly via UPDATE
         // They should use RPC endpoints (complete/fail).
-        if (data.status && ['COMPLETED', 'FAILED', 'RUNNING'].includes(data.status)) {
+        const status = data.status as string | undefined;
+        if (status && ['COMPLETED', 'FAILED', 'RUNNING'].includes(status)) {
             delete data.status;
         }
 
@@ -89,7 +89,7 @@ export async function init() {
     });
 
     // Security: Validate Job Ownership on Read
-    HookSystem.on('job.read', async (job: any, context: any) => {
+    HookSystem.on('job.read', async (job: unknown) => {
         return job;
     });
 }

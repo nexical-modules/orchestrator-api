@@ -1,19 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY
-import { defineApi } from "@/lib/api/api-docs";
-import { ApiGuard } from "@/lib/api/api-guard";
-import { HookSystem } from "@/lib/modules/hooks";
-import { z } from "zod";
-import { AgentService } from "@modules/orchestrator-api/src/services/agent-service";
-import { AgentStatus } from "@modules/orchestrator-api/src/sdk";
+import { defineApi } from '@/lib/api/api-docs';
+import { ApiGuard } from '@/lib/api/api-guard';
+import { z } from 'zod';
+import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
+import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
   async (context) => {
     const { id } = context.params;
-    if (!id) return new Response(null, { status: 404 });
 
-    // Pre-check
-    await ApiGuard.protect(context, "member", { ...context.params });
+    // Security Check
+    await ApiGuard.protect(context, 'member', { ...context.params });
 
     const select = {
       id: true,
@@ -23,51 +21,46 @@ export const GET = defineApi(
       status: true,
       createdAt: true,
     };
-    const result = await AgentService.get(id, select);
+    const actor = context.locals.actor;
 
-    if (!result.success || !result.data) {
-      return new Response(null, { status: 404 });
+    const result = await AgentService.get(id, select, actor);
+
+    if (!result.success) {
+      if (result.error?.code === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
 
-    // Post-check (Data ownership)
-    await ApiGuard.protect(
-      context,
-      "member",
-      { ...context.params },
-      result.data,
-    );
-
-    // Analytics Hook
-    const actor = (context as any).user;
-    await HookSystem.dispatch("agent.viewed", {
-      id,
-      actorId: actor?.id || "anonymous",
-    });
+    if (!result.data) {
+      return new Response(
+        JSON.stringify({ error: { code: 'NOT_FOUND', message: 'Agent not found' } }),
+        { status: 404 },
+      );
+    }
 
     return { success: true, data: result.data };
   },
   {
-    summary: "Get Agent",
-    tags: ["Agent"],
-    parameters: [
-      { name: "id", in: "path", required: true, schema: { type: "string" } },
-    ],
+    summary: 'Get Agent',
+    tags: ['Agent'],
+    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
-                id: { type: "string" },
-                hostname: { type: "string" },
-                capabilities: { type: "array", items: { type: "string" } },
-                lastHeartbeat: { type: "string", format: "date-time" },
-                status: { type: "string" },
-                createdAt: { type: "string", format: "date-time" },
+                id: { type: 'string' },
+                hostname: { type: 'string' },
+                capabilities: { type: 'array', items: { type: 'string' } },
+                lastHeartbeat: { type: 'string', format: 'date-time' },
+                status: { type: 'string' },
+                createdAt: { type: 'string', format: 'date-time' },
               },
-              required: ["hostname", "capabilities"],
+              required: ['hostname', 'capabilities'],
             },
           },
         },
@@ -78,26 +71,10 @@ export const GET = defineApi(
 export const PUT = defineApi(
   async (context) => {
     const { id } = context.params;
-    if (!id) return new Response(null, { status: 404 });
-
     const body = await context.request.json();
 
-    // Pre-check
-    await ApiGuard.protect(context, "member", { ...context.params, ...body });
-
-    // Fetch for Post-check ownership
-    const existing = await AgentService.get(id);
-    if (!existing.success || !existing.data) {
-      return new Response(null, { status: 404 });
-    }
-
-    // Post-check
-    await ApiGuard.protect(
-      context,
-      "member",
-      { ...context.params, ...body },
-      existing.data,
-    );
+    // Security Check
+    await ApiGuard.protect(context, 'member', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z
@@ -108,6 +85,7 @@ export const PUT = defineApi(
         status: z.nativeEnum(AgentStatus).optional(),
       })
       .partial();
+
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -117,36 +95,35 @@ export const PUT = defineApi(
       status: true,
       createdAt: true,
     };
-    const actor = context.locals?.actor || (context as any).user;
+    const actor = context.locals.actor;
 
     const result = await AgentService.update(id, validated, select, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), {
-        status: 400,
-      });
+      if (result.error?.code === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
 
-    return { success: true, data: result.data };
+    return new Response(JSON.stringify({ success: true, data: result.data }), { status: 200 });
   },
   {
-    summary: "Update Agent",
-    tags: ["Agent"],
-    parameters: [
-      { name: "id", in: "path", required: true, schema: { type: "string" } },
-    ],
+    summary: 'Update Agent',
+    tags: ['Agent'],
+    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
     requestBody: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: {
-            type: "object",
+            type: 'object',
             properties: {
-              id: { type: "string" },
-              hostname: { type: "string" },
-              capabilities: { type: "array", items: { type: "string" } },
-              lastHeartbeat: { type: "string", format: "date-time" },
-              status: { type: "string" },
-              createdAt: { type: "string", format: "date-time" },
+              id: { type: 'string' },
+              hostname: { type: 'string' },
+              capabilities: { type: 'array', items: { type: 'string' } },
+              lastHeartbeat: { type: 'string', format: 'date-time' },
+              status: { type: 'string' },
+              createdAt: { type: 'string', format: 'date-time' },
             },
           },
         },
@@ -154,20 +131,20 @@ export const PUT = defineApi(
     },
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
-                id: { type: "string" },
-                hostname: { type: "string" },
-                capabilities: { type: "array", items: { type: "string" } },
-                lastHeartbeat: { type: "string", format: "date-time" },
-                status: { type: "string" },
-                createdAt: { type: "string", format: "date-time" },
+                id: { type: 'string' },
+                hostname: { type: 'string' },
+                capabilities: { type: 'array', items: { type: 'string' } },
+                lastHeartbeat: { type: 'string', format: 'date-time' },
+                status: { type: 'string' },
+                createdAt: { type: 'string', format: 'date-time' },
               },
-              required: ["hostname", "capabilities"],
+              required: ['hostname', 'capabilities'],
             },
           },
         },
@@ -178,50 +155,35 @@ export const PUT = defineApi(
 export const DELETE = defineApi(
   async (context) => {
     const { id } = context.params;
-    if (!id) return new Response(null, { status: 404 });
 
-    // Pre-check
-    await ApiGuard.protect(context, "member", { ...context.params });
+    // Security Check
+    await ApiGuard.protect(context, 'member', { ...context.params });
 
-    // Fetch for Post-check ownership
-    const existing = await AgentService.get(id);
-    if (!existing.success || !existing.data) {
-      return new Response(null, { status: 404 });
-    }
-
-    // Post-check
-    await ApiGuard.protect(
-      context,
-      "member",
-      { ...context.params },
-      existing.data,
-    );
-
-    const result = await AgentService.delete(id);
+    const actor = context.locals.actor;
+    const result = await AgentService.delete(id, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), {
-        status: 400,
-      });
+      if (result.error?.code === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
 
     return { success: true };
   },
   {
-    summary: "Delete Agent",
-    tags: ["Agent"],
-    parameters: [
-      { name: "id", in: "path", required: true, schema: { type: "string" } },
-    ],
+    summary: 'Delete Agent',
+    tags: ['Agent'],
+    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
-                success: { type: "boolean" },
+                success: { type: 'boolean' },
               },
             },
           },

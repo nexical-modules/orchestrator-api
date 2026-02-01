@@ -1,11 +1,10 @@
-// GENERATED CODE - DO NOT MODIFY
-import { describe, it, expect, beforeEach } from "vitest";
-import { ApiClient } from "@tests/integration/lib/client";
-import { Factory } from "@tests/integration/lib/factory";
-import { TestServer } from "@tests/integration/lib/server";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { ApiClient } from '@tests/integration/lib/client';
+import { TestServer } from '@tests/integration/lib/server';
+import { Factory } from '@tests/integration/lib/factory';
 
 // GENERATED CODE - DO NOT MODIFY
-const _test = describe("Job API - Create", () => {
+describe('Job API - Create', () => {
   let client: ApiClient;
 
   beforeEach(async () => {
@@ -13,19 +12,20 @@ const _test = describe("Job API - Create", () => {
   });
 
   // POST /api/job
-  describe("POST /api/job", () => {
-    it("should allow job-owner to create job", async () => {
-      const actor = await client.as("team", {});
+  describe('POST /api/job', () => {
+    it('should allow job-owner to create job', async () => {
+      const actor = await client.as('team', {});
 
       const payload = {
-        ...{ type: "type_test", progress: 10 },
+        ...{ type: 'type_test', progress: 10 },
         actorId: actor ? actor.id : undefined,
       };
 
-      const res = await client.post("/api/job", payload);
+      const res = await client.post('/api/job', payload);
 
       expect(res.status).toBe(201);
       expect(res.body.data).toBeDefined();
+
       expect(res.body.data.type).toBe(payload.type);
       expect(res.body.data.progress).toBe(payload.progress);
 
@@ -35,15 +35,16 @@ const _test = describe("Job API - Create", () => {
       expect(created).toBeDefined();
     });
 
-    it("should forbid non-admin/unauthorized users", async () => {
-      (client as any).bearerToken = "invalid-token";
-      const actor = undefined as any;
+    it('should forbid non-admin/unauthorized users', async () => {
+      client.useToken('invalid-token');
+       
+      const actor = undefined as unknown;
 
       const payload = {
-        ...{ type: "type_test", progress: 10 },
+        ...{ type: 'type_test', progress: 10 },
         actorId: actor ? actor.id : undefined,
       };
-      const res = await client.post("/api/job", payload);
+      const res = await client.post('/api/job', payload);
       expect([401, 403, 404]).toContain(res.status);
     });
   });

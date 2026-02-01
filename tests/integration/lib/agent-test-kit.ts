@@ -1,5 +1,5 @@
 
-import { fork, type ChildProcess } from 'child_process';
+import type { ChildProcess } from 'child_process';
 import path from 'node:path';
 
 export interface AgentSpawnerOptions {
@@ -59,25 +59,35 @@ export class AgentSpawner {
             stdio: ['ignore', 'pipe', 'pipe'] // No IPC
         });
 
-        this.process.stdout?.on('data', (data) => {
-            console.log(`[Agent] ${data.toString().trim()}`);
-            try { require('fs').appendFileSync('/tmp/agent-stdout.log', data.toString()); } catch (e) { }
+        this.process.stdout?.on('data', async (data) => {
+            console.info(`[Agent] ${data.toString().trim()}`);
+            try {
+                const fs = await import('node:fs');
+                fs.appendFileSync('/tmp/agent-stdout.log', data.toString());
+            } catch {
+                // Ignore file write errors in tests
+            }
         });
 
-        this.process.stderr?.on('data', (data) => {
+        this.process.stderr?.on('data', async (data) => {
             console.error(`[Agent ERR] ${data.toString().trim()}`);
-            try { require('fs').appendFileSync('/tmp/agent-stderr.log', `[Stderr] ${data.toString()}`); } catch (e) { }
+            try {
+                const fs = await import('node:fs');
+                fs.appendFileSync('/tmp/agent-stderr.log', `[Stderr] ${data.toString()}`);
+            } catch {
+                // Ignore file write errors in tests
+            }
         });
 
         this.process.on('exit', (code, signal) => {
-            console.log(`[Agent] Exited with code ${code} signal ${signal}`);
+            console.info(`[Agent] Exited with code ${code} signal ${signal}`);
         });
 
         this.process.on('error', (err) => {
             console.error(`[Agent] Spawn Error:`, err);
         });
 
-        console.log(`[AgentSpawner] Started Agent (PID: ${this.process.pid})`);
+        console.info(`[AgentSpawner] Started Agent (PID: ${this.process.pid})`);
 
         // Give it a moment to initialize
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -85,7 +95,7 @@ export class AgentSpawner {
 
     async stop() {
         if (this.process) {
-            console.log(`[AgentSpawner] Stopping Agent (PID: ${this.process.pid})...`);
+            console.info(`[AgentSpawner] Stopping Agent (PID: ${this.process.pid})...`);
 
             const exitPromise = new Promise((resolve) => {
                 this.process?.on('exit', resolve);

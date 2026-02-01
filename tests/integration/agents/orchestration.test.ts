@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { ApiClient } from "@tests/integration/lib/client";
-import { Factory } from "@tests/integration/lib/factory";
 import { TestServer } from "@tests/integration/lib/server";
 import { AgentRunner } from "../lib/agent-runner";
 
@@ -86,6 +85,7 @@ describe('Orchestration Flow', () => {
 
         const mockWorker = {
             jobType: 'agent.run',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handler: async (job: any, context: any) => {
                 // Emulate work
                 await context.api.orchestrator.job.completeJob(job.id, { result: { y: 2 } });
@@ -93,7 +93,9 @@ describe('Orchestration Flow', () => {
         };
 
         // Run the agent worker
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await AgentRunner.run(mockWorker as any, jobId, {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             agentToken: (client as any).bearerToken,
             baseUrl: TestServer.getUrl() + '/api'
         });

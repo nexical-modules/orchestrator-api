@@ -1,17 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY
-import { defineApi } from "@/lib/api/api-docs";
-import { ApiGuard } from "@/lib/api/api-guard";
-import { z } from "zod";
-import { JobLogService } from "@modules/orchestrator-api/src/services/job-log-service";
-import { HookSystem } from "@/lib/modules/hooks";
-
+import { defineApi } from '@/lib/api/api-docs';
+import { ApiGuard } from '@/lib/api/api-guard';
+import { z } from 'zod';
+import { JobLogService } from '@modules/orchestrator-api/src/services/job-log-service';
 export const GET = defineApi(
   async (context) => {
     const { id } = context.params;
-    if (!id) return new Response(null, { status: 404 });
 
-    // Pre-check
-    await ApiGuard.protect(context, "job-owner", { ...context.params });
+    // Security Check
+    await ApiGuard.protect(context, 'job-owner', { ...context.params });
 
     const select = {
       id: true,
@@ -21,51 +18,46 @@ export const GET = defineApi(
       timestamp: true,
       job: true,
     };
-    const result = await JobLogService.get(id, select);
+    const actor = context.locals.actor;
 
-    if (!result.success || !result.data) {
-      return new Response(null, { status: 404 });
+    const result = await JobLogService.get(id, select, actor);
+
+    if (!result.success) {
+      if (result.error?.code === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
 
-    // Post-check (Data ownership)
-    await ApiGuard.protect(
-      context,
-      "job-owner",
-      { ...context.params },
-      result.data,
-    );
-
-    // Analytics Hook
-    const actor = (context as any).user;
-    await HookSystem.dispatch("jobLog.viewed", {
-      id,
-      actorId: actor?.id || "anonymous",
-    });
+    if (!result.data) {
+      return new Response(
+        JSON.stringify({ error: { code: 'NOT_FOUND', message: 'JobLog not found' } }),
+        { status: 404 },
+      );
+    }
 
     return { success: true, data: result.data };
   },
   {
-    summary: "Get JobLog",
-    tags: ["JobLog"],
-    parameters: [
-      { name: "id", in: "path", required: true, schema: { type: "string" } },
-    ],
+    summary: 'Get JobLog',
+    tags: ['JobLog'],
+    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
-                id: { type: "string" },
-                jobId: { type: "string" },
-                level: { type: "string" },
-                message: { type: "string" },
-                timestamp: { type: "string", format: "date-time" },
-                job: { type: "string" },
+                id: { type: 'string' },
+                jobId: { type: 'string' },
+                level: { type: 'string' },
+                message: { type: 'string' },
+                timestamp: { type: 'string', format: 'date-time' },
+                job: { type: 'string' },
               },
-              required: ["jobId", "message", "job"],
+              required: ['jobId', 'message', 'job'],
             },
           },
         },
@@ -76,29 +68,10 @@ export const GET = defineApi(
 export const PUT = defineApi(
   async (context) => {
     const { id } = context.params;
-    if (!id) return new Response(null, { status: 404 });
-
     const body = await context.request.json();
 
-    // Pre-check
-    await ApiGuard.protect(context, "job-owner", {
-      ...context.params,
-      ...body,
-    });
-
-    // Fetch for Post-check ownership
-    const existing = await JobLogService.get(id);
-    if (!existing.success || !existing.data) {
-      return new Response(null, { status: 404 });
-    }
-
-    // Post-check
-    await ApiGuard.protect(
-      context,
-      "job-owner",
-      { ...context.params, ...body },
-      existing.data,
-    );
+    // Security Check
+    await ApiGuard.protect(context, 'job-owner', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z
@@ -109,6 +82,7 @@ export const PUT = defineApi(
         timestamp: z.string().datetime().optional(),
       })
       .partial();
+
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -118,36 +92,35 @@ export const PUT = defineApi(
       timestamp: true,
       job: true,
     };
-    const actor = context.locals?.actor || (context as any).user;
+    const actor = context.locals.actor;
 
     const result = await JobLogService.update(id, validated, select, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), {
-        status: 400,
-      });
+      if (result.error?.code === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
 
-    return { success: true, data: result.data };
+    return new Response(JSON.stringify({ success: true, data: result.data }), { status: 200 });
   },
   {
-    summary: "Update JobLog",
-    tags: ["JobLog"],
-    parameters: [
-      { name: "id", in: "path", required: true, schema: { type: "string" } },
-    ],
+    summary: 'Update JobLog',
+    tags: ['JobLog'],
+    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
     requestBody: {
       content: {
-        "application/json": {
+        'application/json': {
           schema: {
-            type: "object",
+            type: 'object',
             properties: {
-              id: { type: "string" },
-              jobId: { type: "string" },
-              level: { type: "string" },
-              message: { type: "string" },
-              timestamp: { type: "string", format: "date-time" },
-              job: { type: "string" },
+              id: { type: 'string' },
+              jobId: { type: 'string' },
+              level: { type: 'string' },
+              message: { type: 'string' },
+              timestamp: { type: 'string', format: 'date-time' },
+              job: { type: 'string' },
             },
           },
         },
@@ -155,20 +128,20 @@ export const PUT = defineApi(
     },
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
-                id: { type: "string" },
-                jobId: { type: "string" },
-                level: { type: "string" },
-                message: { type: "string" },
-                timestamp: { type: "string", format: "date-time" },
-                job: { type: "string" },
+                id: { type: 'string' },
+                jobId: { type: 'string' },
+                level: { type: 'string' },
+                message: { type: 'string' },
+                timestamp: { type: 'string', format: 'date-time' },
+                job: { type: 'string' },
               },
-              required: ["jobId", "message", "job"],
+              required: ['jobId', 'message', 'job'],
             },
           },
         },
@@ -179,50 +152,35 @@ export const PUT = defineApi(
 export const DELETE = defineApi(
   async (context) => {
     const { id } = context.params;
-    if (!id) return new Response(null, { status: 404 });
 
-    // Pre-check
-    await ApiGuard.protect(context, "job-owner", { ...context.params });
+    // Security Check
+    await ApiGuard.protect(context, 'job-owner', { ...context.params });
 
-    // Fetch for Post-check ownership
-    const existing = await JobLogService.get(id);
-    if (!existing.success || !existing.data) {
-      return new Response(null, { status: 404 });
-    }
-
-    // Post-check
-    await ApiGuard.protect(
-      context,
-      "job-owner",
-      { ...context.params },
-      existing.data,
-    );
-
-    const result = await JobLogService.delete(id);
+    const actor = context.locals.actor;
+    const result = await JobLogService.delete(id, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), {
-        status: 400,
-      });
+      if (result.error?.code === 'NOT_FOUND') {
+        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
 
     return { success: true };
   },
   {
-    summary: "Delete JobLog",
-    tags: ["JobLog"],
-    parameters: [
-      { name: "id", in: "path", required: true, schema: { type: "string" } },
-    ],
+    summary: 'Delete JobLog',
+    tags: ['JobLog'],
+    parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
     responses: {
       200: {
-        description: "OK",
+        description: 'OK',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
+              type: 'object',
               properties: {
-                success: { type: "boolean" },
+                success: { type: 'boolean' },
               },
             },
           },

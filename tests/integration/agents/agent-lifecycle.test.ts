@@ -2,10 +2,8 @@ import { describe, beforeAll, afterAll, test, expect } from 'vitest';
 import { AgentSpawner } from '../lib/agent-test-kit';
 import { ApiClient } from '@tests/integration/lib/client';
 import { db } from '@/lib/core/db';
-import { OrchestrationService } from '../../../src/services/orchestration-service';
 import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
-import crypto from 'node:crypto';
 
 describe('Agent Lifecycle Integration', () => {
     let spawner: AgentSpawner;
@@ -33,8 +31,9 @@ describe('Agent Lifecycle Integration', () => {
 
         // Start Agent
         // Pass env vars to point to OUR test server
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const token = (client as any).bearerToken || 'test-secret';
-        console.log('[DEBUG Test] Token sent to Agent:', token);
+        console.info('[DEBUG Test] Token sent to Agent:', token);
 
         // Wait for DB consistency/middleware availability
         await new Promise(r => setTimeout(r, 1000));

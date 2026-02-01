@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api/api';
 import type { Job } from '@modules/orchestrator-api/src/sdk/types';
 
-export function useJobPoller<T = any>(
+export function useJobPoller<T = unknown>(
     jobId: string | null,
     options: { interval?: number } = {}
 ) {
     const [data, setData] = useState<T | null>(null);
     const [status, setStatus] = useState<Job['status'] | 'LOADING'>('LOADING');
-    const [error, setError] = useState<any>(null);
+    const [error, setError] = useState<unknown>(null);
 
     useEffect(() => {
         if (!jobId) return;

@@ -1,10 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY
-import { db } from "@/lib/core/db";
-import { Logger } from "@/lib/core/logger";
-import type { ServiceResponse } from "@/types/service";
-import { HookSystem } from "@/lib/modules/hooks";
-import type { Job, Prisma } from "@prisma/client";
-import type { ApiActor } from "@/lib/api/api-docs";
+import { db } from '@/lib/core/db';
+import { Logger } from '@/lib/core/logger';
+import type { ServiceResponse } from '@/types/service';
+import { HookSystem } from '@/lib/modules/hooks';
+import type { Job, Prisma } from '@prisma/client';
+import type { ApiActor } from '@/lib/api/api-docs';
 
 // GENERATED CODE - DO NOT MODIFY
 /** Service class for Job-related business logic. */
@@ -18,7 +18,7 @@ export class JobService {
 
       // Allow hooks to modify the query parameters (e.g. for scoping)
       // Pass actor context if available
-      const filteredParams = await HookSystem.filter("job.beforeList", {
+      const filteredParams = await HookSystem.filter('job.beforeList', {
         where,
         take,
         skip,
@@ -37,12 +37,12 @@ export class JobService {
         db.job.count({ where }),
       ]);
 
-      const filteredData = await HookSystem.filter("job.list", data);
+      const filteredData = await HookSystem.filter('job.list', data);
 
       return { success: true, data: filteredData, total };
     } catch (error) {
-      Logger.error("Job list Error", error);
-      return { success: false, error: "job.service.error.list_failed" };
+      Logger.error('Job list Error', error);
+      return { success: false, error: 'job.service.error.list_failed' };
     }
   }
 
@@ -52,15 +52,14 @@ export class JobService {
   ): Promise<ServiceResponse<Job | null>> {
     try {
       const data = await db.job.findUnique({ where: { id }, select });
-      if (!data)
-        return { success: false, error: "job.service.error.not_found" };
+      if (!data) return { success: false, error: 'job.service.error.not_found' };
 
-      const filtered = await HookSystem.filter("job.read", data);
+      const filtered = await HookSystem.filter('job.read', data);
 
       return { success: true, data: filtered };
     } catch (error) {
-      Logger.error("Job get Error", error);
-      return { success: false, error: "job.service.error.get_failed" };
+      Logger.error('Job get Error', error);
+      return { success: false, error: 'job.service.error.get_failed' };
     }
   }
 
@@ -71,25 +70,25 @@ export class JobService {
   ): Promise<ServiceResponse<Job>> {
     try {
       // Pass actor context to hooks for security/authorship validation
-      const input = await HookSystem.filter("job.beforeCreate", data, {
+      const input = await HookSystem.filter('job.beforeCreate', data, {
         actor,
       });
 
       const newItem = await db.$transaction(async (tx) => {
-        const created = await tx.job.create({ data: input as any, select });
-        await HookSystem.dispatch("job.created", {
+        const created = await tx.job.create({ data: input, select });
+        await HookSystem.dispatch('job.created', {
           id: created.id,
-          actorId: actor?.id || "system",
+          actorId: actor?.id || 'system',
         });
         return created;
       });
 
-      const filtered = await HookSystem.filter("job.read", newItem, { actor });
+      const filtered = await HookSystem.filter('job.read', newItem, { actor });
 
       return { success: true, data: filtered };
     } catch (error) {
-      Logger.error("Job create Error", error);
-      return { success: false, error: "job.service.error.create_failed" };
+      Logger.error('Job create Error', error);
+      return { success: false, error: 'job.service.error.create_failed' };
     }
   }
 
@@ -100,7 +99,7 @@ export class JobService {
     actor?: ApiActor,
   ): Promise<ServiceResponse<Job>> {
     try {
-      const input = await HookSystem.filter("job.beforeUpdate", data, {
+      const input = await HookSystem.filter('job.beforeUpdate', data, {
         actor,
         id,
       });
@@ -108,10 +107,10 @@ export class JobService {
       const updatedItem = await db.$transaction(async (tx) => {
         const updated = await tx.job.update({
           where: { id },
-          data: input as any,
+          data: input,
           select,
         });
-        await HookSystem.dispatch("job.updated", {
+        await HookSystem.dispatch('job.updated', {
           id,
           changes: Object.keys(input),
           actorId: actor?.id,
@@ -119,14 +118,14 @@ export class JobService {
         return updated;
       });
 
-      const filtered = await HookSystem.filter("job.read", updatedItem, {
+      const filtered = await HookSystem.filter('job.read', updatedItem, {
         actor,
       });
 
       return { success: true, data: filtered };
     } catch (error) {
-      Logger.error("Job update Error", error);
-      return { success: false, error: "job.service.error.update_failed" };
+      Logger.error('Job update Error', error);
+      return { success: false, error: 'job.service.error.update_failed' };
     }
   }
 
@@ -134,12 +133,12 @@ export class JobService {
     try {
       await db.$transaction(async (tx) => {
         await tx.job.delete({ where: { id } });
-        await HookSystem.dispatch("job.deleted", { id });
+        await HookSystem.dispatch('job.deleted', { id });
       });
       return { success: true };
     } catch (error) {
-      Logger.error("Job delete Error", error);
-      return { success: false, error: "job.service.error.delete_failed" };
+      Logger.error('Job delete Error', error);
+      return { success: false, error: 'job.service.error.delete_failed' };
     }
   }
 }

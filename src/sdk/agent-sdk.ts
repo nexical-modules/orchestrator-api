@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-import { BaseResource, ApiClient } from "@nexical/sdk-core";
-import type { Agent, RegisterAgentDTO } from "./types";
+import { BaseResource } from '@nexical/sdk-core';
+import type { Agent, RegisterAgentDTO } from './types';
 
 /** SDK client for Agent. */
 export class AgentSDK extends BaseResource {
@@ -8,16 +8,11 @@ export class AgentSDK extends BaseResource {
     search?: string;
     take?: number;
     skip?: number;
-    orderBy?: string | Record<string, "asc" | "desc">;
-    filters?: Record<string, any>;
-  }): Promise<{
-    success: boolean;
-    data: Agent[];
-    error?: string;
-    meta: { total: number };
-  }> {
+    orderBy?: string | Record<string, 'asc' | 'desc'>;
+    filters?: Record<string, unknown>;
+  }): Promise<{ success: boolean; data: Agent[]; error?: string; meta: { total: number } }> {
     let orderBy = params?.orderBy;
-    if (orderBy && typeof orderBy === "object") {
+    if (orderBy && typeof orderBy === 'object') {
       const keys = Object.keys(orderBy);
       if (keys.length > 0) {
         orderBy = `${keys[0]}:${orderBy[keys[0]]}`;
@@ -30,37 +25,33 @@ export class AgentSDK extends BaseResource {
       skip: params?.skip,
       orderBy,
     });
-    return this._request("GET", `/agent${query}`);
+    return this._request('GET', `/agent${query}`);
   }
 
-  public async get(
-    id: string,
-  ): Promise<{ success: boolean; data: Agent; error?: string }> {
-    return this._request("GET", `/agent/${id}`);
+  public async get(id: string): Promise<{ success: boolean; data: Agent; error?: string }> {
+    return this._request('GET', `/agent/${id}`);
   }
 
   public async create(
     data: Partial<Agent>,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
-    return this._request("POST", `/agent`, data);
+    return this._request('POST', `/agent`, data);
   }
 
   public async update(
     id: string,
     data: Partial<Agent>,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
-    return this._request("PUT", `/agent/${id}`, data);
+    return this._request('PUT', `/agent/${id}`, data);
   }
 
-  public async delete(
-    id: string,
-  ): Promise<{ success: boolean; error?: string }> {
-    return this._request("DELETE", `/agent/${id}`);
+  public async delete(id: string): Promise<{ success: boolean; error?: string }> {
+    return this._request('DELETE', `/agent/${id}`);
   }
 
   public async register(
     data: RegisterAgentDTO,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
-    return this._request("POST", `/agent/register`, data);
+    return this._request('POST', `/agent/register`, data);
   }
 }

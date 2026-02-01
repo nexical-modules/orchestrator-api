@@ -1,10 +1,10 @@
-// GENERATED CODE - DO NOT MODIFY
-import { describe, it, expect, beforeEach } from "vitest";
-import { ApiClient } from "@tests/integration/lib/client";
-import { Factory } from "@tests/integration/lib/factory";
-import { TestServer } from "@tests/integration/lib/server";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { ApiClient } from '@tests/integration/lib/client';
+import { TestServer } from '@tests/integration/lib/server';
+import { Factory } from '@tests/integration/lib/factory';
 
-const _test = describe("Agent API - Delete", () => {
+// GENERATED CODE - DO NOT MODIFY
+describe('Agent API - Delete', () => {
   let client: ApiClient;
 
   beforeEach(async () => {
@@ -12,14 +12,15 @@ const _test = describe("Agent API - Delete", () => {
   });
 
   // DELETE /api/agent/[id]
-  describe("DELETE /api/agent/[id]", () => {
-    it("should delete agent", async () => {
-      const actor = await client.as("team", {});
+  describe('DELETE /api/agent/[id]', () => {
+    it('should delete agent', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const actor = await client.as('team', {});
 
-      const target = await Factory.create("agent", {
+      const target = await Factory.create('agent', {
         ...{
-          hostname: "hostname_test",
-          capabilities: ["capabilities_test"],
+          hostname: 'hostname_test',
+          capabilities: ['capabilities_test'],
           lastHeartbeat: new Date().toISOString(),
         },
       });
@@ -28,9 +29,7 @@ const _test = describe("Agent API - Delete", () => {
 
       expect(res.status).toBe(200);
 
-      const check = await Factory.prisma.agent.findUnique({
-        where: { id: target.id },
-      });
+      const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
   });

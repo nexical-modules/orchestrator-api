@@ -43,6 +43,7 @@ export class AgentRunner {
 
         const context: AgentContext = {
             logger: options.logger || console,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             api: api as any // Cast to match the AgentContext type (which might be 'any' or 'NexicalClient')
         };
 
@@ -69,6 +70,7 @@ export class AgentRunner {
      */
     static async invoke(
         worker: AgentWorker,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         payload: any,
         contextOverrides: Partial<AgentContext> = {}
     ) {
@@ -81,6 +83,7 @@ export class AgentRunner {
         // Mock API if not provided
         const context: AgentContext = {
             logger: console,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             api: {} as any, // Mock API
             ...contextOverrides
         };

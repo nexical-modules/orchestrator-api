@@ -1,10 +1,10 @@
-// GENERATED CODE - DO NOT MODIFY
-import { describe, it, expect, beforeEach } from "vitest";
-import { ApiClient } from "@tests/integration/lib/client";
-import { Factory } from "@tests/integration/lib/factory";
-import { TestServer } from "@tests/integration/lib/server";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { ApiClient } from '@tests/integration/lib/client';
+import { TestServer } from '@tests/integration/lib/server';
+import { Factory } from '@tests/integration/lib/factory';
 
-const _test = describe("Job API - Get", () => {
+// GENERATED CODE - DO NOT MODIFY
+describe('Job API - Get', () => {
   let client: ApiClient;
 
   beforeEach(async () => {
@@ -12,12 +12,12 @@ const _test = describe("Job API - Get", () => {
   });
 
   // GET /api/job/[id]
-  describe("GET /api/job/[id]", () => {
-    it("should retrieve a specific job", async () => {
-      const actor = await client.as("team", {});
+  describe('GET /api/job/[id]', () => {
+    it('should retrieve a specific job', async () => {
+      const actor = await client.as('team', {});
 
-      const target = await Factory.create("job", {
-        ...{ type: "type_test", progress: 10 },
+      const target = await Factory.create('job', {
+        ...{ type: 'type_test', progress: 10 },
         actorId: actor.id,
       });
 
@@ -27,9 +27,10 @@ const _test = describe("Job API - Get", () => {
       expect(res.body.id).toBe(target.id);
     });
 
-    it("should return 404 for missing id", async () => {
-      const actor = await client.as("team", {});
-      const res = await client.get("/api/job/missing-id-123");
+    it('should return 404 for missing id', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const actor = await client.as('team', {});
+      const res = await client.get('/api/job/missing-id-123');
       expect(res.status).toBe(404);
     });
   });

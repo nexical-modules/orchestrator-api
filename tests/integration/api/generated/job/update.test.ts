@@ -1,10 +1,10 @@
-// GENERATED CODE - DO NOT MODIFY
-import { describe, it, expect, beforeEach } from "vitest";
-import { ApiClient } from "@tests/integration/lib/client";
-import { Factory } from "@tests/integration/lib/factory";
-import { TestServer } from "@tests/integration/lib/server";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { ApiClient } from '@tests/integration/lib/client';
+import { TestServer } from '@tests/integration/lib/server';
+import { Factory } from '@tests/integration/lib/factory';
 
-const _test = describe("Job API - Update", () => {
+// GENERATED CODE - DO NOT MODIFY
+describe('Job API - Update', () => {
   let client: ApiClient;
 
   beforeEach(async () => {
@@ -12,17 +12,17 @@ const _test = describe("Job API - Update", () => {
   });
 
   // PUT /api/job/[id]
-  describe("PUT /api/job/[id]", () => {
-    it("should update job", async () => {
-      const actor = await client.as("team", {});
+  describe('PUT /api/job/[id]', () => {
+    it('should update job', async () => {
+      const actor = await client.as('team', {});
 
-      const target = await Factory.create("job", {
-        ...{ type: "type_test", progress: 10 },
+      const target = await Factory.create('job', {
+        ...{ type: 'type_test', progress: 10 },
         actorId: actor.id,
       });
 
       const updatePayload = {
-        type: "type_updated",
+        type: 'type_updated',
         progress: 20,
       };
 
@@ -30,9 +30,7 @@ const _test = describe("Job API - Update", () => {
 
       expect(res.status).toBe(200);
 
-      const updated = await Factory.prisma.job.findUnique({
-        where: { id: target.id },
-      });
+      const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
     });

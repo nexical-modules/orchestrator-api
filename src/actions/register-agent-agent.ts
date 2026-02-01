@@ -1,9 +1,9 @@
 import { OrchestrationService } from "../services/orchestration-service";
 import type { ServiceResponse } from "@/types/service";
-import type { RegisterAgentDTO } from "../sdk/types";
+import type { RegisterAgentDTO, Agent } from "../sdk/types";
 
 export class RegisterAgentAgentAction {
-    public static async run(input: RegisterAgentDTO): Promise<ServiceResponse<any>> {
+    public static async run(input: RegisterAgentDTO): Promise<ServiceResponse<Agent>> {
         try {
             const { id, hostname, capabilities } = input;
 

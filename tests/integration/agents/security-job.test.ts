@@ -41,12 +41,14 @@ describe('Job Security Integration', () => {
 
         // List A
         const listA = await clientA.get('/api/job');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const idsA = listA.body.data.map((j: any) => j.id);
         expect(idsA).toContain(jobA.id);
         expect(idsA).not.toContain(jobB.id);
 
         // List B
         const listB = await clientB.get('/api/job');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const idsB = listB.body.data.map((j: any) => j.id);
         expect(idsB).toContain(jobB.id);
         expect(idsB).not.toContain(jobA.id);

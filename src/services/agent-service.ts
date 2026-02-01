@@ -1,10 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY
-import { db } from "@/lib/core/db";
-import type { ServiceResponse } from "@/types/service";
-import { HookSystem } from "@/lib/modules/hooks";
-import type { Agent, Prisma } from "@prisma/client";
-import { Logger } from "@/lib/core/logger";
-import type { ApiActor } from "@/lib/api/api-docs";
+import { db } from '@/lib/core/db';
+import type { ServiceResponse } from '@/types/service';
+import { HookSystem } from '@/lib/modules/hooks';
+import type { Agent, Prisma } from '@prisma/client';
+import type { ApiActor } from '@/lib/api/api-docs';
 
 /** Service class for Agent-related business logic. */
 export class AgentService {
@@ -13,24 +12,18 @@ export class AgentService {
     actor?: ApiActor,
   ): Promise<ServiceResponse<Agent[]>> {
     try {
-      const {
-        where,
-        take = 50,
-        skip = 0,
-        orderBy = { createdAt: "desc" },
-        select,
-      } = params || {};
+      const { where, take = 50, skip = 0, orderBy = { createdAt: 'desc' }, select } = params || {};
       const [data, total] = await db.$transaction([
         db.agent.findMany({ where, take, skip, orderBy, select }),
         db.agent.count({ where }),
       ]);
 
-      const filteredData = await HookSystem.filter("agent.list", data);
+      const filteredData = await HookSystem.filter('agent.list', data);
 
       return { success: true, data: filteredData, total };
     } catch (error) {
-      console.error("Agent list Error:", error);
-      return { success: false, error: "agent.service.error.list_failed" };
+      console.error('Agent list Error:', error);
+      return { success: false, error: 'agent.service.error.list_failed' };
     }
   }
 
@@ -40,15 +33,14 @@ export class AgentService {
   ): Promise<ServiceResponse<Agent | null>> {
     try {
       const data = await db.agent.findUnique({ where: { id }, select });
-      if (!data)
-        return { success: false, error: "agent.service.error.not_found" };
+      if (!data) return { success: false, error: 'agent.service.error.not_found' };
 
-      const filtered = await HookSystem.filter("agent.read", data);
+      const filtered = await HookSystem.filter('agent.read', data);
 
       return { success: true, data: filtered };
     } catch (error) {
-      console.error("Agent get Error:", error);
-      return { success: false, error: "agent.service.error.get_failed" };
+      console.error('Agent get Error:', error);
+      return { success: false, error: 'agent.service.error.get_failed' };
     }
   }
 
@@ -58,23 +50,23 @@ export class AgentService {
     actor?: ApiActor,
   ): Promise<ServiceResponse<Agent>> {
     try {
-      const input = await HookSystem.filter("agent.beforeCreate", data);
+      const input = await HookSystem.filter('agent.beforeCreate', data);
 
       const newItem = await db.$transaction(async (tx) => {
-        const created = await tx.agent.create({ data: input as any, select });
-        await HookSystem.dispatch("agent.created", {
+        const created = await tx.agent.create({ data: input as Prisma.AgentCreateInput, select });
+        await HookSystem.dispatch('agent.created', {
           id: created.id,
-          actorId: "system",
+          actorId: 'system',
         });
         return created;
       });
 
-      const filtered = await HookSystem.filter("agent.read", newItem);
+      const filtered = await HookSystem.filter('agent.read', newItem);
 
       return { success: true, data: filtered };
     } catch (error) {
-      console.error("Agent create Error:", error);
-      return { success: false, error: "agent.service.error.create_failed" };
+      console.error('Agent create Error:', error);
+      return { success: false, error: 'agent.service.error.create_failed' };
     }
   }
 
@@ -85,27 +77,27 @@ export class AgentService {
     actor?: ApiActor,
   ): Promise<ServiceResponse<Agent>> {
     try {
-      const input = await HookSystem.filter("agent.beforeUpdate", data);
+      const input = await HookSystem.filter('agent.beforeUpdate', data);
 
       const updatedItem = await db.$transaction(async (tx) => {
         const updated = await tx.agent.update({
           where: { id },
-          data: input as any,
+          data: input as Prisma.AgentUpdateInput,
           select,
         });
-        await HookSystem.dispatch("agent.updated", {
+        await HookSystem.dispatch('agent.updated', {
           id,
           changes: Object.keys(input),
         });
         return updated;
       });
 
-      const filtered = await HookSystem.filter("agent.read", updatedItem);
+      const filtered = await HookSystem.filter('agent.read', updatedItem);
 
       return { success: true, data: filtered };
     } catch (error) {
-      console.error("Agent update Error:", error);
-      return { success: false, error: "agent.service.error.update_failed" };
+      console.error('Agent update Error:', error);
+      return { success: false, error: 'agent.service.error.update_failed' };
     }
   }
 
@@ -113,12 +105,12 @@ export class AgentService {
     try {
       await db.$transaction(async (tx) => {
         await tx.agent.delete({ where: { id } });
-        await HookSystem.dispatch("agent.deleted", { id });
+        await HookSystem.dispatch('agent.deleted', { id });
       });
       return { success: true };
     } catch (error) {
-      console.error("Agent delete Error:", error);
-      return { success: false, error: "agent.service.error.delete_failed" };
+      console.error('Agent delete Error:', error);
+      return { success: false, error: 'agent.service.error.delete_failed' };
     }
   }
 }

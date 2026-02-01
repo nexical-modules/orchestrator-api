@@ -1,4 +1,5 @@
 import { db } from "@/lib/core/db";
+import { Logger } from '@/lib/core/logger';
 import type { ServiceResponse } from "@/types/service";
 import { HookSystem } from "@/lib/modules/hooks";
 import type { Prisma, Agent } from "@prisma/client";
@@ -7,7 +8,7 @@ import type { Prisma, Agent } from "@prisma/client";
 export interface AgentJobType {
     id: string;
     type: string;
-    payload: any;
+    payload: unknown;
 }
 
 export class OrchestrationService {
@@ -30,7 +31,7 @@ export class OrchestrationService {
                 if (actorId) where.actorId = actorId;
                 if (actorType) where.actorType = actorType;
 
-                console.log(`[OrchestrationService.poll] Polling for agent: ${agentId}, capabilities: ${capabilities}, actorId: ${actorId}, actorType: ${actorType}`);
+                Logger.info(`[OrchestrationService.poll] Polling for agent: ${agentId}, capabilities: ${capabilities}, actorId: ${actorId}, actorType: ${actorType}`);
 
                 const job = await tx.job.findFirst({
                     where,
@@ -39,11 +40,11 @@ export class OrchestrationService {
 
                 if (!job) {
                     const allPending = await tx.job.findMany({ where: { status: 'PENDING' }, select: { id: true, type: true, actorId: true, actorType: true } });
-                    console.log(`[OrchestrationService.poll] No job found. Pending jobs in DB:`, allPending);
+                    Logger.info(`[OrchestrationService.poll] No job found. Pending jobs in DB:`, allPending);
                     return null;
                 }
 
-                console.log(`[OrchestrationService.poll] Found job: ${job.id} (${job.type})`);
+                Logger.info(`[OrchestrationService.poll] Found job: ${job.id} (${job.type})`);
 
                 const updated = await tx.job.update({
                     where: { id: job.id },
@@ -79,12 +80,12 @@ export class OrchestrationService {
 
             return { success: true, data: jobData };
         } catch (error) {
-            console.error("OrchestrationService.poll Error:", error);
+            Logger.error("OrchestrationService.poll Error:", error);
             return { success: false, error: 'orchestrator.service.error.poll_failed' };
         }
     }
 
-    static async complete(id: string, result: any, actorId?: string, actorType?: string): Promise<ServiceResponse<Prisma.JobGetPayload<{}>>> {
+    static async complete(id: string, result: unknown, actorId?: string, actorType?: string): Promise<ServiceResponse<Prisma.JobGetPayload<object>>> {
         try {
             // Security check
             if (actorId) {
@@ -114,12 +115,12 @@ export class OrchestrationService {
             await HookSystem.dispatch('job.completed', updatedJob);
             return { success: true, data: updatedJob };
         } catch (error) {
-            console.error("OrchestrationService.complete Error:", error);
+            Logger.error("OrchestrationService.complete Error:", error);
             return { success: false, error: 'orchestrator.service.error.complete_failed' };
         }
     }
 
-    static async fail(id: string, error: any, actorId?: string, actorType?: string): Promise<ServiceResponse<Prisma.JobGetPayload<{}>>> {
+    static async fail(id: string, error: unknown, actorId?: string, actorType?: string): Promise<ServiceResponse<Prisma.JobGetPayload<object>>> {
         try {
             // Security check
             if (actorId) {
@@ -139,16 +140,16 @@ export class OrchestrationService {
                 where: { id },
                 data: {
                     status: 'FAILED',
-                    error,
+                    error: error as Prisma.InputJsonValue,
                     completedAt: new Date(),
                     progress: 0,
                 },
             });
             const updated = await db.job.findUnique({ where: { id } });
             await HookSystem.dispatch('job.failed', { id, error });
-            return { success: true, data: updated as any };
+            return { success: true, data: updated as unknown as Prisma.JobGetPayload<object> };
         } catch (error) {
-            console.error("OrchestrationService.fail Error:", error);
+            Logger.error("OrchestrationService.fail Error:", error);
             return { success: false, error: 'orchestrator.service.error.fail_failed' };
         }
     }
@@ -177,13 +178,13 @@ export class OrchestrationService {
             await HookSystem.dispatch('agent.registered', agent);
             return { success: true, data: agent };
         } catch (error) {
-            console.error("OrchestrationService.registerAgent Error:", error);
+            Logger.error("OrchestrationService.registerAgent Error:", error);
             return { success: false, error: 'orchestrator.service.error.register_agent_failed' };
         }
     }
 
     // CLI/Script utility to wait for a job
-    static async waitFor(jobId: string, timeoutMs = 30000): Promise<ServiceResponse<any>> {
+    static async waitFor(jobId: string, timeoutMs = 30000): Promise<ServiceResponse<Prisma.JobGetPayload<object>>> {
         try {
             const start = Date.now();
 
@@ -199,7 +200,7 @@ export class OrchestrationService {
 
             return { success: false, error: `Timeout waiting for job ${jobId}` };
         } catch (error) {
-            console.error("OrchestrationService.waitFor Error:", error);
+            Logger.error("OrchestrationService.waitFor Error:", error);
             return { success: false, error: 'orchestrator.service.error.wait_failed' };
         }
     }

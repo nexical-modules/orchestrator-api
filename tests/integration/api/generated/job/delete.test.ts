@@ -1,10 +1,10 @@
-// GENERATED CODE - DO NOT MODIFY
-import { describe, it, expect, beforeEach } from "vitest";
-import { ApiClient } from "@tests/integration/lib/client";
-import { Factory } from "@tests/integration/lib/factory";
-import { TestServer } from "@tests/integration/lib/server";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { ApiClient } from '@tests/integration/lib/client';
+import { TestServer } from '@tests/integration/lib/server';
+import { Factory } from '@tests/integration/lib/factory';
 
-const _test = describe("Job API - Delete", () => {
+// GENERATED CODE - DO NOT MODIFY
+describe('Job API - Delete', () => {
   let client: ApiClient;
 
   beforeEach(async () => {
@@ -12,12 +12,12 @@ const _test = describe("Job API - Delete", () => {
   });
 
   // DELETE /api/job/[id]
-  describe("DELETE /api/job/[id]", () => {
-    it("should delete job", async () => {
-      const actor = await client.as("team", {});
+  describe('DELETE /api/job/[id]', () => {
+    it('should delete job', async () => {
+      const actor = await client.as('team', {});
 
-      const target = await Factory.create("job", {
-        ...{ type: "type_test", progress: 10 },
+      const target = await Factory.create('job', {
+        ...{ type: 'type_test', progress: 10 },
         actorId: actor.id,
       });
 
@@ -25,9 +25,7 @@ const _test = describe("Job API - Delete", () => {
 
       expect(res.status).toBe(200);
 
-      const check = await Factory.prisma.job.findUnique({
-        where: { id: target.id },
-      });
+      const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
   });

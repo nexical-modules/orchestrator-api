@@ -6,6 +6,7 @@ import { TestServer } from "@tests/integration/lib/server";
 describe('Job Security', () => {
     let owner: ApiClient;
     let attacker: ApiClient;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let job: any;
 
     beforeEach(async () => {
@@ -46,6 +47,7 @@ describe('Job Security', () => {
                 throw new Error(`Expected failure but got 200 OK. Body: ${JSON.stringify(res.body)}`);
             }
             expect([403, 500]).toContain(res.status);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             // If threw (network error etc), that's fine? 
             // no, we expect a status code check if client resolves.

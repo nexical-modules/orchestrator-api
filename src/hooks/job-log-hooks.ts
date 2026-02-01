@@ -1,5 +1,4 @@
 import { HookSystem } from "@/lib/modules/hooks";
-import type { JobLog } from "@prisma/client";
 
 export async function init() {
     HookSystem.on('jobLog.created', async (payload: { id: string; actorId: string }) => {

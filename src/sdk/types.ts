@@ -1,6 +1,7 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
 export interface CreateJobDTO {
   type: string;
-  payload: any;
+  payload: unknown;
   actorId?: string;
   actorType?: string;
   userId?: string;
@@ -12,11 +13,11 @@ export interface PollJobsDTO {
 }
 
 export interface CompleteJobDTO {
-  result: any;
+  result: unknown;
 }
 
 export interface FailJobDTO {
-  error: any;
+  error: unknown;
 }
 
 export interface RegisterAgentDTO {
@@ -25,19 +26,29 @@ export interface RegisterAgentDTO {
   capabilities: string[];
 }
 
-export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus];
-export type AgentStatus = (typeof AgentStatus)[keyof typeof AgentStatus];
-
 export const JobStatus = {
-  PENDING: "PENDING",
-  RUNNING: "RUNNING",
-  COMPLETED: "COMPLETED",
-  FAILED: "FAILED",
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
 } as const;
 export const AgentStatus = {
-  ONLINE: "ONLINE",
-  OFFLINE: "OFFLINE",
-  BUSY: "BUSY",
+  ONLINE: 'ONLINE',
+  OFFLINE: 'OFFLINE',
+  BUSY: 'BUSY',
 } as const;
 
-export type { Job, JobLog, Agent } from "@prisma/client";
+export type { Job, JobLog, Agent } from '@prisma/client';
+
+export enum JobStatus {
+  PENDING = 'PENDING',
+  RUNNING = 'RUNNING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+}
+
+export enum AgentStatus {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+  BUSY = 'BUSY',
+}
