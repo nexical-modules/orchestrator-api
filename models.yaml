@@ -20,8 +20,8 @@ models:
       id:
         type: String
         attributes:
-          - "@id"
-          - "@default(cuid())"
+          - '@id'
+          - '@default(cuid())'
       type:
         type: String
       userId:
@@ -30,13 +30,13 @@ models:
       actorId:
         type: String
         isRequired: false
-      actorType: 
+      actorType:
         type: String
         isRequired: false
       payload:
         type: Json
         attributes:
-          - "@default(\"{}\")"
+          - '@default("{}")'
       result:
         type: Json
         isRequired: false
@@ -46,11 +46,11 @@ models:
       status:
         type: JobStatus
         attributes:
-          - "@default(PENDING)"
+          - '@default(PENDING)'
       progress:
         type: Int
         attributes:
-          - "@default(0)"
+          - '@default(0)'
       lockedBy:
         type: String
         isRequired: false
@@ -66,16 +66,16 @@ models:
       createdAt:
         type: DateTime
         attributes:
-          - "@default(now())"
+          - '@default(now())'
       updatedAt:
         type: DateTime
         attributes:
-          - "@updatedAt"
+          - '@updatedAt'
       logs:
         type: JobLog
         isList: true
         attributes:
-          - "@relation(\"JobLogs\")"
+          - '@relation("JobLogs")'
 
   JobLog:
     role: job-owner
@@ -85,24 +85,24 @@ models:
       id:
         type: String
         attributes:
-          - "@id"
-          - "@default(cuid())"
+          - '@id'
+          - '@default(cuid())'
       jobId:
         type: String
       level:
         type: String
         attributes:
-          - "@default(\"INFO\")"
+          - '@default("INFO")'
       message:
         type: String
       timestamp:
         type: DateTime
         attributes:
-          - "@default(now())"
+          - '@default(now())'
       job:
         type: Job
         attributes:
-          - "@relation(\"JobLogs\", fields: [jobId], references: [id], onDelete: Cascade)"
+          - '@relation("JobLogs", fields: [jobId], references: [id], onDelete: Cascade)'
 
   Agent:
     test:
@@ -111,8 +111,8 @@ models:
       id:
         type: String
         attributes:
-          - "@id"
-          - "@default(cuid())"
+          - '@id'
+          - '@default(cuid())'
       hostname:
         type: String
       capabilities:
@@ -121,15 +121,15 @@ models:
       lastHeartbeat:
         type: DateTime
         attributes:
-          - "@default(now())"
+          - '@default(now())'
       status:
         type: AgentStatus
         attributes:
-          - "@default(ONLINE)"
+          - '@default(ONLINE)'
       createdAt:
         type: DateTime
         attributes:
-          - "@default(now())"
+          - '@default(now())'
 
   # DTOs
   CreateJobDTO:
@@ -152,7 +152,6 @@ models:
         type: String
         isRequired: false
 
-
   PollJobsDTO:
     db: false
     api: false
@@ -160,7 +159,7 @@ models:
       capabilities:
         type: String
         isList: true
-    
+
   CompleteJobDTO:
     db: false
     api: false

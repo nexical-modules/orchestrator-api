@@ -35,7 +35,6 @@ describe('Job API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-       
       const actor = await client.as('team', {});
 
       // Cleanup and seed specific count

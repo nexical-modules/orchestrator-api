@@ -1,4 +1,4 @@
 export default {
-    type: 'core',
-    order: 10
+  type: 'core',
+  order: 10,
 };

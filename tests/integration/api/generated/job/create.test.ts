@@ -37,7 +37,7 @@ describe('Job API - Create', () => {
 
     it('should forbid non-admin/unauthorized users', async () => {
       client.useToken('invalid-token');
-       
+
       const actor = undefined as unknown;
 
       const payload = {

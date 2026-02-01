@@ -1,10 +1,14 @@
-import type { RolePolicy } from "@/lib/registries/role-registry";
-import type { APIContext, AstroGlobal } from "astro";
+import type { RolePolicy } from '@/lib/registries/role-registry';
+import type { APIContext, AstroGlobal } from 'astro';
 
 export class PublicPolicy implements RolePolicy {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async check(context: AstroGlobal | APIContext, input: Record<string, unknown>, data?: any): Promise<void> {
-        // Public access allowed.
-        return;
-    }
+   
+  async check(
+    context: AstroGlobal | APIContext,
+    input: Record<string, unknown>,
+    data?: any,
+  ): Promise<void> {
+    // Public access allowed.
+    return;
+  }
 }
