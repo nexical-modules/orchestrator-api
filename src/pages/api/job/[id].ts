@@ -30,6 +30,9 @@ export const GET = defineApi(
       completedAt: true,
       createdAt: true,
       updatedAt: true,
+      retryCount: true,
+      maxRetries: true,
+      nextRetryAt: true,
       logs: { take: 10 },
     };
     const actor = context.locals.actor;
@@ -37,7 +40,10 @@ export const GET = defineApi(
     const result = await JobService.get(id, select, actor);
 
     if (!result.success) {
-      if (result.error?.code === 'NOT_FOUND') {
+      if (
+        result.error?.code === 'NOT_FOUND' ||
+        (typeof result.error === 'string' && result.error.includes('not_found'))
+      ) {
         return new Response(JSON.stringify({ error: result.error }), { status: 404 });
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
@@ -80,6 +86,9 @@ export const GET = defineApi(
                 completedAt: { type: 'string', format: 'date-time' },
                 createdAt: { type: 'string', format: 'date-time' },
                 updatedAt: { type: 'string', format: 'date-time' },
+                retryCount: { type: 'number' },
+                maxRetries: { type: 'number' },
+                nextRetryAt: { type: 'string', format: 'date-time' },
                 logs: { type: 'array', items: { type: 'string' } },
               },
               required: ['type', 'updatedAt', 'logs'],
@@ -114,6 +123,9 @@ export const PUT = defineApi(
         lockedAt: z.string().datetime().optional(),
         startedAt: z.string().datetime().optional(),
         completedAt: z.string().datetime().optional(),
+        retryCount: z.number().int().optional(),
+        maxRetries: z.number().int().optional(),
+        nextRetryAt: z.string().datetime().optional(),
       })
       .partial();
 
@@ -135,6 +147,9 @@ export const PUT = defineApi(
       completedAt: true,
       createdAt: true,
       updatedAt: true,
+      retryCount: true,
+      maxRetries: true,
+      nextRetryAt: true,
       logs: { take: 10 },
     };
     const actor = context.locals.actor;
@@ -142,7 +157,10 @@ export const PUT = defineApi(
     const result = await JobService.update(id, validated, select, actor);
 
     if (!result.success) {
-      if (result.error?.code === 'NOT_FOUND') {
+      if (
+        result.error?.code === 'NOT_FOUND' ||
+        (typeof result.error === 'string' && result.error.includes('not_found'))
+      ) {
         return new Response(JSON.stringify({ error: result.error }), { status: 404 });
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 400 });
@@ -176,6 +194,9 @@ export const PUT = defineApi(
               completedAt: { type: 'string', format: 'date-time' },
               createdAt: { type: 'string', format: 'date-time' },
               updatedAt: { type: 'string', format: 'date-time' },
+              retryCount: { type: 'number' },
+              maxRetries: { type: 'number' },
+              nextRetryAt: { type: 'string', format: 'date-time' },
               logs: { type: 'array', items: { type: 'string' } },
             },
           },
@@ -206,6 +227,9 @@ export const PUT = defineApi(
                 completedAt: { type: 'string', format: 'date-time' },
                 createdAt: { type: 'string', format: 'date-time' },
                 updatedAt: { type: 'string', format: 'date-time' },
+                retryCount: { type: 'number' },
+                maxRetries: { type: 'number' },
+                nextRetryAt: { type: 'string', format: 'date-time' },
                 logs: { type: 'array', items: { type: 'string' } },
               },
               required: ['type', 'updatedAt', 'logs'],
@@ -227,7 +251,10 @@ export const DELETE = defineApi(
     const result = await JobService.delete(id, actor);
 
     if (!result.success) {
-      if (result.error?.code === 'NOT_FOUND') {
+      if (
+        result.error?.code === 'NOT_FOUND' ||
+        (typeof result.error === 'string' && result.error.includes('not_found'))
+      ) {
         return new Response(JSON.stringify({ error: result.error }), { status: 404 });
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });

@@ -18,7 +18,7 @@ export const POST = defineApi(
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
-    await ApiGuard.protect(context, 'job-owner', combinedInput);
+    await ApiGuard.protect(context, 'agent', combinedInput);
 
     // Inject userId from context for protected routes
     const user = context.locals.actor;
@@ -48,9 +48,10 @@ export const POST = defineApi(
           schema: {
             type: 'object',
             properties: {
+              agentId: { type: 'string' },
               capabilities: { type: 'array', items: { type: 'string' } },
             },
-            required: ['capabilities'],
+            required: ['agentId', 'capabilities'],
           },
         },
       },
@@ -81,6 +82,9 @@ export const POST = defineApi(
                   completedAt: { type: 'string', format: 'date-time' },
                   createdAt: { type: 'string', format: 'date-time' },
                   updatedAt: { type: 'string', format: 'date-time' },
+                  retryCount: { type: 'number' },
+                  maxRetries: { type: 'number' },
+                  nextRetryAt: { type: 'string', format: 'date-time' },
                   logs: { type: 'array', items: { type: 'string' } },
                 },
                 required: ['type', 'updatedAt', 'logs'],

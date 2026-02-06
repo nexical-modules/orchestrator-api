@@ -1,8 +1,8 @@
-import { OrchestrationService } from '../services/orchestration-service';
+// GENERATED CODE - DO NOT MODIFY
 import type { ServiceResponse } from '@/types/service';
 import type { PollJobsDTO, Job } from '../sdk/types';
 import type { APIContext } from 'astro';
-import type { ApiActor } from '@/lib/api/api-docs';
+import { OrchestrationService } from '../services/orchestration-service';
 
 export class PollJobsOrchestratorAction {
   public static async run(
@@ -14,8 +14,9 @@ export class PollJobsOrchestratorAction {
 
       // Resolve Actor from Context (if not in input)
       const actor: ApiActor = context.locals.actor;
-      const actorId = input.actorId || actor?.id;
-      const actorType = input.actorType || actor?.type;
+      const inputWithActor = input as PollJobsDTO & { actorId?: string; actorType?: string };
+      const actorId = inputWithActor.actorId || actor?.id;
+      const actorType = inputWithActor.actorType || actor?.type;
 
       // Fix: Prioritize actorId (authenticated user/agent) over input.agentId.
       // This ensures that the entity locking the job is the same entity that will try to complete it.
@@ -23,7 +24,7 @@ export class PollJobsOrchestratorAction {
 
       // If the actor is an AGENT, they should be able to pick up ANY job (worker pool).
       // If the actor is a USER, they likely only want to poll their OWN jobs.
-      const isAgent = actor?.role === 'AGENT' || actor?.type === 'agent';
+      const isAgent = actor?.type === 'agent';
 
       // If Agent, don't filter by owner (pass undefined). If User, filter by owner (pass actorId).
       const filterActorId = isAgent ? undefined : actorId;
@@ -44,7 +45,7 @@ export class PollJobsOrchestratorAction {
         return { success: true, data: [] };
       }
 
-      return { success: true, data: [result.data] };
+      return { success: true, data: [result.data as unknown as Job] };
     } catch (error) {
       console.error('PollJobsOrchestratorAction Error:', error);
       return { success: false, error: 'orchestrator.action.error.poll_failed' };

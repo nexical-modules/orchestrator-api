@@ -14,11 +14,11 @@ export const POST = defineApi(
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: RegisterAgentDTO = await HookSystem.filter('agent.register.input', body);
+    const input: RegisterAgentDTO = await HookSystem.filter('agent.registerAgent.input', body);
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
-    await ApiGuard.protect(context, 'public', combinedInput);
+    await ApiGuard.protect(context, 'anonymous', combinedInput);
 
     // Inject userId from context for protected routes
     const user = context.locals.actor;
@@ -30,7 +30,7 @@ export const POST = defineApi(
     const result = await RegisterAgentAction.run(combinedInput, context);
 
     // 5. Hook: Filter Output
-    const filteredResult = await HookSystem.filter('agent.register.output', result);
+    const filteredResult = await HookSystem.filter('agent.registerAgent.output', result);
 
     // 6. Response
     if (!filteredResult.success) {
@@ -66,6 +66,9 @@ export const POST = defineApi(
               type: 'object',
               properties: {
                 id: { type: 'string' },
+                name: { type: 'string' },
+                hashedKey: { type: 'string' },
+                prefix: { type: 'string' },
                 hostname: { type: 'string' },
                 capabilities: { type: 'array', items: { type: 'string' } },
                 lastHeartbeat: { type: 'string', format: 'date-time' },
@@ -78,5 +81,6 @@ export const POST = defineApi(
         },
       },
     },
+    protected: false,
   },
 );
