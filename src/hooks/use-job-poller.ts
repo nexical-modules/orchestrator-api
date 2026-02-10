@@ -6,7 +6,9 @@ export function useJobPoller<T = unknown>(
   options: { interval?: number } = {},
 ) {
   const [data, setData] = useState<T | null>(null);
-  const [status, setStatus] = useState<OrchestratorModuleTypes.Job['status'] | 'LOADING'>('LOADING');
+  const [status, setStatus] = useState<OrchestratorModuleTypes.Job['status'] | 'LOADING'>(
+    'LOADING',
+  );
   const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {

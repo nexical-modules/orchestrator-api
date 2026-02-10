@@ -14,7 +14,10 @@ export const POST = defineApi(
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorModuleTypes.PollJobsDTO = await HookSystem.filter('orchestrator.pollJobs.input', body);
+    const input: OrchestratorModuleTypes.PollJobsDTO = await HookSystem.filter(
+      'orchestrator.pollJobs.input',
+      body,
+    );
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };

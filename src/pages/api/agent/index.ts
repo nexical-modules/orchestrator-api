@@ -46,7 +46,10 @@ export const GET = defineApi(
     };
 
     const actor = context.locals.actor as any;
-    const result = await AgentService.list({ where: where as any, take, skip, orderBy, select }, actor);
+    const result = await AgentService.list(
+      { where: where as any, take, skip, orderBy, select },
+      actor,
+    );
 
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
