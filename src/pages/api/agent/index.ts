@@ -5,7 +5,7 @@ import { parseQuery } from '@/lib/api/api-query';
 import { HookSystem } from '@/lib/modules/hooks';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
+import { OrchestratorModuleTypes } from '@/lib/api';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
@@ -45,8 +45,8 @@ export const GET = defineApi(
       createdAt: true,
     };
 
-    const actor = context.locals.actor;
-    const result = await AgentService.list({ where, take, skip, orderBy, select }, actor);
+    const actor = context.locals.actor as any;
+    const result = await AgentService.list({ where: where as any, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
@@ -566,7 +566,7 @@ export const POST = defineApi(
       hostname: z.string(),
       capabilities: z.array(z.string()),
       lastHeartbeat: z.string().datetime().optional(),
-      status: z.nativeEnum(AgentStatus).optional(),
+      status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
     });
 
     const validated = schema.parse(body);

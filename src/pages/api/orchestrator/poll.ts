@@ -3,25 +3,25 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { PollJobsOrchestratorAction } from '@modules/orchestrator-api/src/actions/poll-jobs-orchestrator';
-import type { PollJobsDTO } from '@modules/orchestrator-api/src/sdk';
+import { OrchestratorModuleTypes } from '@/lib/api';
 
 // GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
   async (context) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as PollJobsDTO;
+    const body = (await context.request.json()) as OrchestratorModuleTypes.PollJobsDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: PollJobsDTO = await HookSystem.filter('orchestrator.pollJobs.input', body);
+    const input: OrchestratorModuleTypes.PollJobsDTO = await HookSystem.filter('orchestrator.pollJobs.input', body);
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
     await ApiGuard.protect(context, 'agent', combinedInput);
 
     // Inject userId from context for protected routes
-    const user = context.locals.actor;
+    const user = context.locals.actor as any;
     if (user && user.id) {
       Object.assign(combinedInput, { userId: user.id });
     }

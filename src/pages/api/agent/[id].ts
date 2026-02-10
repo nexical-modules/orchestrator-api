@@ -3,12 +3,12 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
+import { OrchestratorModuleTypes } from '@/lib/api';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
   async (context) => {
-    const { id } = context.params;
+    const id = context.params.id as string;
 
     // Security Check
     await ApiGuard.protect(context, 'member', { ...context.params });
@@ -24,13 +24,13 @@ export const GET = defineApi(
       status: true,
       createdAt: true,
     };
-    const actor = context.locals.actor;
+    const actor = context.locals.actor as any;
 
     const result = await AgentService.get(id, select, actor);
 
     if (!result.success) {
       if (
-        result.error?.code === 'NOT_FOUND' ||
+        (result.error as any)?.code === 'NOT_FOUND' ||
         (typeof result.error === 'string' && result.error.includes('not_found'))
       ) {
         return new Response(JSON.stringify({ error: result.error }), { status: 404 });
@@ -94,7 +94,7 @@ export const PUT = defineApi(
         hostname: z.string(),
         capabilities: z.array(z.string()),
         lastHeartbeat: z.string().datetime().optional(),
-        status: z.nativeEnum(AgentStatus).optional(),
+        status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
       })
       .partial();
 
@@ -110,13 +110,13 @@ export const PUT = defineApi(
       status: true,
       createdAt: true,
     };
-    const actor = context.locals.actor;
+    const actor = context.locals.actor as any;
 
-    const result = await AgentService.update(id, validated, select, actor);
+    const result = await AgentService.update(id as string, validated, select, actor);
 
     if (!result.success) {
       if (
-        result.error?.code === 'NOT_FOUND' ||
+        (result.error as any)?.code === 'NOT_FOUND' ||
         (typeof result.error === 'string' && result.error.includes('not_found'))
       ) {
         return new Response(JSON.stringify({ error: result.error }), { status: 404 });
@@ -183,12 +183,12 @@ export const DELETE = defineApi(
     // Security Check
     await ApiGuard.protect(context, 'member', { ...context.params });
 
-    const actor = context.locals.actor;
-    const result = await AgentService.delete(id, actor);
+    const actor = context.locals.actor as any;
+    const result = await AgentService.delete(id as string, actor);
 
     if (!result.success) {
       if (
-        result.error?.code === 'NOT_FOUND' ||
+        (result.error as any)?.code === 'NOT_FOUND' ||
         (typeof result.error === 'string' && result.error.includes('not_found'))
       ) {
         return new Response(JSON.stringify({ error: result.error }), { status: 404 });

@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api/api';
-import type { Job } from '@modules/orchestrator-api/src/sdk/types';
+import { api, OrchestratorModuleTypes } from '@/lib/api';
 
 export function useJobPoller<T = unknown>(
   jobId: string | null,
   options: { interval?: number } = {},
 ) {
   const [data, setData] = useState<T | null>(null);
-  const [status, setStatus] = useState<Job['status'] | 'LOADING'>('LOADING');
+  const [status, setStatus] = useState<OrchestratorModuleTypes.Job['status'] | 'LOADING'>('LOADING');
   const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {
@@ -19,11 +18,12 @@ export function useJobPoller<T = unknown>(
     const fetchStatus = async () => {
       try {
         // Use the new SDK method from orchestrator-api
-        const job = await api.orchestrator.job.get(jobId);
+        const response = await api.orchestrator.job.get(jobId);
 
         if (!isMounted) return;
 
-        if (job) {
+        if (response.success && response.data) {
+          const job = response.data;
           setStatus(job.status);
 
           if (job.status === 'COMPLETED') {
@@ -32,7 +32,7 @@ export function useJobPoller<T = unknown>(
             setError(job.error);
           }
         } else {
-          setError('Job not found');
+          setError(response.error || 'Job not found');
           setStatus('FAILED');
         }
       } catch (err) {
