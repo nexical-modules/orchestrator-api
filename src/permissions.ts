@@ -31,6 +31,7 @@ import { Permissions } from '@/lib/security/permissions';
 // GENERATED CODE - DO NOT MODIFY
 // GENERATED CODE - DO NOT MODIFY
 // GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
 export const PermissionRegistry = {
   'job:create': {
     description: 'Create a new job',
