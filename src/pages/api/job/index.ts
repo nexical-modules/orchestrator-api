@@ -9,7 +9,7 @@ import { JobStatus } from '@modules/orchestrator-api/src/sdk';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const filterOptions = {
       fields: {
         id: 'string',
@@ -64,7 +64,6 @@ export const GET = defineApi(
       logs: { take: 10 },
     };
 
-    const actor = context.locals.actor;
     const result = await JobService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -1086,7 +1085,7 @@ export const GET = defineApi(
   },
 );
 export const POST = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const body = await context.request.json();
 
     // Security Check
@@ -1135,7 +1134,6 @@ export const POST = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-    const actor = context.locals.actor;
 
     const result = await JobService.create(validated, select, actor);
 

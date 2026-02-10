@@ -6,7 +6,7 @@ import { CheckStaleAgentsOrchestratorAction } from '@modules/orchestrator-api/sr
 
 // GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
-  async (context) => {
+  async (context, actor) => {
     // 1. Body Parsing (Input)
     const body = (await context.request.json()) as none;
 
@@ -20,9 +20,8 @@ export const POST = defineApi(
     await ApiGuard.protect(context, 'agent-admin', combinedInput);
 
     // Inject userId from context for protected routes
-    const user = context.locals.actor;
-    if (user && user.id) {
-      Object.assign(combinedInput, { userId: user.id });
+    if (actor && actor.id) {
+      Object.assign(combinedInput, { userId: actor.id });
     }
 
     // 4. Action Execution

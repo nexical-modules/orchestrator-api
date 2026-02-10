@@ -7,7 +7,7 @@ import { JobStatus } from '@modules/orchestrator-api/src/sdk';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const { id } = context.params;
 
     // Security Check
@@ -35,7 +35,6 @@ export const GET = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-    const actor = context.locals.actor;
 
     const result = await JobService.get(id, select, actor);
 
@@ -100,7 +99,7 @@ export const GET = defineApi(
   },
 );
 export const PUT = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const { id } = context.params;
     const body = await context.request.json();
 
@@ -152,7 +151,6 @@ export const PUT = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-    const actor = context.locals.actor;
 
     const result = await JobService.update(id, validated, select, actor);
 
@@ -241,13 +239,12 @@ export const PUT = defineApi(
   },
 );
 export const DELETE = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const { id } = context.params;
 
     // Security Check
     await ApiGuard.protect(context, 'job-owner', { ...context.params });
 
-    const actor = context.locals.actor;
     const result = await JobService.delete(id, actor);
 
     if (!result.success) {

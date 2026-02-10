@@ -3,29 +3,26 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { HeartbeatAgentAction } from '@modules/orchestrator-api/src/actions/heartbeat-agent';
-import { OrchestratorModuleTypes } from '@/lib/api';
+import type { HeartbeatDTO } from '@modules/orchestrator-api/src/sdk';
 
 // GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
-  async (context, user) => {
+  async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorModuleTypes.HeartbeatDTO;
+    const body = (await context.request.json()) as HeartbeatDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorModuleTypes.HeartbeatDTO = await HookSystem.filter(
-      'agent.heartbeat.input',
-      body,
-    );
+    const input: HeartbeatDTO = await HookSystem.filter('agent.heartbeat.input', body);
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
     await ApiGuard.protect(context, 'anonymous', combinedInput);
 
     // Inject userId from context for protected routes
-    if (user && user.id) {
-      Object.assign(combinedInput, { userId: user.id });
+    if (actor && actor.id) {
+      Object.assign(combinedInput, { userId: actor.id });
     }
 
     // 4. Action Execution

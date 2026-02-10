@@ -5,8 +5,7 @@ import { parseQuery } from '@/lib/api/api-query';
 import { HookSystem } from '@/lib/modules/hooks';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import { OrchestratorModuleTypes } from '@/lib/api';
-import type { Prisma } from '@prisma/client';
+import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
@@ -25,7 +24,7 @@ export const GET = defineApi(
       searchFields: ['id', 'name', 'hashedKey', 'prefix', 'hostname'],
     } as const;
 
-    const { where, take, skip, orderBy } = parseQuery<Prisma.AgentWhereInput>(
+    const { where, take, skip, orderBy } = parseQuery(
       new URL(context.request.url).searchParams,
       filterOptions,
     );
@@ -55,6 +54,7 @@ export const GET = defineApi(
     const data = result.data || [];
     const total = result.total || 0;
 
+    // Analytics Hook
     await HookSystem.dispatch('agent.list.viewed', {
       count: data.length,
       actorId: actor?.id || 'anonymous',
@@ -565,7 +565,7 @@ export const POST = defineApi(
       hostname: z.string(),
       capabilities: z.array(z.string()),
       lastHeartbeat: z.string().datetime().optional(),
-      status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
+      status: z.nativeEnum(AgentStatus).optional(),
     });
 
     const validated = schema.parse(body);

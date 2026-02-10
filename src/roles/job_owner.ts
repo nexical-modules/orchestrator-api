@@ -16,6 +16,9 @@ import { BaseRole } from './base-role';
 // GENERATED CODE - DO NOT MODIFY
 // GENERATED CODE - DO NOT MODIFY
 // GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
 /** */
 export class Job_ownerRole extends BaseRole {
   readonly name: string = 'JOB_OWNER';

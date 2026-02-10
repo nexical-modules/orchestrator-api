@@ -7,7 +7,7 @@ import { CancelJobAction } from '@modules/orchestrator-api/src/actions/cancel-jo
 import type { CancelJobDTO } from '@modules/orchestrator-api/src/sdk';
 
 export const POST = defineApi(
-  async (context) => {
+  async (context, actor) => {
     // 1. Body Parsing (Input)
     const body = (await context.request.json()) as CancelJobDTO;
 
@@ -21,9 +21,8 @@ export const POST = defineApi(
     await ApiGuard.protect(context, 'job-owner', combinedInput);
 
     // Inject userId from context for protected routes
-    const user = context.locals.actor;
-    if (user && user.id) {
-      Object.assign(combinedInput, { userId: user.id });
+    if (actor && actor.id) {
+      Object.assign(combinedInput, { userId: actor.id });
     }
 
     // 4. Action Execution

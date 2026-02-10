@@ -4,7 +4,7 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { JobLogService } from '@modules/orchestrator-api/src/services/job-log-service';
 export const GET = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const { id } = context.params;
 
     // Security Check
@@ -18,7 +18,6 @@ export const GET = defineApi(
       timestamp: true,
       job: true,
     };
-    const actor = context.locals.actor;
 
     const result = await JobLogService.get(id, select, actor);
 
@@ -69,7 +68,7 @@ export const GET = defineApi(
   },
 );
 export const PUT = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const { id } = context.params;
     const body = await context.request.json();
 
@@ -95,7 +94,6 @@ export const PUT = defineApi(
       timestamp: true,
       job: true,
     };
-    const actor = context.locals.actor;
 
     const result = await JobLogService.update(id, validated, select, actor);
 
@@ -156,13 +154,12 @@ export const PUT = defineApi(
   },
 );
 export const DELETE = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const { id } = context.params;
 
     // Security Check
     await ApiGuard.protect(context, 'job-owner', { ...context.params });
 
-    const actor = context.locals.actor;
     const result = await JobLogService.delete(id, actor);
 
     if (!result.success) {

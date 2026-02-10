@@ -7,7 +7,7 @@ import { JobLogService } from '@modules/orchestrator-api/src/services/job-log-se
 import { HookSystem } from '@/lib/modules/hooks';
 
 export const GET = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const filterOptions = {
       fields: {
         id: 'string',
@@ -37,7 +37,6 @@ export const GET = defineApi(
       job: true,
     };
 
-    const actor = context.locals.actor;
     const result = await JobLogService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -387,7 +386,7 @@ export const GET = defineApi(
   },
 );
 export const POST = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const body = await context.request.json();
 
     // Security Check
@@ -410,7 +409,6 @@ export const POST = defineApi(
       timestamp: true,
       job: true,
     };
-    const actor = context.locals.actor;
 
     const result = await JobLogService.create(validated, select, actor);
 

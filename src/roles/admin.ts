@@ -29,6 +29,9 @@ import { BaseRole } from './base-role';
 // GENERATED CODE - DO NOT MODIFY
 // GENERATED CODE - DO NOT MODIFY
 // GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - DO NOT MODIFY
 /** */
 export class AdminRole extends BaseRole {
   readonly name: string = 'ADMIN';

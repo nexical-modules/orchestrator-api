@@ -8,7 +8,7 @@ import { DeadLetterJobService } from '@modules/orchestrator-api/src/services/dea
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const filterOptions = {
       fields: {
         id: 'string',
@@ -45,7 +45,6 @@ export const GET = defineApi(
       actorType: true,
     };
 
-    const actor = context.locals.actor;
     const result = await DeadLetterJobService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -581,7 +580,7 @@ export const GET = defineApi(
   },
 );
 export const POST = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const body = await context.request.json();
 
     // Security Check
@@ -613,7 +612,6 @@ export const POST = defineApi(
       actorId: true,
       actorType: true,
     };
-    const actor = context.locals.actor;
 
     const result = await DeadLetterJobService.create(validated, select, actor);
 

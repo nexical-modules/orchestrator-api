@@ -17,7 +17,7 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
     const entity = tokenEntity;
 
     if (entity) {
-      context.locals.actor = { ...entity, type: 'agent', role: '${name.toUpperCase()}' };
+      context.locals.actor = { ...entity, type: 'agent', role: 'AGENT' };
       context.locals.actorType = 'agent';
       return next();
     }
@@ -32,7 +32,7 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
     const entity = tokenEntity?.user;
 
     if (entity) {
-      context.locals.actor = { ...entity, type: 'user', role: '${name.toUpperCase()}' };
+      context.locals.actor = { ...entity, type: 'user', role: 'USER' };
       context.locals.actorType = 'user';
       return next();
     }
