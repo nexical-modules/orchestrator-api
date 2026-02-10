@@ -7,7 +7,7 @@ import { OrchestratorModuleTypes } from '@/lib/api';
 
 // GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
-  async (context) => {
+  async (context, user) => {
     // 1. Body Parsing (Input)
     const body = (await context.request.json()) as OrchestratorModuleTypes.RegisterAgentDTO;
 
@@ -24,7 +24,6 @@ export const POST = defineApi(
     await ApiGuard.protect(context, 'anonymous', combinedInput);
 
     // Inject userId from context for protected routes
-    const user = context.locals.actor as any;
     if (user && user.id) {
       Object.assign(combinedInput, { userId: user.id });
     }

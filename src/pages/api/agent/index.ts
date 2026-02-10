@@ -6,10 +6,11 @@ import { HookSystem } from '@/lib/modules/hooks';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
 import { OrchestratorModuleTypes } from '@/lib/api';
+import type { Prisma } from '@prisma/client';
 
 // GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const filterOptions = {
       fields: {
         id: 'string',
@@ -24,7 +25,7 @@ export const GET = defineApi(
       searchFields: ['id', 'name', 'hashedKey', 'prefix', 'hostname'],
     } as const;
 
-    const { where, take, skip, orderBy } = parseQuery(
+    const { where, take, skip, orderBy } = parseQuery<Prisma.AgentWhereInput>(
       new URL(context.request.url).searchParams,
       filterOptions,
     );
@@ -45,11 +46,7 @@ export const GET = defineApi(
       createdAt: true,
     };
 
-    const actor = context.locals.actor as any;
-    const result = await AgentService.list(
-      { where: where as any, take, skip, orderBy, select },
-      actor,
-    );
+    const result = await AgentService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
@@ -58,7 +55,6 @@ export const GET = defineApi(
     const data = result.data || [];
     const total = result.total || 0;
 
-    // Analytics Hook
     await HookSystem.dispatch('agent.list.viewed', {
       count: data.length,
       actorId: actor?.id || 'anonymous',
@@ -555,7 +551,7 @@ export const GET = defineApi(
   },
 );
 export const POST = defineApi(
-  async (context) => {
+  async (context, actor) => {
     const body = await context.request.json();
 
     // Security Check
@@ -584,7 +580,6 @@ export const POST = defineApi(
       status: true,
       createdAt: true,
     };
-    const actor = context.locals.actor;
 
     const result = await AgentService.create(validated, select, actor);
 
