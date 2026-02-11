@@ -4,7 +4,7 @@ import { db } from '@/lib/core/db';
 import crypto from 'node:crypto';
 
 export async function onRequest(context: APIContext, next: MiddlewareNext) {
-  const publicRoutes = ['/register', '/[id]/heartbeat'];
+  const publicRoutes: string[] = ['/register', '/[id]/heartbeat'];
   if (publicRoutes.some((route) => context.url.pathname.startsWith(route))) return next();
   const authHeader = context.request.headers.get('Authorization');
   if (authHeader?.startsWith('Bearer ')) {
