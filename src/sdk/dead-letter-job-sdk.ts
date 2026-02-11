@@ -1,8 +1,7 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+// GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { DeadLetterJob } from './types.js';
 
-// GENERATED CODE - DO NOT MODIFY BY HAND
 /** SDK client for DeadLetterJob. */
 export class DeadLetterJobSDK extends BaseResource {
   public async list(params?: {

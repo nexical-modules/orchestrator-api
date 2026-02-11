@@ -5,7 +5,6 @@ import { HookSystem } from '@/lib/modules/hooks';
 import { HeartbeatAgentAction } from '@modules/orchestrator-api/src/actions/heartbeat-agent';
 import type { HeartbeatDTO } from '@modules/orchestrator-api/src/sdk';
 
-// GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

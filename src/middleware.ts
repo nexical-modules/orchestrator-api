@@ -3,7 +3,6 @@ import type { APIContext, MiddlewareNext } from 'astro';
 import { db } from '@/lib/core/db';
 import crypto from 'node:crypto';
 
-// GENERATED CODE - DO NOT MODIFY
 export async function onRequest(context: APIContext, next: MiddlewareNext) {
   const publicRoutes = ['/register', '/[id]/heartbeat'];
   if (publicRoutes.some((route) => context.url.pathname.startsWith(route))) return next();

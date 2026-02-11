@@ -6,7 +6,6 @@ import type { DeadLetterJob, Prisma } from '@prisma/client';
 import type { ApiActor } from '@/lib/api/api-docs';
 import { Logger } from '@/lib/core/logger';
 
-// GENERATED CODE - DO NOT MODIFY
 /** Service class for DeadLetterJob-related business logic. */
 export class DeadLetterJobService {
   public static async list(

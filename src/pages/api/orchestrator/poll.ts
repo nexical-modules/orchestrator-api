@@ -5,7 +5,6 @@ import { HookSystem } from '@/lib/modules/hooks';
 import { PollJobsOrchestratorAction } from '@modules/orchestrator-api/src/actions/poll-jobs-orchestrator';
 import type { PollJobsDTO } from '@modules/orchestrator-api/src/sdk';
 
-// GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

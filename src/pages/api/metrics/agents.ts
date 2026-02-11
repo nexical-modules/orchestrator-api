@@ -4,7 +4,6 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { GetAgentMetricsAction } from '@modules/orchestrator-api/src/actions/get-agent-metrics';
 
-// GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

@@ -4,7 +4,6 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { DeadLetterJobService } from '@modules/orchestrator-api/src/services/dead-letter-job-service';
 
-// GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;

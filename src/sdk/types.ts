@@ -1,5 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// GENERATED CODE - DO NOT MODIFY BY HAND
+// GENERATED CODE - DO NOT MODIFY
 export interface CreateJobDTO {
   type: string;
   payload: unknown;

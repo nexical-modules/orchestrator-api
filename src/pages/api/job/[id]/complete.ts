@@ -5,7 +5,6 @@ import { HookSystem } from '@/lib/modules/hooks';
 import type { CompleteJobDTO } from '@modules/orchestrator-api/src/sdk';
 import { CompleteJobAction } from '@modules/orchestrator-api/src/actions/complete-job';
 
-// GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

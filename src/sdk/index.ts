@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+// GENERATED CODE - DO NOT MODIFY
 import { BaseResource, ApiClient } from '@nexical/sdk-core';
 import { JobSDK as BaseJobSDK } from './job-sdk.js';
 import { JobLogSDK as BaseJobLogSDK } from './job-log-sdk.js';
@@ -7,7 +7,6 @@ import { DeadLetterJobSDK as BaseDeadLetterJobSDK } from './dead-letter-job-sdk.
 import { OrchestratorSDK as BaseOrchestratorSDK } from './orchestrator-sdk.js';
 import { MetricsSDK as BaseMetricsSDK } from './metrics-sdk.js';
 
-// GENERATED CODE - DO NOT MODIFY BY HAND
 export * from './job-sdk.js';
 export * from './job-log-sdk.js';
 export * from './agent-sdk.js';

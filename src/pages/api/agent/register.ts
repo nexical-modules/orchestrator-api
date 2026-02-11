@@ -5,7 +5,6 @@ import { HookSystem } from '@/lib/modules/hooks';
 import { RegisterAgentAction } from '@modules/orchestrator-api/src/actions/register-agent';
 import type { RegisterAgentDTO } from '@modules/orchestrator-api/src/sdk';
 
-// GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
 import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
 
-// GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
   async (context, actor) => {
     const filterOptions = {

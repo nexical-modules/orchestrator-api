@@ -4,7 +4,6 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { CheckStaleAgentsOrchestratorAction } from '@modules/orchestrator-api/src/actions/check-stale-agents-orchestrator';
 
-// GENERATED CODE - DO NOT MODIFY
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

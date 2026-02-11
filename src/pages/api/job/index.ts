@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { JobService } from '@modules/orchestrator-api/src/services/job-service';
 import { JobStatus } from '@modules/orchestrator-api/src/sdk';
 
-// GENERATED CODE - DO NOT MODIFY
 export const GET = defineApi(
   async (context, actor) => {
     const filterOptions = {

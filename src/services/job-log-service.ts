@@ -6,7 +6,6 @@ import { HookSystem } from '@/lib/modules/hooks';
 import type { JobLog, Prisma } from '@prisma/client';
 import type { ApiActor } from '@/lib/api/api-docs';
 
-// GENERATED CODE - DO NOT MODIFY
 /** Service class for JobLog-related business logic. */
 export class JobLogService {
   public static async list(

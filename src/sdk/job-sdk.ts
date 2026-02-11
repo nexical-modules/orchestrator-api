@@ -1,8 +1,7 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+// GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { Job, CompleteJobDTO, FailJobDTO, CancelJobDTO, UpdateProgressDTO } from './types.js';
 
-// GENERATED CODE - DO NOT MODIFY BY HAND
 /** SDK client for Job. */
 export class JobSDK extends BaseResource {
   public async list(params?: {
