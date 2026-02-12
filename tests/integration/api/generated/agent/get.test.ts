@@ -21,6 +21,7 @@ describe('Agent API - Get', () => {
           hostname: 'hostname_test',
           capabilities: ['capabilities_test'],
           lastHeartbeat: new Date().toISOString(),
+          status: 'ONLINE',
         },
       });
 

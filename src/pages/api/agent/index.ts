@@ -5,7 +5,7 @@ import { parseQuery } from '@/lib/api/api-query';
 import { HookSystem } from '@/lib/modules/hooks';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
+import type { OrchestratorApiModuleTypes } from '@/lib/api';
 
 export const GET = defineApi(
   async (context, actor) => {
@@ -564,7 +564,7 @@ export const POST = defineApi(
       hostname: z.string(),
       capabilities: z.array(z.string()),
       lastHeartbeat: z.string().datetime().optional(),
-      status: z.nativeEnum(AgentStatus).optional(),
+      status: z.nativeEnum(OrchestratorApiModuleTypes.AgentStatus).optional(),
     });
 
     const validated = schema.parse(body);

@@ -3,7 +3,7 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import { AgentStatus } from '@modules/orchestrator-api/src/sdk';
+import type { OrchestratorApiModuleTypes } from '@/lib/api';
 
 export const GET = defineApi(
   async (context, actor) => {
@@ -92,7 +92,7 @@ export const PUT = defineApi(
         hostname: z.string(),
         capabilities: z.array(z.string()),
         lastHeartbeat: z.string().datetime().optional(),
-        status: z.nativeEnum(AgentStatus).optional(),
+        status: z.nativeEnum(OrchestratorApiModuleTypes.AgentStatus).optional(),
       })
       .partial();
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ApiClient } from '../../../../../../tests/integration/lib/client';
-import { Factory } from '../../../../../../tests/integration/lib/factory';
-import { TestServer } from '../../../../../../tests/integration/lib/server';
+import { ApiClient } from '@tests/integration/lib/client';
+import { Factory } from '@tests/integration/lib/factory';
+import { TestServer } from '@tests/integration/lib/server';
 
 describe('Orchestrator Flow Integration', () => {
   let client: ApiClient;

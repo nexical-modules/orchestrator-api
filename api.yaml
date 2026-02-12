@@ -55,7 +55,7 @@ Agent:
     summary: Register or update an agent
     input: RegisterAgentDTO
     output: Agent
-    role: anonymous
+    role: public
 
   - path: /[id]/heartbeat
     verb: POST
@@ -63,7 +63,7 @@ Agent:
     summary: Update agent heartbeat
     input: HeartbeatDTO
     output: none
-    role: anonymous
+    role: public
 
 Metrics:
   - path: /jobs
