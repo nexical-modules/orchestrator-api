@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useJobPoller } from '../../../src/hooks/use-job-poller';
@@ -29,8 +32,11 @@ describe('useJobPoller', () => {
 
   it('should fetch and update status to COMPLETED', async () => {
     vi.mocked(api.orchestrator.job.get).mockResolvedValue({
-      status: 'COMPLETED',
-      result: 'ok',
+      success: true,
+      data: {
+        status: 'COMPLETED',
+        result: 'ok',
+      },
     } as never);
 
     const { result } = renderHook(() => useJobPoller('j1'));
@@ -41,8 +47,11 @@ describe('useJobPoller', () => {
 
   it('should handle FAILED status', async () => {
     vi.mocked(api.orchestrator.job.get).mockResolvedValue({
-      status: 'FAILED',
-      error: 'boom',
+      success: true,
+      data: {
+        status: 'FAILED',
+        error: 'boom',
+      },
     } as never);
 
     const { result } = renderHook(() => useJobPoller('j1'));
@@ -67,7 +76,10 @@ describe('useJobPoller', () => {
   });
 
   it('should handle job not found', async () => {
-    vi.mocked(api.orchestrator.job.get).mockResolvedValue(null as never);
+    vi.mocked(api.orchestrator.job.get).mockResolvedValue({
+      success: false,
+      error: 'Job not found',
+    } as never);
 
     const { result } = renderHook(() => useJobPoller('j1'));
 

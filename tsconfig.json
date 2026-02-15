@@ -1,15 +1,17 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../../../tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "baseUrl": "../../"
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
   "include": [
     "src/**/*",
+    "tests/**/*",
     "../../src/**/*",
-    "../../modules/*/src/types.d.ts",
-    "tests/integration/lib/agent-test-kit.ts",
-    "tests/integration/lib/agent-runner.ts",
-    "tests/**/*"
+    "../../../../core/src/**/*",
+    "../../../../core/tests/**/*",
+    "../../../../packages/*/src/**/*",
+    "../../modules/*/src/**/*"
   ]
 }

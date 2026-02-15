@@ -3,6 +3,7 @@ import type { ServiceResponse } from '@/types/service';
 import type { PollJobsDTO, Job } from '../sdk/types';
 import type { APIContext } from 'astro';
 import { OrchestrationService } from '../services/orchestration-service';
+import type { ApiActor } from '@/lib/api/api-docs';
 
 export class PollJobsOrchestratorAction {
   public static async run(
@@ -24,7 +25,11 @@ export class PollJobsOrchestratorAction {
 
       // If the actor is an AGENT, they should be able to pick up ANY job (worker pool).
       // If the actor is a USER, they likely only want to poll their OWN jobs.
-      const isAgent = actor?.type === 'agent';
+      // ADMINs should also be able to act as a worker pool.
+      const isAgent =
+        (actor as { type?: string })?.type === 'agent' ||
+        ((actor as { type?: string })?.type === 'user' &&
+          (actor as { role?: string }).role === 'ADMIN');
 
       // If Agent, don't filter by owner (pass undefined). If User, filter by owner (pass actorId).
       const filterActorId = isAgent ? undefined : actorId;
@@ -48,6 +53,9 @@ export class PollJobsOrchestratorAction {
       return { success: true, data: [result.data as unknown as Job] };
     } catch (error) {
       console.error('PollJobsOrchestratorAction Error:', error);
+      if (error instanceof Error) {
+        console.error('Stack:', error.stack);
+      }
       return { success: false, error: 'orchestrator.action.error.poll_failed' };
     }
   }

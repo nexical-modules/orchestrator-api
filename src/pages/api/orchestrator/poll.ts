@@ -3,17 +3,20 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { PollJobsOrchestratorAction } from '@modules/orchestrator-api/src/actions/poll-jobs-orchestrator';
-import type { PollJobsDTO } from '@modules/orchestrator-api/src/sdk';
+import type { OrchestratorApiModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as PollJobsDTO;
+    const body = (await context.request.json()) as OrchestratorApiModuleTypes.PollJobsDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: PollJobsDTO = await HookSystem.filter('orchestrator.pollJobs.input', body);
+    const input: OrchestratorApiModuleTypes.PollJobsDTO = await HookSystem.filter(
+      'orchestrator.pollJobs.input',
+      body,
+    );
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };

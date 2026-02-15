@@ -5,7 +5,7 @@ import { parseQuery } from '@/lib/api/api-query';
 import { HookSystem } from '@/lib/modules/hooks';
 import { z } from 'zod';
 import { JobService } from '@modules/orchestrator-api/src/services/job-service';
-import { JobStatus } from '@modules/orchestrator-api/src/sdk';
+import type { OrchestratorApiModuleTypes } from '@/lib/api';
 
 export const GET = defineApi(
   async (context, actor) => {
@@ -1099,7 +1099,7 @@ export const POST = defineApi(
       payload: z.unknown().optional(),
       result: z.unknown().optional(),
       error: z.unknown().optional(),
-      status: z.nativeEnum(JobStatus).optional(),
+      status: z.nativeEnum(OrchestratorApiModuleTypes.JobStatus).optional(),
       progress: z.number().int().optional(),
       lockedBy: z.string().optional(),
       lockedAt: z.string().datetime().optional(),

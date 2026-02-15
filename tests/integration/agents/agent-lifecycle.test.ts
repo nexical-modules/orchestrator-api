@@ -10,17 +10,13 @@ describe('Agent Lifecycle Integration', () => {
   let client: ApiClient;
 
   beforeAll(async () => {
-    await TestServer.start();
     client = new ApiClient();
-    // await client.as('team'); // Moved to test body
-
     // Ensure we have a clean state or at least known agent
     spawner = new AgentSpawner();
   }, 60000);
 
   afterAll(async () => {
     await spawner.stop();
-    await TestServer.stop();
   });
 
   test('Agent spawned, polls, and completes a job', async () => {

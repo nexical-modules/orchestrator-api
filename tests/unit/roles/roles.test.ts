@@ -5,14 +5,18 @@ import { PublicPolicy } from '../../../src/roles/public';
 import { createMockAstroContext } from '@tests/unit/helpers';
 
 // Mock DB for dynamic imports
-const mockDb = {
-  job: {
-    findUnique: vi.fn(),
-  },
-  jobLog: {
-    findUnique: vi.fn(),
-  },
-};
+const { mockDb } = await vi.hoisted(async () => {
+  return {
+    mockDb: {
+      job: {
+        findUnique: vi.fn(),
+      },
+      jobLog: {
+        findUnique: vi.fn(),
+      },
+    },
+  };
+});
 
 vi.mock('@/lib/core/db', () => ({
   db: mockDb,

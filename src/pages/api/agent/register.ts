@@ -3,21 +3,24 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { RegisterAgentAction } from '@modules/orchestrator-api/src/actions/register-agent';
-import type { RegisterAgentDTO } from '@modules/orchestrator-api/src/sdk';
+import type { OrchestratorApiModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as RegisterAgentDTO;
+    const body = (await context.request.json()) as OrchestratorApiModuleTypes.RegisterAgentDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: RegisterAgentDTO = await HookSystem.filter('agent.registerAgent.input', body);
+    const input: OrchestratorApiModuleTypes.RegisterAgentDTO = await HookSystem.filter(
+      'agent.registerAgent.input',
+      body,
+    );
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
-    await ApiGuard.protect(context, 'anonymous', combinedInput);
+    await ApiGuard.protect(context, 'public', combinedInput);
 
     // Inject userId from context for protected routes
     if (actor && actor.id) {

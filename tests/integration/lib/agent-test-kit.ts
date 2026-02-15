@@ -1,5 +1,6 @@
 import type { ChildProcess } from 'child_process';
 import path from 'node:path';
+import fs from 'node:fs';
 
 export interface AgentSpawnerOptions {
   /**
@@ -18,8 +19,15 @@ export class AgentSpawner {
 
   constructor() {
     // Resolve path to the compiled agent script
-    // Assuming we are running from project root or module root
-    this.agentPath = path.resolve(process.cwd(), 'packages/agent/src/main.ts');
+    let root = process.cwd();
+    while (root !== '/' && !fs.existsSync(path.join(root, 'package.json'))) {
+      root = path.dirname(root);
+    }
+    // If we are in apps/backend, we need to go one level up to find the root of the workspace
+    if (path.basename(root) === 'backend') {
+      root = path.join(root, '../..');
+    }
+    this.agentPath = path.resolve(root, 'packages/agent/src/main.ts');
   }
 
   /**
@@ -50,7 +58,21 @@ export class AgentSpawner {
     // Use spawn to mimic manual run
     // Use tsx via npx to run the agent source (handles aliases better and supports fork)
     // Use tsx directly from node_modules to avoid npx signal propagation issues
-    const nodeExecutable = path.resolve(process.cwd(), 'node_modules/.bin/tsx');
+    let root = process.cwd();
+    while (root !== '/' && !fs.existsSync(path.join(root, 'package.json'))) {
+      root = path.dirname(root);
+    }
+    if (path.basename(root) === 'backend') {
+      root = path.join(root, '../..');
+    }
+    const nodeExecutable = path.resolve(root, 'node_modules/.bin/tsx');
+
+    if (!fs.existsSync(nodeExecutable)) {
+      console.error(`[AgentSpawner] tsx not found at: ${nodeExecutable}`);
+    }
+    if (!fs.existsSync(this.agentPath)) {
+      console.error(`[AgentSpawner] Agent source not found at: ${this.agentPath}`);
+    }
 
     // Spawn directly
     const { spawn } = await import('child_process');
@@ -59,24 +81,16 @@ export class AgentSpawner {
       stdio: ['ignore', 'pipe', 'pipe'], // No IPC
     });
 
-    this.process.stdout?.on('data', async (data) => {
+    if (!this.process.pid) {
+      console.error('[AgentSpawner] Failed to get PID for spawned process');
+    }
+
+    this.process.stdout?.on('data', (data) => {
       console.info(`[Agent] ${data.toString().trim()}`);
-      try {
-        const fs = await import('node:fs');
-        fs.appendFileSync('/tmp/agent-stdout.log', data.toString());
-      } catch {
-        // Ignore file write errors in tests
-      }
     });
 
-    this.process.stderr?.on('data', async (data) => {
+    this.process.stderr?.on('data', (data) => {
       console.error(`[Agent ERR] ${data.toString().trim()}`);
-      try {
-        const fs = await import('node:fs');
-        fs.appendFileSync('/tmp/agent-stderr.log', `[Stderr] ${data.toString()}`);
-      } catch {
-        // Ignore file write errors in tests
-      }
     });
 
     this.process.on('exit', (code, signal) => {
