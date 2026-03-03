@@ -7,15 +7,12 @@ import { CheckStaleAgentsOrchestratorAction } from '@modules/orchestrator-api/sr
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorApiModuleTypes.none;
+    const body = (await context.request.json()) as unknown;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.none = await HookSystem.filter(
-      'orchestrator.checkStaleAgents.input',
-      body,
-    );
+    const input: unknown = await HookSystem.filter('orchestrator.checkStaleAgents.input', body);
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };

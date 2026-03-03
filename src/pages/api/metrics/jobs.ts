@@ -7,15 +7,12 @@ import { GetJobMetricsAction } from '@modules/orchestrator-api/src/actions/get-j
 export const GET = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = {} as OrchestratorApiModuleTypes.none;
+    const body = {} as unknown;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.none = await HookSystem.filter(
-      'metrics.getJobMetrics.input',
-      body,
-    );
+    const input: unknown = await HookSystem.filter('metrics.getJobMetrics.input', body);
 
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
