@@ -17,7 +17,7 @@ describe('Job Security', () => {
     attacker = new ApiClient(TestServer.getUrl());
     await attacker.as('user');
 
-    // 2. Create a Job owned by 'owner'
+    // 2. Create a Job owned by 'TEAM_OWNER'
     // We use Factory to bypass API restrictions
     job = await Factory.create('job', {
       type: 'test.job',

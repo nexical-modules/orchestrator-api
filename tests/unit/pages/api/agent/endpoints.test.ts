@@ -26,7 +26,7 @@ describe('Metrics and Agent Endpoints', () => {
   describe('GET api/metrics/jobs', () => {
     it('should return job metrics', async () => {
       const mockContext = createMockAstroContext({
-        locals: { actor: { id: 'u1', role: 'admin' } },
+        locals: { actor: { id: 'u1', role: 'TEAM_ADMIN' } },
       }) as unknown as APIContext;
       vi.mocked(GetJobMetricsAction.run).mockResolvedValue({
         success: true,
@@ -41,7 +41,7 @@ describe('Metrics and Agent Endpoints', () => {
   describe('GET api/metrics/agents', () => {
     it('should return agent metrics', async () => {
       const mockContext = createMockAstroContext({
-        locals: { actor: { id: 'u1', role: 'admin' } },
+        locals: { actor: { id: 'u1', role: 'TEAM_ADMIN' } },
       }) as unknown as APIContext;
       vi.mocked(GetAgentMetricsAction.run).mockResolvedValue({
         success: true,

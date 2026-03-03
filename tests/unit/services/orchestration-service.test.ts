@@ -366,7 +366,7 @@ describe('OrchestrationService', () => {
     });
 
     it('should enforce owner check if actorId provided', async () => {
-      const mockJob = { id: 'job-1', status: 'PENDING', actorId: 'owner' };
+      const mockJob = { id: 'job-1', status: 'PENDING', actorId: 'TEAM_OWNER' };
       vi.mocked(db.job.findUnique).mockResolvedValue(mockJob as unknown as Job);
 
       const result = await OrchestrationService.cancel('job-1', 'not-owner');

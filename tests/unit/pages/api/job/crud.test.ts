@@ -83,7 +83,7 @@ describe('Job CRUD and Orchestrator Endpoints', () => {
     it('should check stale agents', async () => {
       const mockContext = createMockAstroContext({
         url: 'http://localhost/api/orchestrator/check-stale',
-        locals: { actor: { id: 'u1', role: 'admin' } },
+        locals: { actor: { id: 'u1', role: 'TEAM_ADMIN' } },
       }) as unknown as APIContext;
       mockContext.request = new Request('http://localhost/api/orchestrator/check-stale', {
         method: 'POST',

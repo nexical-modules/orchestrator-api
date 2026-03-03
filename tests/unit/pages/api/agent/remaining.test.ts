@@ -19,7 +19,7 @@ describe('Remaining Agent and Orch Endpoints', () => {
   describe('Agents', () => {
     it('should list agents', async () => {
       const mockContext = createMockAstroContext({
-        locals: { actor: { id: 'u1', role: 'admin' } },
+        locals: { actor: { id: 'u1', role: 'TEAM_ADMIN' } },
       }) as unknown as APIContext;
       vi.mocked(AgentService.list).mockResolvedValue({
         success: true,
@@ -32,7 +32,7 @@ describe('Remaining Agent and Orch Endpoints', () => {
     it('should get an agent', async () => {
       const mockContext = createMockAstroContext({
         params: { id: 'a1' },
-        locals: { actor: { id: 'u1', role: 'admin' } },
+        locals: { actor: { id: 'u1', role: 'TEAM_ADMIN' } },
       }) as unknown as APIContext;
       vi.mocked(AgentService.get).mockResolvedValue({
         success: true,
@@ -41,7 +41,7 @@ describe('Remaining Agent and Orch Endpoints', () => {
       await agentGetGET(mockContext);
       expect(AgentService.get).toHaveBeenCalledWith('a1', expect.any(Object), {
         id: 'u1',
-        role: 'admin',
+        role: 'TEAM_ADMIN',
       });
     });
   });
@@ -49,7 +49,7 @@ describe('Remaining Agent and Orch Endpoints', () => {
   describe('Orchestrator Metrics', () => {
     it('should return metrics', async () => {
       const mockContext = createMockAstroContext({
-        locals: { actor: { id: 'u1', role: 'admin' } },
+        locals: { actor: { id: 'u1', role: 'TEAM_ADMIN' } },
       }) as unknown as APIContext;
       const response = await orchMetricsGET(mockContext);
       expect(response).toBeDefined();

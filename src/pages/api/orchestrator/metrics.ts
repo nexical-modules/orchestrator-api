@@ -6,7 +6,7 @@ import { JobMetricsService } from '@modules/orchestrator-api/src/services/job-me
 export const GET = defineApi(
   async (context) => {
     // Security Check - Only admins can view metrics
-    await ApiGuard.protect(context, 'admin');
+    await ApiGuard.protect(context, 'TEAM_ADMIN');
 
     // Get metrics
     const [jobs, agents] = await Promise.all([
