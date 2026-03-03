@@ -3,14 +3,14 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { JobService } from '@modules/orchestrator-api/src/services/job-service';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import { OrchestratorModuleTypes } from '@/lib/api';
 
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
 
     // Security Check
-    await ApiGuard.protect(context, 'job-owner', { ...context.params });
+    await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params });
 
     const select = {
       id: true,
@@ -103,7 +103,7 @@ export const PUT = defineApi(
     const body = await context.request.json();
 
     // Security Check
-    await ApiGuard.protect(context, 'job-owner', { ...context.params, ...body });
+    await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z
@@ -115,7 +115,7 @@ export const PUT = defineApi(
         payload: z.unknown().optional(),
         result: z.unknown().optional(),
         error: z.unknown().optional(),
-        status: z.nativeEnum(OrchestratorApiModuleTypes.JobStatus).optional(),
+        status: z.nativeEnum(OrchestratorModuleTypes.JobStatus).optional(),
         progress: z.number().int().optional(),
         lockedBy: z.string().optional(),
         lockedAt: z.string().datetime().optional(),
@@ -242,7 +242,7 @@ export const DELETE = defineApi(
     const { id } = context.params;
 
     // Security Check
-    await ApiGuard.protect(context, 'job-owner', { ...context.params });
+    await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params });
 
     const result = await JobService.delete(id, actor);
 

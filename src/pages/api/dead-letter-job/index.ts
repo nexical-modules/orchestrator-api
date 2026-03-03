@@ -29,7 +29,13 @@ export const GET = defineApi(
 
     // Security Check
     // Pass query params as input to role check
-    await ApiGuard.protect(context, 'TEAM_ADMIN', { ...context.params, where, take, skip, orderBy });
+    await ApiGuard.protect(context, 'AGENT_ADMIN', {
+      ...context.params,
+      where,
+      take,
+      skip,
+      orderBy,
+    });
 
     const select = {
       id: true,
@@ -583,7 +589,7 @@ export const POST = defineApi(
     const body = await context.request.json();
 
     // Security Check
-    await ApiGuard.protect(context, 'TEAM_ADMIN', { ...context.params, ...body });
+    await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z.object({

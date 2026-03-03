@@ -14,7 +14,7 @@ enums:
 
 models:
   Job:
-    role: job-owner
+    role: AGENT_JOB_OWNER
     test:
       actor: user
     fields:
@@ -91,7 +91,7 @@ models:
           - '@relation("JobLogs")'
 
   JobLog:
-    role: job-owner
+    role: AGENT_JOB_OWNER
     test:
       actor: user
     fields:
@@ -118,6 +118,7 @@ models:
           - '@relation("JobLogs", fields: [jobId], references: [id], onDelete: Cascade)'
 
   Agent:
+    role: AGENT_ADMIN
     actor:
       strategy: bearer
       prefix: ''
@@ -182,7 +183,7 @@ models:
 
   # Dead-letter queue for permanently failed jobs
   DeadLetterJob:
-    role: admin
+    role: AGENT_ADMIN
     test:
       actor: user
     fields:

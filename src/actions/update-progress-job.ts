@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY
+// GENERATED CODE - THE SIGNATURE IS MANAGED BY THE GENERATOR. YOU MAY MODIFY THE IMPLEMENTATION AND ADD CUSTOM IMPORTS.
 // Manual Action - Update Job Progress
 import type { APIContext } from 'astro';
 import type { ServiceResponse } from '@/types/service';

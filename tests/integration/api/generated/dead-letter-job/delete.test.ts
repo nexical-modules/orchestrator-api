@@ -14,7 +14,7 @@ describe('DeadLetterJob API - Delete', () => {
   // DELETE /api/dead-letter-job/[id]
   describe('DELETE /api/dead-letter-job/[id]', () => {
     it('should delete deadLetterJob', async () => {
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       const target = await Factory.create('deadLetterJob', {
         ...{

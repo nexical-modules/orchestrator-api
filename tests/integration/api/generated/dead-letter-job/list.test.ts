@@ -21,7 +21,7 @@ describe('DeadLetterJob API - List', () => {
     };
 
     it('should allow admin to list deadLetterJobs', async () => {
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       // Cleanup first to ensure clean state
       await Factory.prisma.deadLetterJob.deleteMany();
@@ -40,7 +40,7 @@ describe('DeadLetterJob API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       // Cleanup and seed specific count
       await Factory.prisma.deadLetterJob.deleteMany();
@@ -81,7 +81,7 @@ describe('DeadLetterJob API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
       // Reuse getActorStatement to ensure correct actor context
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       const val1 = 'originalJobId_' + Date.now() + '_A';
       const val2 = 'originalJobId_' + Date.now() + '_B';
@@ -102,7 +102,7 @@ describe('DeadLetterJob API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
       // Reuse getActorStatement to ensure correct actor context
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       const val1 = 'type_' + Date.now() + '_A';
       const val2 = 'type_' + Date.now() + '_B';
@@ -123,7 +123,7 @@ describe('DeadLetterJob API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
       // Reuse getActorStatement to ensure correct actor context
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       const val1 = 'reason_' + Date.now() + '_A';
       const val2 = 'reason_' + Date.now() + '_B';

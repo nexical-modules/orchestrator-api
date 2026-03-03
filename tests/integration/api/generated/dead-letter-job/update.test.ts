@@ -14,7 +14,7 @@ describe('DeadLetterJob API - Update', () => {
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       const target = await Factory.create('deadLetterJob', {
         ...{

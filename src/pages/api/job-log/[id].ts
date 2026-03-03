@@ -8,7 +8,7 @@ export const GET = defineApi(
     const { id } = context.params;
 
     // Security Check
-    await ApiGuard.protect(context, 'job-owner', { ...context.params });
+    await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params });
 
     const select = {
       id: true,
@@ -73,7 +73,7 @@ export const PUT = defineApi(
     const body = await context.request.json();
 
     // Security Check
-    await ApiGuard.protect(context, 'job-owner', { ...context.params, ...body });
+    await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z
@@ -158,7 +158,7 @@ export const DELETE = defineApi(
     const { id } = context.params;
 
     // Security Check
-    await ApiGuard.protect(context, 'job-owner', { ...context.params });
+    await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params });
 
     const result = await JobLogService.delete(id, actor);
 

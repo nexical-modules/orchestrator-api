@@ -7,10 +7,10 @@ export class OrchestratorSDK extends BaseResource {
   public async pollJobs(
     data: PollJobsDTO,
   ): Promise<{ success: boolean; data: Job[]; error?: string }> {
-    return this._request('POST', `/orchestrator/poll`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/poll`, data);
   }
 
   public async checkStaleAgents(): Promise<{ success: boolean; data: void; error?: string }> {
-    return this._request('POST', `/orchestrator/check-stale`);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/check-stale`);
   }
 }

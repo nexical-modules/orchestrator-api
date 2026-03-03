@@ -14,7 +14,7 @@ describe('DeadLetterJob API - Create', () => {
   // POST /api/dead-letter-job
   describe('POST /api/dead-letter-job', () => {
     it('should allow admin to create deadLetterJob', async () => {
-      const actor = await client.as('user', { role: 'ADMIN' });
+      const actor = await client.as('user', { role: 'AGENT_ADMIN' });
 
       const payload = {
         ...{

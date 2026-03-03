@@ -5,7 +5,7 @@ Job:
     summary: Mark job as completed
     input: CompleteJobDTO
     output: Job
-    role: job-owner
+    role: AGENT_JOB_OWNER
 
   - path: /[id]/fail
     verb: POST
@@ -13,7 +13,7 @@ Job:
     summary: Mark job as failed
     input: FailJobDTO
     output: Job
-    role: job-owner
+    role: AGENT_JOB_OWNER
 
   - path: /[id]/cancel
     verb: POST
@@ -21,7 +21,7 @@ Job:
     summary: Cancel a job
     input: CancelJobDTO
     output: Job
-    role: job-owner
+    role: AGENT_JOB_OWNER
 
   - path: /[id]/progress
     verb: POST
@@ -29,7 +29,7 @@ Job:
     summary: Update job progress
     input: UpdateProgressDTO
     output: none
-    role: job-owner
+    role: AGENT_JOB_OWNER
 
 Orchestrator:
   - path: /poll
@@ -38,7 +38,7 @@ Orchestrator:
     summary: Poll for pending jobs based on capabilities
     input: PollJobsDTO
     output: Job[]
-    role: agent
+    role: AGENT_JOB_OWNER
 
   - path: /check-stale
     verb: POST
@@ -46,7 +46,7 @@ Orchestrator:
     summary: Check for and handle stale agents
     input: none
     output: none
-    role: agent-admin
+    role: AGENT_ADMIN
 
 Agent:
   - path: /register
@@ -72,7 +72,7 @@ Metrics:
     summary: Get job metrics
     input: none
     output: JobMetrics
-    role: agent-admin
+    role: AGENT_ADMIN
 
   - path: /agents
     verb: GET
@@ -80,4 +80,4 @@ Metrics:
     summary: Get agent metrics
     input: none
     output: AgentMetrics
-    role: agent-admin
+    role: AGENT_ADMIN

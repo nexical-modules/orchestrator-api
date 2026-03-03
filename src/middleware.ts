@@ -16,7 +16,11 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
     const entity = tokenEntity;
 
     if (entity) {
-      context.locals.actor = { ...entity, type: 'agent', role: 'AGENT' };
+      context.locals.actor = {
+        ...entity,
+        type: 'agent',
+        role: entity && 'role' in entity ? (entity as { role: string }).role : 'AGENT',
+      };
       context.locals.actorType = 'agent';
       return next();
     }
@@ -31,7 +35,11 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
     const entity = tokenEntity?.user;
 
     if (entity) {
-      context.locals.actor = { ...entity, type: 'user', role: 'USER' };
+      context.locals.actor = {
+        ...entity,
+        type: 'user',
+        role: entity && 'role' in entity ? (entity as { role: string }).role : 'USER',
+      };
       context.locals.actorType = 'user';
       return next();
     }

@@ -52,13 +52,13 @@ export class AgentSDK extends BaseResource {
   public async registerAgent(
     data: RegisterAgentDTO,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
-    return this._request('POST', `/agent/register`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/register`, data);
   }
 
   public async heartbeat(
     id: string,
     data: HeartbeatDTO,
   ): Promise<{ success: boolean; data: void; error?: string }> {
-    return this._request('POST', `/agent/${id}/heartbeat`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/${id}/heartbeat`, data);
   }
 }

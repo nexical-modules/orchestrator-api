@@ -59,7 +59,7 @@ describe('Job Access Control (RBAC)', () => {
   });
 
   it('Admin can read User A job', async () => {
-    const admin = await Factory.create('user', { role: 'ADMIN' });
+    const admin = await Factory.create('user', { role: 'AGENT_ADMIN' });
     await client.as('user', admin);
     const response = await client.get(`/api/job/${jobA.id}`);
     expect(response.status).toBe(200);

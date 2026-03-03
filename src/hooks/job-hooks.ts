@@ -2,7 +2,9 @@ import { HookSystem } from '@/lib/modules/hooks';
 import type { JobLog } from '../sdk/types';
 
 export async function init() {
+  console.info('[Hooks] Initializing job-hooks for orchestrator-api');
   HookSystem.on('jobLog.created', async (log: JobLog) => {
+    console.info('[Hooks] jobLog.created triggered');
     // Legacy Compatibility: Dispath 'job.log.error' when an error log is created.
     if (log.level === 'ERROR') {
       await HookSystem.dispatch('job.log.error', log);
@@ -16,10 +18,12 @@ export async function init() {
       data: Record<string, unknown>,
       context?: { actor?: { id: string; type: string; [key: string]: unknown } },
     ) => {
+      console.info('[Hooks] job.beforeCreate triggered');
       const actor = context?.actor;
 
       // 1. Force Defaults & Sanitize
       data.status = 'PENDING';
+      console.info('[Hooks] Forced status to PENDING');
       data.progress = data.progress ?? 0;
       delete data.result;
       delete data.error;
@@ -61,7 +65,7 @@ export async function init() {
       // JobService.list passes actor inside params
       const actor = params.actor || context?.actor;
 
-      if (actor && actor.role !== 'ADMIN') {
+      if (actor && actor.role !== 'AGENT_ADMIN') {
         // Enforce that users only see their own jobs
         const actorId = actor.id;
         params.where = {

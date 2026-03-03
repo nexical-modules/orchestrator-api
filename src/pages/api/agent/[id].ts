@@ -3,14 +3,14 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import type { OrchestratorModuleTypes } from '@/lib/api';
 
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
 
     // Security Check
-    await ApiGuard.protect(context, 'TEAM_MEMBER', { ...context.params });
+    await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
 
     const select = {
       id: true,
@@ -81,7 +81,7 @@ export const PUT = defineApi(
     const body = await context.request.json();
 
     // Security Check
-    await ApiGuard.protect(context, 'TEAM_MEMBER', { ...context.params, ...body });
+    await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
 
     // Zod Validation
     const schema = z
@@ -92,7 +92,7 @@ export const PUT = defineApi(
         hostname: z.string(),
         capabilities: z.array(z.string()),
         lastHeartbeat: z.string().datetime().optional(),
-        status: z.nativeEnum(OrchestratorApiModuleTypes.AgentStatus).optional(),
+        status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
       })
       .partial();
 
@@ -178,7 +178,7 @@ export const DELETE = defineApi(
     const { id } = context.params;
 
     // Security Check
-    await ApiGuard.protect(context, 'TEAM_MEMBER', { ...context.params });
+    await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
 
     const result = await AgentService.delete(id, actor);
 

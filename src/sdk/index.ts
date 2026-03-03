@@ -23,6 +23,10 @@ export class OrchestratorModule extends BaseResource {
   public deadLetterJob: BaseDeadLetterJobSDK;
   public orchestrator: BaseOrchestratorSDK;
   public metrics: BaseMetricsSDK;
+  public static readonly roles: Record<string, string> = {
+    AGENT_JOB_OWNER: 'AGENT_JOB_OWNER',
+    AGENT_ADMIN: 'AGENT_ADMIN',
+  };
 
   constructor(client: ApiClient) {
     super(client);

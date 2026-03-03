@@ -53,27 +53,27 @@ export class JobSDK extends BaseResource {
     id: string,
     data: CompleteJobDTO,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
-    return this._request('POST', `/job/${id}/complete`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/${id}/complete`, data);
   }
 
   public async failJob(
     id: string,
     data: FailJobDTO,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
-    return this._request('POST', `/job/${id}/fail`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/${id}/fail`, data);
   }
 
   public async cancelJob(
     id: string,
     data: CancelJobDTO,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
-    return this._request('POST', `/job/${id}/cancel`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/${id}/cancel`, data);
   }
 
   public async updateProgress(
     id: string,
     data: UpdateProgressDTO,
   ): Promise<{ success: boolean; data: void; error?: string }> {
-    return this._request('POST', `/job/${id}/progress`, data);
+    return this._request('POST', `${endpoint ? '/' + endpoint : ''}/${id}/progress`, data);
   }
 }

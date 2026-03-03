@@ -34,8 +34,15 @@ export const PermissionRegistry = {
 export type PermissionAction = keyof typeof PermissionRegistry;
 
 export const RolePermissions = {
-  JOB_OWNER: ['job:create', 'job:read', 'job:cancel', 'job:complete', 'job:fail', 'job:progress'],
-  ADMIN: ['job:read_all', 'agent:read_all', 'system:maintain'],
+  AGENT_JOB_OWNER: [
+    'job:create',
+    'job:read',
+    'job:cancel',
+    'job:complete',
+    'job:fail',
+    'job:progress',
+  ],
+  AGENT_ADMIN: ['job:read_all', 'agent:read_all', 'system:maintain'],
 } as const;
 
 export class Permission {

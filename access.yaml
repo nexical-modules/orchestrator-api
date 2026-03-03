@@ -1,6 +1,6 @@
 config:
   roles:
-    JOB_OWNER:
+    AGENT_JOB_OWNER:
       permissions:
         - job:create
         - job:read
@@ -8,7 +8,7 @@ config:
         - job:complete
         - job:fail
         - job:progress
-    ADMIN:
+    AGENT_ADMIN:
       permissions:
         - job:read_all
         - agent:read_all

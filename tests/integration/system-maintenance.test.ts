@@ -11,7 +11,7 @@ describe('System Maintenance & Admin', () => {
 
   beforeEach(async () => {
     client = new ApiClient();
-    admin = await Factory.create('user', { role: 'ADMIN' });
+    admin = await Factory.create('user', { role: 'AGENT_ADMIN' });
     user = await Factory.create('user', { role: 'EMPLOYEE' });
   });
 
