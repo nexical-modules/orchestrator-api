@@ -4,8 +4,13 @@ import { BaseRole } from './base-role';
 /** */
 export class AgentAdminRole extends BaseRole {
   readonly name: string = 'AGENT_ADMIN';
-  protected readonly compatibleRoles: string[] = ['USER_ADMIN', 'TEAM_ADMIN', 'ADMIN'];
+  protected readonly compatibleRoles: string[] = ['USER_ADMIN'];
   readonly description: string = '';
-  readonly inherits: string[] = [];
-  readonly permissions: string[] = ['job:read_all', 'agent:read_all', 'system:maintain'];
+  readonly inherits: string[] = ['AGENT_JOB_OWNER'];
+  readonly permissions: string[] = [
+    'job:read_all',
+    'agent:read_all',
+    'agent:manage_keys',
+    'system:maintain',
+  ];
 }

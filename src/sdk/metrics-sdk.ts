@@ -5,7 +5,7 @@ import type { JobMetrics, AgentMetrics } from './types.js';
 /** SDK client for Metrics. */
 export class MetricsSDK extends BaseResource {
   public async getJobMetrics(): Promise<{ success: boolean; data: JobMetrics; error?: string }> {
-    return this._request('GET', `${endpoint ? '/' + endpoint : ''}/jobs`);
+    return this._request('GET', `/metrics/jobs`);
   }
 
   public async getAgentMetrics(): Promise<{
@@ -13,6 +13,6 @@ export class MetricsSDK extends BaseResource {
     data: AgentMetrics;
     error?: string;
   }> {
-    return this._request('GET', `${endpoint ? '/' + endpoint : ''}/agents`);
+    return this._request('GET', `/metrics/agents`);
   }
 }

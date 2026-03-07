@@ -1098,6 +1098,7 @@ export const POST = defineApi(
 
     // Zod Validation
     const schema = z.object({
+      id: z.string().optional(),
       type: z.string(),
       userId: z.string().optional(),
       actorId: z.string().optional(),

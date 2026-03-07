@@ -4,17 +4,17 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { CancelJobAction } from '@modules/orchestrator-api/src/actions/cancel-job';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import type { OrchestratorModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorApiModuleTypes.CancelJobDTO;
+    const body = (await context.request.json()) as OrchestratorModuleTypes.CancelJobDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.CancelJobDTO = await HookSystem.filter(
+    const input: OrchestratorModuleTypes.CancelJobDTO = await HookSystem.filter(
       'job.cancelJob.input',
       body,
     );

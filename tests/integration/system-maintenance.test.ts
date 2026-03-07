@@ -11,8 +11,8 @@ describe('System Maintenance & Admin', () => {
 
   beforeEach(async () => {
     client = new ApiClient();
-    admin = await Factory.create('user', { role: 'AGENT_ADMIN' });
-    user = await Factory.create('user', { role: 'EMPLOYEE' });
+    admin = await Factory.create('user', { role: 'USER_ADMIN' });
+    user = await Factory.create('user', { role: 'USER_EMPLOYEE' });
   });
 
   it('Admin can check stale agents', async () => {

@@ -65,6 +65,23 @@ Agent:
     output: none
     role: public
 
+AgentApiKey:
+  - path: /keys
+    verb: POST
+    method: createAgentApiKey
+    summary: Create a new agent API key
+    input: CreateAgentApiKeyDTO
+    output: CreateAgentApiKeyResponseDTO
+    role: AGENT_ADMIN
+
+  - path: /keys/[id]
+    verb: DELETE
+    method: deleteAgentApiKey
+    summary: Delete an agent API key
+    input: DeleteAgentApiKeyDTO
+    output: AgentApiKey
+    role: AGENT_ADMIN
+
 Metrics:
   - path: /jobs
     verb: GET

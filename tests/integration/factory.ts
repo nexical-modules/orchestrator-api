@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY
 import bcrypt from 'bcryptjs';
 import { Factory } from '@tests/integration/lib/factory';
+import crypto from 'node:crypto';
 
 export function hashPassword(password: string): string {
   const salt = bcrypt.genSaltSync(10);
@@ -42,6 +43,18 @@ export const factories = {
       hostname: `hostname_${index}`,
       capabilities: [`capabilities_${index}`],
       lastHeartbeat: new Date(),
+    };
+  },
+  agentApiKey: (index: number) => {
+    return {
+      name: `name_${index}`,
+      hashedKey: `hashedKey_${index}_${crypto.randomUUID().split('-')[0]}`,
+      prefix: `prefix_${index}`,
+      lastUsedAt: new Date(),
+      expiresAt: new Date(),
+      agent: {
+        create: Factory.getBuilder('agent')(index),
+      },
     };
   },
   deadLetterJob: (index: number) => {

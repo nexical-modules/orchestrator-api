@@ -400,6 +400,7 @@ export const POST = defineApi(
 
     // Zod Validation
     const schema = z.object({
+      id: z.string().optional(),
       jobId: z.string(),
       level: z.string().optional(),
       message: z.string(),

@@ -3,17 +3,17 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { CompleteJobAction } from '@modules/orchestrator-api/src/actions/complete-job';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import type { OrchestratorModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorApiModuleTypes.CompleteJobDTO;
+    const body = (await context.request.json()) as OrchestratorModuleTypes.CompleteJobDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.CompleteJobDTO = await HookSystem.filter(
+    const input: OrchestratorModuleTypes.CompleteJobDTO = await HookSystem.filter(
       'job.completeJob.input',
       body,
     );

@@ -12,7 +12,7 @@ describe('Orchestration Flow', () => {
 
   it('should handle the full job lifecycle (Success)', async () => {
     // 1. Authenticate as Admin
-    await client.as('user', { role: 'AGENT_ADMIN' });
+    await client.as('user', { role: 'USER_ADMIN' });
 
     // 2. Create a Job
     const createRes = await client.post('/api/job', {
@@ -46,7 +46,7 @@ describe('Orchestration Flow', () => {
 
   it('should handle the full job lifecycle (Failure)', async () => {
     // 1. Authenticate
-    await client.as('user', { role: 'AGENT_ADMIN' });
+    await client.as('user', { role: 'USER_ADMIN' });
 
     // 2. Create a Job
     const createRes = await client.post('/api/job', {
@@ -76,7 +76,7 @@ describe('Orchestration Flow', () => {
 
   it('should work with AgentRunner utility', async () => {
     // This test demonstrates the usage of the ported AgentRunner
-    await client.as('user', { role: 'AGENT_ADMIN' });
+    await client.as('user', { role: 'USER_ADMIN' });
 
     const createRes = await client.post('/api/job', {
       type: 'agent.run',

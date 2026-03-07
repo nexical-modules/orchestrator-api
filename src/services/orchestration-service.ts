@@ -107,11 +107,11 @@ export class OrchestrationService {
     actorType?: string,
   ): Promise<ServiceResponse<Prisma.JobGetPayload<object>>> {
     try {
+      const job = await db.job.findUnique({ where: { id } });
+      if (!job) return { success: false, error: 'orchestrator.service.error.not_found' };
+
       // Security check
       if (actorId) {
-        const job = await db.job.findUnique({ where: { id } });
-        if (!job) return { success: false, error: 'orchestrator.service.error.not_found' };
-
         // Authorization: Owner or Locker
         // Allow completion if actor OWNS the job OR if actor LOCKED the job (Agent logic)
         const isOwner = job.actorId === actorId;

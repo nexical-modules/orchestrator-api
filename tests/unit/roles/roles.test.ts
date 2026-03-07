@@ -38,7 +38,7 @@ describe('Security Roles', () => {
 
     it('should throw if no actor', async () => {
       const mockContext = createMockAstroContext({ locals: {} });
-      await expect(policy.check(mockContext, {})).rejects.toThrow('Unauthorized: Login required');
+      await expect(policy.check(mockContext, {})).rejects.toThrow('Unauthorized: No actor found');
     });
   });
 
@@ -47,7 +47,7 @@ describe('Security Roles', () => {
 
     it('should throw if no actor', async () => {
       const mockContext = createMockAstroContext({ locals: {} });
-      await expect(policy.check(mockContext, {})).rejects.toThrow('Unauthorized: Login required');
+      await expect(policy.check(mockContext, {})).rejects.toThrow('Unauthorized: No actor found');
     });
 
     it('should allow AGENT_ADMIN', async () => {

@@ -1,24 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY
-export abstract class BaseRole {
+import type { APIContext } from 'astro';
+import type { ApiActor } from '@/lib/api/api-docs';
+import { roleRegistry } from '@/lib/registries/role-registry';
+
+export abstract class BaseRole implements RolePolicy {
   abstract readonly name: string;
   protected readonly compatibleRoles: string[] = [];
 
   public async check(
-    context: unknown,
-    input: Record<string, unknown>,
+    context: APIContext,
+    input: Record<string, unknown> = {},
     data?: unknown,
   ): Promise<void> {
-    const locals = (context as { locals?: Record<string, unknown> }).locals;
-    const actor = locals?.actor;
-
+    const actor = context.locals.actor as ApiActor;
     if (!actor) {
-      throw new Error('Unauthorized: Login required');
+      throw new Error('Unauthorized: No actor found');
     }
 
-    const { role } = actor as { role: string };
-    if (role === 'AGENT_ADMIN') return;
-    if (role === this.name) return;
-    if (this.compatibleRoles.includes(role)) return;
+    const { role: actorRole } = actor as { role: string };
+    const normalizeRole = (r: unknown) => String(r).toUpperCase().replace(/-/g, '_');
+
+    // Site Admin Bypass
+    if (normalizeRole(actorRole) === 'USER_ADMIN') return;
+
+    const normalizedActorRole = normalizeRole(actorRole);
+    const normalizedRequiredRole = normalizeRole(this.name);
+
+    if (normalizedActorRole === normalizedRequiredRole) return;
+    if (this.compatibleRoles?.includes(normalizedActorRole)) return;
+
+    // Inheritance Check
+    const checkInheritance = (roleName: string, targetRole: string): boolean => {
+      const policy = roleRegistry.get(roleName);
+      if (!policy || !('inherits' in policy)) return false;
+      const inherits = (policy as { inherits: string[] }).inherits;
+      if (inherits.includes(targetRole)) return true;
+      for (const parent of inherits) {
+        if (checkInheritance(parent, targetRole)) return true;
+      }
+      return false;
+    };
+
+    if (checkInheritance(normalizedActorRole, normalizedRequiredRole)) return;
 
     throw new Error(`Forbidden: required role ${this.name}`);
   }

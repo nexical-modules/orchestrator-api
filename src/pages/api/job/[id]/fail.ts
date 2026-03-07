@@ -3,17 +3,17 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { FailJobAction } from '@modules/orchestrator-api/src/actions/fail-job';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import type { OrchestratorModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorApiModuleTypes.FailJobDTO;
+    const body = (await context.request.json()) as OrchestratorModuleTypes.FailJobDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.FailJobDTO = await HookSystem.filter(
+    const input: OrchestratorModuleTypes.FailJobDTO = await HookSystem.filter(
       'job.failJob.input',
       body,
     );

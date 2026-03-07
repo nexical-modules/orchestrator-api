@@ -87,6 +87,7 @@ export const PUT = defineApi(
     // Zod Validation
     const schema = z
       .object({
+        id: z.string().optional(),
         originalJobId: z.string(),
         type: z.string(),
         payload: z.unknown().optional(),

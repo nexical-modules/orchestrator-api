@@ -10,7 +10,7 @@ describe('Agent Operations (Worker Flow)', () => {
 
   beforeEach(async () => {
     client = new ApiClient();
-    agentUser = await Factory.create('user', { role: 'AGENT_ADMIN' });
+    agentUser = await Factory.create('user', { role: 'USER_ADMIN' });
 
     // Register agent first (via API or DB? Service layer is safer for checks)
     // But let's assume the agent just needs a record to exist for capability matching

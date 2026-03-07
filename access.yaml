@@ -9,9 +9,12 @@ config:
         - job:fail
         - job:progress
     AGENT_ADMIN:
+      inherits:
+        - AGENT_JOB_OWNER
       permissions:
         - job:read_all
         - agent:read_all
+        - agent:manage_keys
         - system:maintain
   permissions:
     job:create:
@@ -30,5 +33,7 @@ config:
       description: View all jobs across the system
     agent:read_all:
       description: View all registered agents
+    agent:manage_keys:
+      description: Create and delete Agent API keys
     system:maintain:
       description: Perform system maintenance (stale checks)

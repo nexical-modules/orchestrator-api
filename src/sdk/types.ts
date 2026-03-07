@@ -1,4 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY
+import type { AgentApiKey } from '@prisma/client';
+
 export interface CreateJobDTO {
   type: string;
   payload: unknown;
@@ -13,8 +15,8 @@ export interface PollJobsDTO {
 }
 
 export interface UpdateProgressDTO {
-  progress: number;
   id: string;
+  progress: number;
 }
 
 export interface JobMetrics {
@@ -57,8 +59,25 @@ export interface HeartbeatDTO {
 
 export interface RegisterAgentDTO {
   id?: string;
+  name?: string;
   hostname: string;
   capabilities: string[];
+}
+
+export interface CreateAgentApiKeyDTO {
+  agentId: string;
+  name: string;
+  expiresAt?: Date;
+}
+
+export interface DeleteAgentApiKeyDTO {
+  id: string;
+  agentId?: string;
+}
+
+export interface CreateAgentApiKeyResponseDTO {
+  token: AgentApiKey;
+  rawKey: string;
 }
 
 export enum JobStatus {
@@ -75,14 +94,9 @@ export enum AgentStatus {
   BUSY = 'BUSY',
 }
 
-export type { Job, JobLog, Agent, DeadLetterJob } from '@prisma/client';
-
-export interface User {
-  id: string;
+export enum AgentRole {
+  AGENT_ADMIN = 'AGENT_ADMIN',
+  AGENT_JOB_OWNER = 'AGENT_JOB_OWNER',
 }
 
-export interface PersonalAccessToken {
-  hashedKey: string;
-  userId: string;
-  prefix: string;
-}
+export type { Job, JobLog, Agent, AgentApiKey, DeadLetterJob } from '@prisma/client';

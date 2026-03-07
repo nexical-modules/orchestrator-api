@@ -3,7 +3,7 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import type { OrchestratorModuleTypes } from '@/lib/api';
+import { OrchestratorModuleTypes } from '@/lib/api';
 
 export const GET = defineApi(
   async (context, actor) => {
@@ -21,7 +21,9 @@ export const GET = defineApi(
       capabilities: true,
       lastHeartbeat: true,
       status: true,
+      role: true,
       createdAt: true,
+      apiKeys: { take: 10 },
     };
 
     const result = await AgentService.get(id, select, actor);
@@ -65,9 +67,11 @@ export const GET = defineApi(
                 capabilities: { type: 'array', items: { type: 'string' } },
                 lastHeartbeat: { type: 'string', format: 'date-time' },
                 status: { type: 'string' },
+                role: { type: 'string' },
                 createdAt: { type: 'string', format: 'date-time' },
+                apiKeys: { type: 'array', items: { type: 'string' } },
               },
-              required: ['hostname', 'capabilities'],
+              required: ['hostname', 'capabilities', 'apiKeys'],
             },
           },
         },
@@ -86,6 +90,7 @@ export const PUT = defineApi(
     // Zod Validation
     const schema = z
       .object({
+        id: z.string().optional(),
         name: z.string().optional(),
         hashedKey: z.string().optional(),
         prefix: z.string().optional(),
@@ -93,6 +98,7 @@ export const PUT = defineApi(
         capabilities: z.array(z.string()),
         lastHeartbeat: z.string().datetime().optional(),
         status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
+        role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
       })
       .partial();
 
@@ -106,7 +112,9 @@ export const PUT = defineApi(
       capabilities: true,
       lastHeartbeat: true,
       status: true,
+      role: true,
       createdAt: true,
+      apiKeys: { take: 10 },
     };
 
     const result = await AgentService.update(id, validated, select, actor);
@@ -141,7 +149,9 @@ export const PUT = defineApi(
               capabilities: { type: 'array', items: { type: 'string' } },
               lastHeartbeat: { type: 'string', format: 'date-time' },
               status: { type: 'string' },
+              role: { type: 'string' },
               createdAt: { type: 'string', format: 'date-time' },
+              apiKeys: { type: 'array', items: { type: 'string' } },
             },
           },
         },
@@ -163,9 +173,11 @@ export const PUT = defineApi(
                 capabilities: { type: 'array', items: { type: 'string' } },
                 lastHeartbeat: { type: 'string', format: 'date-time' },
                 status: { type: 'string' },
+                role: { type: 'string' },
                 createdAt: { type: 'string', format: 'date-time' },
+                apiKeys: { type: 'array', items: { type: 'string' } },
               },
-              required: ['hostname', 'capabilities'],
+              required: ['hostname', 'capabilities', 'apiKeys'],
             },
           },
         },

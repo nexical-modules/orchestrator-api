@@ -18,6 +18,7 @@ export const GET = defineApi(
         hostname: 'string',
         lastHeartbeat: 'date',
         status: 'enum',
+        role: 'enum',
         createdAt: 'date',
       },
       searchFields: ['id', 'name', 'hashedKey', 'prefix', 'hostname'],
@@ -47,7 +48,9 @@ export const GET = defineApi(
       capabilities: true,
       lastHeartbeat: true,
       status: true,
+      role: true,
       createdAt: true,
+      apiKeys: { take: 10 },
     };
 
     const result = await AgentService.list({ where, take, skip, orderBy, select }, actor);
@@ -459,6 +462,34 @@ export const GET = defineApi(
         description: 'Filter by status (eq)',
       },
       {
+        name: 'role.eq',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by role (eq)',
+      },
+      {
+        name: 'role.ne',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by role (ne)',
+      },
+      {
+        name: 'role.in',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by role (in)',
+      },
+      {
+        name: 'role',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by role (eq)',
+      },
+      {
         name: 'createdAt.eq',
         in: 'query',
         schema: { type: 'string' },
@@ -514,6 +545,34 @@ export const GET = defineApi(
         required: false,
         description: 'Filter by createdAt (eq)',
       },
+      {
+        name: 'apiKeys.eq',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by apiKeys (eq)',
+      },
+      {
+        name: 'apiKeys.ne',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by apiKeys (ne)',
+      },
+      {
+        name: 'apiKeys.in',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by apiKeys (in)',
+      },
+      {
+        name: 'apiKeys',
+        in: 'query',
+        schema: { type: 'string' },
+        required: false,
+        description: 'Filter by apiKeys (eq)',
+      },
     ],
     responses: {
       200: {
@@ -536,9 +595,11 @@ export const GET = defineApi(
                       capabilities: { type: 'array', items: { type: 'string' } },
                       lastHeartbeat: { type: 'string', format: 'date-time' },
                       status: { type: 'string' },
+                      role: { type: 'string' },
                       createdAt: { type: 'string', format: 'date-time' },
+                      apiKeys: { type: 'array', items: { type: 'string' } },
                     },
-                    required: ['hostname', 'capabilities'],
+                    required: ['hostname', 'capabilities', 'apiKeys'],
                   },
                 },
                 meta: {
@@ -564,6 +625,7 @@ export const POST = defineApi(
 
     // Zod Validation
     const schema = z.object({
+      id: z.string().optional(),
       name: z.string().optional(),
       hashedKey: z.string().optional(),
       prefix: z.string().optional(),
@@ -571,6 +633,7 @@ export const POST = defineApi(
       capabilities: z.array(z.string()),
       lastHeartbeat: z.string().datetime().optional(),
       status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
+      role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
     });
 
     const validated = schema.parse(body);
@@ -583,7 +646,9 @@ export const POST = defineApi(
       capabilities: true,
       lastHeartbeat: true,
       status: true,
+      role: true,
       createdAt: true,
+      apiKeys: { take: 10 },
     };
 
     const result = await AgentService.create(validated, select, actor);
@@ -611,9 +676,11 @@ export const POST = defineApi(
               capabilities: { type: 'array', items: { type: 'string' } },
               lastHeartbeat: { type: 'string', format: 'date-time' },
               status: { type: 'string' },
+              role: { type: 'string' },
               createdAt: { type: 'string', format: 'date-time' },
+              apiKeys: { type: 'array', items: { type: 'string' } },
             },
-            required: ['hostname', 'capabilities'],
+            required: ['hostname', 'capabilities', 'apiKeys'],
           },
         },
       },
@@ -637,9 +704,11 @@ export const POST = defineApi(
                     capabilities: { type: 'array', items: { type: 'string' } },
                     lastHeartbeat: { type: 'string', format: 'date-time' },
                     status: { type: 'string' },
+                    role: { type: 'string' },
                     createdAt: { type: 'string', format: 'date-time' },
+                    apiKeys: { type: 'array', items: { type: 'string' } },
                   },
-                  required: ['hostname', 'capabilities'],
+                  required: ['hostname', 'capabilities', 'apiKeys'],
                 },
               },
             },

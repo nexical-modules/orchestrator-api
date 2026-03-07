@@ -4,17 +4,17 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { UpdateProgressJobAction } from '@modules/orchestrator-api/src/actions/update-progress-job';
 import { HookSystem } from '@/lib/modules/hooks';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import type { OrchestratorModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorApiModuleTypes.UpdateProgressDTO;
+    const body = (await context.request.json()) as OrchestratorModuleTypes.UpdateProgressDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.UpdateProgressDTO = await HookSystem.filter(
+    const input: OrchestratorModuleTypes.UpdateProgressDTO = await HookSystem.filter(
       'job.updateProgress.input',
       body,
     );

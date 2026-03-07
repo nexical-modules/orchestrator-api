@@ -3,17 +3,17 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { HeartbeatAgentAction } from '@modules/orchestrator-api/src/actions/heartbeat-agent';
-import type { OrchestratorApiModuleTypes } from '@/lib/api';
+import type { OrchestratorModuleTypes } from '@/lib/api';
 
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
-    const body = (await context.request.json()) as OrchestratorApiModuleTypes.HeartbeatDTO;
+    const body = (await context.request.json()) as OrchestratorModuleTypes.HeartbeatDTO;
 
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
 
     // 2. Hook: Filter Input
-    const input: OrchestratorApiModuleTypes.HeartbeatDTO = await HookSystem.filter(
+    const input: OrchestratorModuleTypes.HeartbeatDTO = await HookSystem.filter(
       'agent.heartbeat.input',
       body,
     );

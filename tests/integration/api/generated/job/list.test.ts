@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ApiClient } from '@tests/integration/lib/client';
 import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
-
 describe('Job API - List', () => {
   let client: ApiClient;
 
@@ -15,8 +14,11 @@ describe('Job API - List', () => {
   describe('GET /api/job', () => {
     const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
 
-    it('should allow job-owner to list jobs', async () => {
-      const actor = await client.as('user', {});
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
 
       // Seed data
       const _listSuffix = Date.now();
@@ -32,11 +34,21 @@ describe('Job API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-      const actor = await client.as('user', {});
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
 
       const _suffix = Date.now();
       const createdIds: string[] = [];
-      const toCreate = 15;
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
 
       for (let i = 0; i < toCreate; i++) {
         const rec = await Factory.create('job', {
@@ -51,7 +63,7 @@ describe('Job API - List', () => {
       const res1 = await client.get('/api/job?take=5&skip=0');
       expect(res1.status).toBe(200);
       expect(res1.body.data.length).toBe(5);
-      expect(res1.body.meta.total).toBeGreaterThanOrEqual(15);
+      expect(res1.body.meta.total).toBe(15);
 
       // Page 2
       const res2 = await client.get('/api/job?take=5&skip=5');
@@ -64,7 +76,7 @@ describe('Job API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
       // Reuse getActorStatement to ensure correct actor context
-      const actor = await client.as('user', {});
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const val1 = 'type_' + Date.now() + '_A';
       const val2 = 'type_' + Date.now() + '_B';
@@ -81,11 +93,32 @@ describe('Job API - List', () => {
       expect(res.body.data[0].type).toBe(val1);
     });
 
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
     it('should filter by lockedBy', async () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
       // Reuse getActorStatement to ensure correct actor context
-      const actor = await client.as('user', {});
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const val1 = 'lockedBy_' + Date.now() + '_A';
       const val2 = 'lockedBy_' + Date.now() + '_B';
@@ -100,6 +133,1945 @@ describe('Job API - List', () => {
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveLength(1);
       expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
+    });
+  });
+});
+describe('Job API - List', () => {
+  let client: ApiClient;
+
+  beforeEach(async () => {
+    client = new ApiClient(TestServer.getUrl());
+  });
+
+  // GET /api/job
+  describe('GET /api/job', () => {
+    const baseData = { type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 };
+
+    it('should allow AGENT_JOB_OWNER to list jobs', async () => {
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup first to ensure clean state
+      await Factory.prisma.job.deleteMany();
+
+      // Seed data
+      const _listSuffix = Date.now();
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.data)).toBe(true);
+      expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+      expect(res.body.meta).toBeDefined();
+    });
+
+    it('should verify pagination metadata', async () => {
+       
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      // Cleanup and seed specific count
+      await Factory.prisma.job.deleteMany();
+
+      const _suffix = Date.now();
+      const createdIds: string[] = [];
+      const totalTarget = 15;
+
+      // Check current count
+
+      const _listSuffix = Date.now();
+      const currentCount = 0;
+      const toCreate = totalTarget - currentCount;
+
+      for (let i = 0; i < toCreate; i++) {
+        const rec = await Factory.create('job', {
+          ...baseData,
+          actorId: actor.id,
+          actorType: 'user',
+        });
+        createdIds.push(rec.id);
+      }
+
+      // Page 1
+      const res1 = await client.get('/api/job?take=5&skip=0');
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.length).toBe(5);
+      expect(res1.body.meta.total).toBe(15);
+
+      // Page 2
+      const res2 = await client.get('/api/job?take=5&skip=5');
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.length).toBe(5);
+      expect(res2.body.data[0].id).not.toBe(res1.body.data[0].id);
+    });
+
+    it('should filter by type', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'type_' + Date.now() + '_A';
+      const val2 = 'type_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, type: val1 };
+      const data2 = { ...baseData, type: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?type=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].type).toBe(val1);
+    });
+
+    it('should filter by progress', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, progress: val1 };
+      const data2 = { ...baseData, progress: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?progress=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].progress).toBe(val1);
+    });
+
+    it('should filter by lockedBy', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = 'lockedBy_' + Date.now() + '_A';
+      const val2 = 'lockedBy_' + Date.now() + '_B';
+
+      const data1 = { ...baseData, lockedBy: val1 };
+      const data2 = { ...baseData, lockedBy: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedBy=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedBy).toBe(val1);
+    });
+
+    it('should filter by lockedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, lockedAt: val1 };
+      const data2 = { ...baseData, lockedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?lockedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].lockedAt).toBe(val1);
+    });
+
+    it('should filter by startedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, startedAt: val1 };
+      const data2 = { ...baseData, startedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?startedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].startedAt).toBe(val1);
+    });
+
+    it('should filter by completedAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, completedAt: val1 };
+      const data2 = { ...baseData, completedAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?completedAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].completedAt).toBe(val1);
+    });
+
+    it('should filter by retryCount', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, retryCount: val1 };
+      const data2 = { ...baseData, retryCount: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?retryCount=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].retryCount).toBe(val1);
+    });
+
+    it('should filter by maxRetries', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = Date.now() % 1000;
+      const val2 = (Date.now() % 1000) + 1;
+
+      const data1 = { ...baseData, maxRetries: val1 };
+      const data2 = { ...baseData, maxRetries: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?maxRetries=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].maxRetries).toBe(val1);
+    });
+
+    it('should filter by nextRetryAt', async () => {
+      // Wait to avoid collisions
+      await new Promise((r) => setTimeout(r, 10));
+      // Reuse getActorStatement to ensure correct actor context
+      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+
+      const val1 = new Date(Date.now() - 100000).toISOString();
+      const val2 = new Date(Date.now() + 100000).toISOString();
+
+      const data1 = { ...baseData, nextRetryAt: val1 };
+      const data2 = { ...baseData, nextRetryAt: val2 };
+
+      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+
+      const res = await client.get('/api/job?nextRetryAt=' + val1);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.data[0].nextRetryAt).toBe(val1);
     });
   });
 });

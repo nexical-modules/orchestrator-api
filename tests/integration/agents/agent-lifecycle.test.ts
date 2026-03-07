@@ -23,7 +23,7 @@ describe('Agent Lifecycle Integration', () => {
     // Setup Client & Token (Moved here to survive global beforeEach clean)
     // Use ADMIN role for Agent execution to bypass job status/lock restrictions in hooks
     // (Since we are simulating an agent with a User token)
-    await client.as('user', { role: 'AGENT_ADMIN' });
+    await client.as('user', { role: 'USER_ADMIN' });
 
     // Start Agent
     // Pass env vars to point to OUR test server

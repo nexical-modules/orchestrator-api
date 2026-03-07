@@ -26,6 +26,9 @@ export const PermissionRegistry = {
   'agent:read_all': {
     description: 'View all registered agents',
   },
+  'agent:manage_keys': {
+    description: 'Create and delete Agent API keys',
+  },
   'system:maintain': {
     description: 'Perform system maintenance (stale checks)',
   },
@@ -42,7 +45,7 @@ export const RolePermissions = {
     'job:fail',
     'job:progress',
   ],
-  AGENT_ADMIN: ['job:read_all', 'agent:read_all', 'system:maintain'],
+  AGENT_ADMIN: ['job:read_all', 'agent:read_all', 'agent:manage_keys', 'system:maintain'],
 } as const;
 
 export class Permission {

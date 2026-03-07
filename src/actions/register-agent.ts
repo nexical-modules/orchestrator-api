@@ -14,6 +14,7 @@ export class RegisterAgentAction {
       const agent = await db.agent.upsert({
         where: { id },
         update: {
+          name: input.name,
           hostname: input.hostname,
           capabilities: input.capabilities,
           status: 'ONLINE',
@@ -21,6 +22,7 @@ export class RegisterAgentAction {
         },
         create: {
           id,
+          name: input.name,
           hostname: input.hostname,
           capabilities: input.capabilities,
           status: 'ONLINE',

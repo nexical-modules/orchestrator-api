@@ -10,7 +10,7 @@ export class CompleteJobAction {
     context: APIContext,
   ): Promise<ServiceResponse<Job>> {
     const actor = context.locals.actor;
-    const actorId = actor?.role === 'ADMIN' ? undefined : actor?.id;
+    const actorId = ['ADMIN', 'USER_ADMIN'].includes(actor?.role as string) ? undefined : actor?.id;
     const result = await OrchestrationService.complete(input.id, input.result, actorId);
     return result as ServiceResponse<Job>;
   }

@@ -4,13 +4,7 @@ import { BaseRole } from './base-role';
 /** */
 export class AgentJobOwnerRole extends BaseRole {
   readonly name: string = 'AGENT_JOB_OWNER';
-  protected readonly compatibleRoles: string[] = [
-    'USER_EMPLOYEE',
-    'USER_CLIENT',
-    'TEAM_MEMBER',
-    'USER',
-    'AGENT',
-  ];
+  protected readonly compatibleRoles: string[] = ['USER_EMPLOYEE'];
   readonly description: string = '';
   readonly inherits: string[] = [];
   readonly permissions: string[] = [
@@ -32,16 +26,20 @@ export class AgentJobOwnerRole extends BaseRole {
     const locals = (context as { locals: Record<string, unknown> }).locals;
     const actor = locals.actor as { id: string; role: string };
 
-    if (actor.role === 'AGENT_ADMIN') return;
+    if (actor.role === 'AGENT_ADMIN' || actor.role === 'USER_ADMIN' || actor.role === 'ADMIN') {
+      return;
+    }
 
     // Check ownership
     let ownerId = (input.actorId as string) || (data as { actorId?: string })?.actorId;
+    let lockedBy: string | undefined;
 
     if (!ownerId && (input.jobId || (data as { jobId?: string })?.jobId)) {
       const jobId = (input.jobId as string) || (data as { jobId?: string })?.jobId;
       const { db } = await import('@/lib/core/db');
       const job = await db.job.findUnique({ where: { id: jobId } });
       ownerId = job?.actorId ?? undefined;
+      lockedBy = job?.lockedBy ?? undefined;
     }
 
     if (!ownerId && (input.id || (data as { id?: string })?.id)) {
@@ -55,10 +53,17 @@ export class AgentJobOwnerRole extends BaseRole {
           include: { job: true },
         });
         ownerId = jobLog?.job.actorId ?? undefined;
+        lockedBy = jobLog?.job.lockedBy ?? undefined;
       } else if (pathname.includes('/api/job/')) {
         const job = await db.job.findUnique({ where: { id } });
         ownerId = job?.actorId ?? undefined;
+        lockedBy = job?.lockedBy ?? undefined;
       }
+    }
+
+    // Allow the Agent that locked the job to modify it
+    if (lockedBy && lockedBy === actor.id) {
+      return;
     }
 
     if (ownerId && ownerId !== actor.id) {

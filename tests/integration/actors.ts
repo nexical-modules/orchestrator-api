@@ -17,45 +17,16 @@ export const actors = {
       actor = await Factory.create('agent', factoryParams);
     }
 
-    const rawKey = `${Date.now()}`;
+    const rawKey = `sk_agent_${crypto.randomUUID().replace(/-/g, '')}`;
     let dbKey = rawKey;
 
     dbKey = crypto.createHash('sha256').update(rawKey).digest('hex');
 
-    await Factory.create('agent', {
+    await Factory.create('agentApiKey', {
+      agent: { connect: { id: actor.id } },
       name: 'Test Token',
       hashedKey: dbKey,
-      prefix: '',
-    });
-
-    client.useToken(rawKey);
-
-    return actor;
-  },
-  user: async (client: ApiClient, params: Record<string, unknown> = {}) => {
-    let actor;
-    if (params.id) {
-      actor = await Factory.prisma.user.findUnique({ where: { id: params.id } });
-    } else if (params.email) {
-      actor = await Factory.prisma.user.findFirst({ where: { email: params.email } });
-    }
-
-    if (!actor) {
-      const factoryParams = { ...params };
-      if (factoryParams.strategy) delete factoryParams.strategy;
-      actor = await Factory.create('user', factoryParams);
-    }
-
-    const rawKey = `ne_pat_${Date.now()}`;
-    let dbKey = rawKey;
-
-    dbKey = crypto.createHash('sha256').update(rawKey).digest('hex');
-
-    await Factory.create('personalAccessToken', {
-      user: { connect: { id: actor.id } },
-      name: 'Test Token',
-      hashedKey: dbKey,
-      prefix: 'ne_pat_',
+      prefix: 'sk_agent_',
     });
 
     client.useToken(rawKey);

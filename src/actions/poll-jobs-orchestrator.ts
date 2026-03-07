@@ -29,7 +29,7 @@ export class PollJobsOrchestratorAction {
       const isAgent =
         (actor as { type?: string })?.type === 'agent' ||
         ((actor as { type?: string })?.type === 'user' &&
-          (actor as { role?: string }).role === 'ADMIN');
+          ['ADMIN', 'USER_ADMIN'].includes((actor as { role?: string }).role as string));
 
       // If Agent, don't filter by owner (pass undefined). If User, filter by owner (pass actorId).
       const filterActorId = isAgent ? undefined : actorId;
