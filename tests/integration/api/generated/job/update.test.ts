@@ -5,22 +5,18 @@ import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -28,11 +24,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -44,22 +37,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -67,11 +56,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -83,22 +69,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -106,11 +88,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -122,22 +101,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -145,11 +120,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -161,22 +133,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -184,11 +152,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -200,22 +165,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -223,11 +184,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -239,22 +197,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -262,11 +216,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);
@@ -278,22 +229,18 @@ describe('Job API - Update', () => {
 });
 describe('Job API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job/[id]
   describe('PUT /api/job/[id]', () => {
     it('should update job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         type: 'type_updated',
         progress: 20,
@@ -301,11 +248,8 @@ describe('Job API - Update', () => {
         maxRetries: 20,
         nextRetryAt: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(updated?.type).toBe(updatePayload.type);
       expect(updated?.progress).toBe(updatePayload.progress);

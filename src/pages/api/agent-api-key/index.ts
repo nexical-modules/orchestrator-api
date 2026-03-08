@@ -4,7 +4,6 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { HookSystem } from '@/lib/modules/hooks';
 import { AgentApiKeyService } from '@modules/orchestrator-api/src/services/agent-api-key-service';
 import { parseQuery } from '@/lib/api/api-query';
-
 export const GET = defineApi(
   async (context, actor) => {
     const filterOptions = {
@@ -20,12 +19,10 @@ export const GET = defineApi(
       },
       searchFields: ['id', 'name', 'hashedKey', 'prefix', 'agentId'],
     } as const;
-
     const { where, take, skip, orderBy } = parseQuery(
       new URL(context.request.url).searchParams,
       filterOptions,
     );
-
     // Security Check
     // Pass query params as input to role check
     await ApiGuard.protect(context, 'AGENT_ADMIN', {
@@ -35,7 +32,6 @@ export const GET = defineApi(
       skip,
       orderBy,
     });
-
     const select = {
       id: true,
       name: true,
@@ -47,22 +43,17 @@ export const GET = defineApi(
       agentId: true,
       agent: true,
     };
-
     const result = await AgentApiKeyService.list({ where, take, skip, orderBy, select }, actor);
-
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
-
     const data = result.data || [];
     const total = result.total || 0;
-
     // Analytics Hook
     await HookSystem.dispatch('agentApiKey.list.viewed', {
       count: data.length,
       actorId: actor?.id || 'anonymous',
     });
-
     return { success: true, data, meta: { total } };
   },
   {

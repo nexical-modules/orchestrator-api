@@ -3,14 +3,11 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { z } from 'zod';
 import { DeadLetterJobService } from '@modules/orchestrator-api/src/services/dead-letter-job-service';
-
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
-
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
-
     const select = {
       id: true,
       originalJobId: true,
@@ -23,9 +20,7 @@ export const GET = defineApi(
       actorId: true,
       actorType: true,
     };
-
     const result = await DeadLetterJobService.get(id, select, actor);
-
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -35,14 +30,12 @@ export const GET = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
-
     if (!result.data) {
       return new Response(
         JSON.stringify({ error: { code: 'NOT_FOUND', message: 'DeadLetterJob not found' } }),
         { status: 404 },
       );
     }
-
     return { success: true, data: result.data };
   },
   {
@@ -80,10 +73,8 @@ export const PUT = defineApi(
   async (context, actor) => {
     const { id } = context.params;
     const body = await context.request.json();
-
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
-
     // Zod Validation
     const schema = z
       .object({
@@ -99,7 +90,6 @@ export const PUT = defineApi(
         actorType: z.string().optional(),
       })
       .partial();
-
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -113,9 +103,7 @@ export const PUT = defineApi(
       actorId: true,
       actorType: true,
     };
-
     const result = await DeadLetterJobService.update(id, validated, select, actor);
-
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -125,7 +113,6 @@ export const PUT = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
-
     return new Response(JSON.stringify({ success: true, data: result.data }), { status: 200 });
   },
   {
@@ -183,12 +170,9 @@ export const PUT = defineApi(
 export const DELETE = defineApi(
   async (context, actor) => {
     const { id } = context.params;
-
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
-
     const result = await DeadLetterJobService.delete(id, actor);
-
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -198,7 +182,6 @@ export const DELETE = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
-
     return { success: true };
   },
   {

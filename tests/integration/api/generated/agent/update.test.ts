@@ -5,17 +5,14 @@ import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -23,7 +20,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -32,11 +28,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -49,17 +42,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -67,7 +57,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -76,11 +65,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -93,17 +79,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -111,7 +94,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -120,11 +102,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -137,17 +116,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -155,7 +131,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -164,11 +139,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -181,17 +153,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -199,7 +168,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -208,11 +176,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -225,17 +190,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -243,7 +205,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -252,11 +213,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -269,17 +227,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -287,7 +242,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -296,11 +250,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);
@@ -313,17 +264,14 @@ describe('Agent API - Update', () => {
 });
 describe('Agent API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -331,7 +279,6 @@ describe('Agent API - Update', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const updatePayload = {
         name: 'name_updated',
         hashedKey: 'hashedKey_updated',
@@ -340,11 +287,8 @@ describe('Agent API - Update', () => {
         capabilities: ['capabilities_updated'],
         lastHeartbeat: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/agent/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(updated?.name).toBe(updatePayload.name);
       expect(updated?.hashedKey).toBe(updatePayload.hashedKey);

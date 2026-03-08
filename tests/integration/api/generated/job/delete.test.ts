@@ -5,26 +5,20 @@ import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -32,26 +26,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -59,26 +47,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -86,26 +68,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -113,26 +89,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -140,26 +110,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -167,26 +131,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -194,26 +152,20 @@ describe('Job API - Delete', () => {
 });
 describe('Job API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/job/[id]
   describe('DELETE /api/job/[id]', () => {
     it('should delete job', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
         actorId: actor.id,
         actorType: 'user',
       });
-
       const res = await client.delete(`/api/job/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.job.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });

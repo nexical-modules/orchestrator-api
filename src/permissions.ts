@@ -1,6 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY
 import { Permissions } from '@/lib/security/permissions';
-
 export const PermissionRegistry = {
   'job:create': {
     description: 'Create a new job',
@@ -33,9 +32,7 @@ export const PermissionRegistry = {
     description: 'Perform system maintenance (stale checks)',
   },
 } as const;
-
 export type PermissionAction = keyof typeof PermissionRegistry;
-
 export const RolePermissions = {
   AGENT_JOB_OWNER: [
     'job:create',
@@ -47,7 +44,6 @@ export const RolePermissions = {
   ],
   AGENT_ADMIN: ['job:read_all', 'agent:read_all', 'agent:manage_keys', 'system:maintain'],
 } as const;
-
 export class Permission {
   public static check(action: PermissionAction, role: string): boolean {
     return Permissions.check(action, role);

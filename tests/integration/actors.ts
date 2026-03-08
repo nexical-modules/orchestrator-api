@@ -14,6 +14,7 @@ export const actors = {
     if (!actor) {
       const factoryParams = { ...params };
       if (factoryParams.strategy) delete factoryParams.strategy;
+
       actor = await Factory.create('agent', factoryParams);
     }
 

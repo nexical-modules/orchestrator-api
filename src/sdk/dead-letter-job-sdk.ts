@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { DeadLetterJob } from './types.js';
-
 /** SDK client for DeadLetterJob. */
 export class DeadLetterJobSDK extends BaseResource {
   public async list(params?: {
@@ -32,24 +31,20 @@ export class DeadLetterJobSDK extends BaseResource {
     });
     return this._request('GET', `/dead-letter-job${query}`);
   }
-
   public async get(id: string): Promise<{ success: boolean; data: DeadLetterJob; error?: string }> {
     return this._request('GET', `/dead-letter-job/${id}`);
   }
-
   public async create(
     data: Partial<DeadLetterJob>,
   ): Promise<{ success: boolean; data: DeadLetterJob; error?: string }> {
     return this._request('POST', `/dead-letter-job`, data);
   }
-
   public async update(
     id: string,
     data: Partial<DeadLetterJob>,
   ): Promise<{ success: boolean; data: DeadLetterJob; error?: string }> {
     return this._request('PUT', `/dead-letter-job/${id}`, data);
   }
-
   public async delete(id: string): Promise<{ success: boolean; error?: string }> {
     return this._request('DELETE', `/dead-letter-job/${id}`);
   }

@@ -5,17 +5,14 @@ import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -23,11 +20,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -35,17 +29,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -53,11 +44,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -65,17 +53,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -83,11 +68,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -95,17 +77,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -113,11 +92,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -125,17 +101,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -143,11 +116,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -155,17 +125,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -173,11 +140,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -185,17 +149,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -203,11 +164,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });
@@ -215,17 +173,14 @@ describe('Agent API - Delete', () => {
 });
 describe('Agent API - Delete', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // DELETE /api/agent/[id]
   describe('DELETE /api/agent/[id]', () => {
     it('should delete agent', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('agent', {
         ...{
           hostname: 'hostname_test',
@@ -233,11 +188,8 @@ describe('Agent API - Delete', () => {
           lastHeartbeat: new Date().toISOString(),
         },
       });
-
       const res = await client.delete(`/api/agent/${target.id}`);
-
       expect(res.status).toBe(200);
-
       const check = await Factory.prisma.agent.findUnique({ where: { id: target.id } });
       expect(check).toBeNull();
     });

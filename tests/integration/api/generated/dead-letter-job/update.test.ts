@@ -5,16 +5,13 @@ import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -25,7 +22,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -33,11 +29,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -49,16 +42,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -69,7 +59,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -77,11 +66,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -93,16 +79,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -113,7 +96,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -121,11 +103,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -137,16 +116,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -157,7 +133,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -165,11 +140,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -181,16 +153,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -201,7 +170,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -209,11 +177,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -225,16 +190,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -245,7 +207,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -253,11 +214,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -269,16 +227,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -289,7 +244,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -297,11 +251,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);
@@ -313,16 +264,13 @@ describe('DeadLetterJob API - Update', () => {
 });
 describe('DeadLetterJob API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/dead-letter-job/[id]
   describe('PUT /api/dead-letter-job/[id]', () => {
     it('should update deadLetterJob', async () => {
       const actor = await client.as('user', { role: 'USER_ADMIN' });
-
       const target = await Factory.create('deadLetterJob', {
         ...{
           originalJobId: 'originalJobId_test',
@@ -333,7 +281,6 @@ describe('DeadLetterJob API - Update', () => {
         actorId: actor.id,
         actorType: 'user',
       });
-
       const updatePayload = {
         originalJobId: 'originalJobId_updated',
         type: 'type_updated',
@@ -341,11 +288,8 @@ describe('DeadLetterJob API - Update', () => {
         retryCount: 20,
         reason: 'reason_updated',
       };
-
       const res = await client.put(`/api/dead-letter-job/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.deadLetterJob.findUnique({ where: { id: target.id } });
       expect(updated?.originalJobId).toBe(updatePayload.originalJobId);
       expect(updated?.type).toBe(updatePayload.type);

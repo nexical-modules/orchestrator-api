@@ -2,7 +2,6 @@
 import type { APIContext, MiddlewareNext } from 'astro';
 import { db } from '@/lib/core/db';
 import crypto from 'node:crypto';
-
 export async function onRequest(context: APIContext, next: MiddlewareNext) {
   const publicRoutes: string[] = [];
   if (publicRoutes.some((route) => context.url.pathname.startsWith(route))) return next();
@@ -15,7 +14,6 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
       include: { agent: true },
     });
     const entity = tokenEntity?.agent;
-
     if (entity) {
       context.locals.actor = {
         ...entity,
@@ -40,7 +38,6 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
       where: { id: context.locals.actor.id },
       select: { status: true },
     });
-
     if (!actorCheck || actorCheck.status !== 'ONLINE') {
       context.locals.actor = undefined;
       return new Response(JSON.stringify({ error: 'Session revoked' }), {

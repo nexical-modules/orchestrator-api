@@ -7,7 +7,6 @@ import { DeadLetterJobSDK as BaseDeadLetterJobSDK } from './dead-letter-job-sdk.
 import { OrchestratorSDK as BaseOrchestratorSDK } from './orchestrator-sdk.js';
 import { MetricsSDK as BaseMetricsSDK } from './metrics-sdk.js';
 import { AgentApiKeySDK as BaseAgentApiKeySDK } from './agent-api-key-sdk.js';
-
 export * from './job-sdk.js';
 export * from './job-log-sdk.js';
 export * from './agent-sdk.js';
@@ -16,7 +15,6 @@ export * from './orchestrator-sdk.js';
 export * from './metrics-sdk.js';
 export * from './types.js';
 export * from './agent-api-key-sdk.js';
-
 /** Main SDK for the orchestrator-api module. */
 export class OrchestratorModule extends BaseResource {
   public job: BaseJobSDK;
@@ -30,7 +28,6 @@ export class OrchestratorModule extends BaseResource {
     AGENT_JOB_OWNER: 'AGENT_JOB_OWNER',
     AGENT_ADMIN: 'AGENT_ADMIN',
   };
-
   constructor(client: ApiClient) {
     super(client);
     this.job = new BaseJobSDK(client);

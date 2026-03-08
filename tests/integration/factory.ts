@@ -2,12 +2,10 @@
 import bcrypt from 'bcryptjs';
 import { Factory } from '@tests/integration/lib/factory';
 import crypto from 'node:crypto';
-
 export function hashPassword(password: string): string {
   const salt = bcrypt.genSaltSync(10);
   return bcrypt.hashSync(password, salt);
 }
-
 export const factories = {
   job: (index: number) => {
     return {

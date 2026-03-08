@@ -5,16 +5,13 @@ import { TestServer } from '@tests/integration/lib/server';
 import { Factory } from '@tests/integration/lib/factory';
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -23,17 +20,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -43,16 +36,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -61,17 +51,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -81,16 +67,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -99,17 +82,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -119,16 +98,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -137,17 +113,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -157,16 +129,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -175,17 +144,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -195,16 +160,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -213,17 +175,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -233,16 +191,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -251,17 +206,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);
@@ -271,16 +222,13 @@ describe('JobLog API - Update', () => {
 });
 describe('JobLog API - Update', () => {
   let client: ApiClient;
-
   beforeEach(async () => {
     client = new ApiClient(TestServer.getUrl());
   });
-
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
-
       const job_0 = await Factory.create('job', {
         actorId: typeof actor !== 'undefined' ? actor.id : undefined,
         actorType: 'user',
@@ -289,17 +237,13 @@ describe('JobLog API - Update', () => {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
-
       const updatePayload = {
         level: 'level_updated',
         message: 'message_updated',
         timestamp: new Date().toISOString(),
       };
-
       const res = await client.put(`/api/job-log/${target.id}`, updatePayload);
-
       expect(res.status).toBe(200);
-
       const updated = await Factory.prisma.jobLog.findUnique({ where: { id: target.id } });
       expect(updated?.level).toBe(updatePayload.level);
       expect(updated?.message).toBe(updatePayload.message);

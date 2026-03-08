@@ -5,40 +5,31 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { UpdateProgressJobAction } from '@modules/orchestrator-api/src/actions/update-progress-job';
 import { HookSystem } from '@/lib/modules/hooks';
 import type { OrchestratorModuleTypes } from '@/lib/api';
-
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)
     const body = (await context.request.json()) as OrchestratorModuleTypes.UpdateProgressDTO;
-
     const query = Object.fromEntries(new URL(context.request.url).searchParams);
-
     // 2. Hook: Filter Input
     const input: OrchestratorModuleTypes.UpdateProgressDTO = await HookSystem.filter(
       'job.updateProgress.input',
       body,
     );
-
     // 3. Security Check
     const combinedInput = { ...context.params, ...query, ...input };
     await ApiGuard.protect(context, 'AGENT_JOB_OWNER', combinedInput);
-
     // Inject userId from context for protected routes
     if (actor && actor.id) {
       Object.assign(combinedInput, { userId: actor.id });
     }
-
     // 4. Action Execution
     const result = await UpdateProgressJobAction.run(combinedInput, context);
-
     // 5. Hook: Filter Output
     const filteredResult = await HookSystem.filter('job.updateProgress.output', result);
-
     // 6. Response
     if (!filteredResult.success) {
       return new Response(JSON.stringify({ error: filteredResult.error }), { status: 400 });
     }
-
     return { success: true, data: filteredResult.data };
   },
   {
