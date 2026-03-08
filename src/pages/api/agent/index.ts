@@ -22,10 +22,12 @@ export const GET = defineApi(
       },
       searchFields: ['id', 'name', 'hashedKey', 'prefix', 'hostname'],
     } as const;
+
     const { where, take, skip, orderBy } = parseQuery(
       new URL(context.request.url).searchParams,
       filterOptions,
     );
+
     // Security Check
     // Pass query params as input to role check
     await ApiGuard.protect(context, 'AGENT_ADMIN', {
@@ -35,6 +37,7 @@ export const GET = defineApi(
       skip,
       orderBy,
     });
+
     const select = {
       id: true,
       name: true,
@@ -48,17 +51,22 @@ export const GET = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
+
     const result = await AgentService.list({ where, take, skip, orderBy, select }, actor);
+
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
+
     const data = result.data || [];
     const total = result.total || 0;
+
     // Analytics Hook
     await HookSystem.dispatch('agent.list.viewed', {
       count: data.length,
       actorId: actor?.id || 'anonymous',
     });
+
     return { success: true, data, meta: { total } };
   },
   {
@@ -610,8 +618,10 @@ export const GET = defineApi(
 export const POST = defineApi(
   async (context, actor) => {
     const body = await context.request.json();
+
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
+
     // Zod Validation
     const schema = z.object({
       id: z.string().optional(),
@@ -624,6 +634,7 @@ export const POST = defineApi(
       status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
       role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
     });
+
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -638,10 +649,13 @@ export const POST = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
+
     const result = await AgentService.create(validated, select, actor);
+
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
+
     return new Response(JSON.stringify({ success: true, data: result.data }), { status: 201 });
   },
   {

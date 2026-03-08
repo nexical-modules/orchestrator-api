@@ -5,8 +5,10 @@ import { AgentApiKeyService } from '@modules/orchestrator-api/src/services/agent
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
+
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
+
     const select = {
       id: true,
       name: true,
@@ -18,7 +20,9 @@ export const GET = defineApi(
       agentId: true,
       agent: true,
     };
+
     const result = await AgentApiKeyService.get(id, select, actor);
+
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -28,12 +32,14 @@ export const GET = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
+
     if (!result.data) {
       return new Response(
         JSON.stringify({ error: { code: 'NOT_FOUND', message: 'AgentApiKey not found' } }),
         { status: 404 },
       );
     }
+
     return { success: true, data: result.data };
   },
   {

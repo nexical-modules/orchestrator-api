@@ -7,8 +7,10 @@ import { OrchestratorModuleTypes } from '@/lib/api';
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
+
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
+
     const select = {
       id: true,
       name: true,
@@ -22,7 +24,9 @@ export const GET = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
+
     const result = await AgentService.get(id, select, actor);
+
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -32,12 +36,14 @@ export const GET = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
+
     if (!result.data) {
       return new Response(
         JSON.stringify({ error: { code: 'NOT_FOUND', message: 'Agent not found' } }),
         { status: 404 },
       );
     }
+
     return { success: true, data: result.data };
   },
   {
@@ -76,8 +82,10 @@ export const PUT = defineApi(
   async (context, actor) => {
     const { id } = context.params;
     const body = await context.request.json();
+
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
+
     // Zod Validation
     const schema = z
       .object({
@@ -92,6 +100,7 @@ export const PUT = defineApi(
         role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
       })
       .partial();
+
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -106,7 +115,9 @@ export const PUT = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
+
     const result = await AgentService.update(id, validated, select, actor);
+
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -116,6 +127,7 @@ export const PUT = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
+
     return new Response(JSON.stringify({ success: true, data: result.data }), { status: 200 });
   },
   {
@@ -175,9 +187,12 @@ export const PUT = defineApi(
 export const DELETE = defineApi(
   async (context, actor) => {
     const { id } = context.params;
+
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params });
+
     const result = await AgentService.delete(id, actor);
+
     if (!result.success) {
       if (
         result.error?.code === 'NOT_FOUND' ||
@@ -187,6 +202,7 @@ export const DELETE = defineApi(
       }
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
+
     return { success: true };
   },
   {

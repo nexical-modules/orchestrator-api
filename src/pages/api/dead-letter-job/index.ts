@@ -20,10 +20,12 @@ export const GET = defineApi(
       },
       searchFields: ['id', 'originalJobId', 'type', 'reason', 'actorId', 'actorType'],
     } as const;
+
     const { where, take, skip, orderBy } = parseQuery(
       new URL(context.request.url).searchParams,
       filterOptions,
     );
+
     // Security Check
     // Pass query params as input to role check
     await ApiGuard.protect(context, 'AGENT_ADMIN', {
@@ -33,6 +35,7 @@ export const GET = defineApi(
       skip,
       orderBy,
     });
+
     const select = {
       id: true,
       originalJobId: true,
@@ -45,17 +48,22 @@ export const GET = defineApi(
       actorId: true,
       actorType: true,
     };
+
     const result = await DeadLetterJobService.list({ where, take, skip, orderBy, select }, actor);
+
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 500 });
     }
+
     const data = result.data || [];
     const total = result.total || 0;
+
     // Analytics Hook
     await HookSystem.dispatch('deadLetterJob.list.viewed', {
       count: data.length,
       actorId: actor?.id || 'anonymous',
     });
+
     return { success: true, data, meta: { total } };
   },
   {
@@ -578,8 +586,10 @@ export const GET = defineApi(
 export const POST = defineApi(
   async (context, actor) => {
     const body = await context.request.json();
+
     // Security Check
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
+
     // Zod Validation
     const schema = z.object({
       id: z.string().optional(),
@@ -593,6 +603,7 @@ export const POST = defineApi(
       actorId: z.string().optional(),
       actorType: z.string().optional(),
     });
+
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -606,10 +617,13 @@ export const POST = defineApi(
       actorId: true,
       actorType: true,
     };
+
     const result = await DeadLetterJobService.create(validated, select, actor);
+
     if (!result.success) {
       return new Response(JSON.stringify({ error: result.error }), { status: 400 });
     }
+
     return new Response(JSON.stringify({ success: true, data: result.data }), { status: 201 });
   },
   {

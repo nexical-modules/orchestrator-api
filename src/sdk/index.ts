@@ -15,6 +15,7 @@ export * from './orchestrator-sdk.js';
 export * from './metrics-sdk.js';
 export * from './types.js';
 export * from './agent-api-key-sdk.js';
+
 /** Main SDK for the orchestrator-api module. */
 export class OrchestratorModule extends BaseResource {
   public job: BaseJobSDK;
@@ -28,6 +29,7 @@ export class OrchestratorModule extends BaseResource {
     AGENT_JOB_OWNER: 'AGENT_JOB_OWNER',
     AGENT_ADMIN: 'AGENT_ADMIN',
   };
+
   constructor(client: ApiClient) {
     super(client);
     this.job = new BaseJobSDK(client);
