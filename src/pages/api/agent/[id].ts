@@ -24,7 +24,6 @@ export const GET = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
-
     const result = await AgentService.get(id, select, actor);
 
     if (!result.success) {
@@ -50,6 +49,7 @@ export const GET = defineApi(
     summary: 'Get Agent',
     tags: ['Agent'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',
@@ -87,20 +87,17 @@ export const PUT = defineApi(
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
 
     // Zod Validation
-    const schema = z
-      .object({
-        id: z.string().optional(),
-        name: z.string().optional(),
-        hashedKey: z.string().optional(),
-        prefix: z.string().optional(),
-        hostname: z.string(),
-        capabilities: z.array(z.string()),
-        lastHeartbeat: z.string().datetime().optional(),
-        status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
-        role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
-      })
-      .partial();
-
+    const schema = z.object({
+      id: z.string().optional(),
+      name: z.string().optional(),
+      hashedKey: z.string().optional(),
+      prefix: z.string().optional(),
+      hostname: z.string(),
+      capabilities: z.array(z.string()),
+      lastHeartbeat: z.string().datetime().optional(),
+      status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
+      role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
+    });
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -115,7 +112,6 @@ export const PUT = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
-
     const result = await AgentService.update(id, validated, select, actor);
 
     if (!result.success) {
@@ -209,6 +205,7 @@ export const DELETE = defineApi(
     summary: 'Delete Agent',
     tags: ['Agent'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',

@@ -42,6 +42,7 @@ export const POST = defineApi(
   {
     summary: 'Update agent heartbeat',
     tags: ['Agent'],
+
     requestBody: {
       content: {
         'application/json': {

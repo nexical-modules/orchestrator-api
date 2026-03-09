@@ -67,7 +67,6 @@ export const GET = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-
     const result = await JobService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -1037,6 +1036,7 @@ export const GET = defineApi(
         description: 'Filter by logs (eq)',
       },
     ],
+
     responses: {
       200: {
         description: 'OK',
@@ -1115,7 +1115,6 @@ export const POST = defineApi(
       maxRetries: z.number().int().optional(),
       nextRetryAt: z.string().datetime().optional(),
     });
-
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -1139,7 +1138,6 @@ export const POST = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-
     const result = await JobService.create(validated, select, actor);
 
     if (!result.success) {

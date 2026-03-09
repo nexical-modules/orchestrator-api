@@ -41,7 +41,6 @@ export const GET = defineApi(
       timestamp: true,
       job: true,
     };
-
     const result = await JobLogService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -353,6 +352,7 @@ export const GET = defineApi(
         description: 'Filter by job (eq)',
       },
     ],
+
     responses: {
       200: {
         description: 'OK',
@@ -405,7 +405,6 @@ export const POST = defineApi(
       message: z.string(),
       timestamp: z.string().datetime().optional(),
     });
-
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -415,7 +414,6 @@ export const POST = defineApi(
       timestamp: true,
       job: true,
     };
-
     const result = await JobLogService.create(validated, select, actor);
 
     if (!result.success) {

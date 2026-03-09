@@ -33,7 +33,6 @@ export const GET = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-
     const result = await JobService.get(id, select, actor);
 
     if (!result.success) {
@@ -59,6 +58,7 @@ export const GET = defineApi(
     summary: 'Get Job',
     tags: ['Job'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',
@@ -105,28 +105,25 @@ export const PUT = defineApi(
     await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params, ...body });
 
     // Zod Validation
-    const schema = z
-      .object({
-        id: z.string().optional(),
-        type: z.string(),
-        userId: z.string().optional(),
-        actorId: z.string().optional(),
-        actorType: z.string().optional(),
-        payload: z.unknown().optional(),
-        result: z.unknown().optional(),
-        error: z.unknown().optional(),
-        status: z.nativeEnum(OrchestratorModuleTypes.JobStatus).optional(),
-        progress: z.number().int().optional(),
-        lockedBy: z.string().optional(),
-        lockedAt: z.string().datetime().optional(),
-        startedAt: z.string().datetime().optional(),
-        completedAt: z.string().datetime().optional(),
-        retryCount: z.number().int().optional(),
-        maxRetries: z.number().int().optional(),
-        nextRetryAt: z.string().datetime().optional(),
-      })
-      .partial();
-
+    const schema = z.object({
+      id: z.string().optional(),
+      type: z.string(),
+      userId: z.string().optional(),
+      actorId: z.string().optional(),
+      actorType: z.string().optional(),
+      payload: z.unknown().optional(),
+      result: z.unknown().optional(),
+      error: z.unknown().optional(),
+      status: z.nativeEnum(OrchestratorModuleTypes.JobStatus).optional(),
+      progress: z.number().int().optional(),
+      lockedBy: z.string().optional(),
+      lockedAt: z.string().datetime().optional(),
+      startedAt: z.string().datetime().optional(),
+      completedAt: z.string().datetime().optional(),
+      retryCount: z.number().int().optional(),
+      maxRetries: z.number().int().optional(),
+      nextRetryAt: z.string().datetime().optional(),
+    });
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -150,7 +147,6 @@ export const PUT = defineApi(
       nextRetryAt: true,
       logs: { take: 10 },
     };
-
     const result = await JobService.update(id, validated, select, actor);
 
     if (!result.success) {
@@ -262,6 +258,7 @@ export const DELETE = defineApi(
     summary: 'Delete Job',
     tags: ['Job'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',

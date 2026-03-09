@@ -42,6 +42,7 @@ export const POST = defineApi(
   {
     summary: 'Create a new agent API key',
     tags: ['AgentApiKey'],
+
     requestBody: {
       content: {
         'application/json': {

@@ -42,6 +42,7 @@ export const POST = defineApi(
   {
     summary: 'Mark job as completed',
     tags: ['Job'],
+
     requestBody: {
       content: {
         'application/json': {

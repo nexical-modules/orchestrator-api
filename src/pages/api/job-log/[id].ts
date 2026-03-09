@@ -18,7 +18,6 @@ export const GET = defineApi(
       timestamp: true,
       job: true,
     };
-
     const result = await JobLogService.get(id, select, actor);
 
     if (!result.success) {
@@ -44,6 +43,7 @@ export const GET = defineApi(
     summary: 'Get JobLog',
     tags: ['JobLog'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',
@@ -76,16 +76,13 @@ export const PUT = defineApi(
     await ApiGuard.protect(context, 'AGENT_JOB_OWNER', { ...context.params, ...body });
 
     // Zod Validation
-    const schema = z
-      .object({
-        id: z.string().optional(),
-        jobId: z.string(),
-        level: z.string().optional(),
-        message: z.string(),
-        timestamp: z.string().datetime().optional(),
-      })
-      .partial();
-
+    const schema = z.object({
+      id: z.string().optional(),
+      jobId: z.string(),
+      level: z.string().optional(),
+      message: z.string(),
+      timestamp: z.string().datetime().optional(),
+    });
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -95,7 +92,6 @@ export const PUT = defineApi(
       timestamp: true,
       job: true,
     };
-
     const result = await JobLogService.update(id, validated, select, actor);
 
     if (!result.success) {
@@ -179,6 +175,7 @@ export const DELETE = defineApi(
     summary: 'Delete JobLog',
     tags: ['JobLog'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',

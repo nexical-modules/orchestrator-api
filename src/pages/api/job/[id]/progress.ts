@@ -43,6 +43,7 @@ export const POST = defineApi(
   {
     summary: 'Update job progress',
     tags: ['Job'],
+
     requestBody: {
       content: {
         'application/json': {

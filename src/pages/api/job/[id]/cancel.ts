@@ -43,6 +43,7 @@ export const POST = defineApi(
   {
     summary: 'Cancel a job',
     tags: ['Job'],
+
     requestBody: {
       content: {
         'application/json': {

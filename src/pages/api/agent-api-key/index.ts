@@ -46,7 +46,6 @@ export const GET = defineApi(
       agentId: true,
       agent: true,
     };
-
     const result = await AgentApiKeyService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -519,6 +518,7 @@ export const GET = defineApi(
         description: 'Filter by agent (eq)',
       },
     ],
+
     responses: {
       200: {
         description: 'OK',

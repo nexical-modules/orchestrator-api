@@ -22,7 +22,6 @@ export const GET = defineApi(
       actorId: true,
       actorType: true,
     };
-
     const result = await DeadLetterJobService.get(id, select, actor);
 
     if (!result.success) {
@@ -48,6 +47,7 @@ export const GET = defineApi(
     summary: 'Get DeadLetterJob',
     tags: ['DeadLetterJob'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',
@@ -84,21 +84,18 @@ export const PUT = defineApi(
     await ApiGuard.protect(context, 'AGENT_ADMIN', { ...context.params, ...body });
 
     // Zod Validation
-    const schema = z
-      .object({
-        id: z.string().optional(),
-        originalJobId: z.string(),
-        type: z.string(),
-        payload: z.unknown().optional(),
-        error: z.unknown().optional(),
-        failedAt: z.string().datetime().optional(),
-        retryCount: z.number().int(),
-        reason: z.string().optional(),
-        actorId: z.string().optional(),
-        actorType: z.string().optional(),
-      })
-      .partial();
-
+    const schema = z.object({
+      id: z.string().optional(),
+      originalJobId: z.string(),
+      type: z.string(),
+      payload: z.unknown().optional(),
+      error: z.unknown().optional(),
+      failedAt: z.string().datetime().optional(),
+      retryCount: z.number().int(),
+      reason: z.string().optional(),
+      actorId: z.string().optional(),
+      actorType: z.string().optional(),
+    });
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -112,7 +109,6 @@ export const PUT = defineApi(
       actorId: true,
       actorType: true,
     };
-
     const result = await DeadLetterJobService.update(id, validated, select, actor);
 
     if (!result.success) {
@@ -204,6 +200,7 @@ export const DELETE = defineApi(
     summary: 'Delete DeadLetterJob',
     tags: ['DeadLetterJob'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',

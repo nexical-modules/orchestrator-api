@@ -42,6 +42,7 @@ export const POST = defineApi(
   {
     summary: 'Register or update an agent',
     tags: ['Agent'],
+
     requestBody: {
       content: {
         'application/json': {

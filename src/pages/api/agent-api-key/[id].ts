@@ -20,7 +20,6 @@ export const GET = defineApi(
       agentId: true,
       agent: true,
     };
-
     const result = await AgentApiKeyService.get(id, select, actor);
 
     if (!result.success) {
@@ -46,6 +45,7 @@ export const GET = defineApi(
     summary: 'Get AgentApiKey',
     tags: ['AgentApiKey'],
     parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+
     responses: {
       200: {
         description: 'OK',

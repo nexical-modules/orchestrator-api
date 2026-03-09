@@ -42,6 +42,7 @@ export const POST = defineApi(
   {
     summary: 'Mark job as failed',
     tags: ['Job'],
+
     requestBody: {
       content: {
         'application/json': {

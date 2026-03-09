@@ -42,6 +42,7 @@ export const DELETE = defineApi(
   {
     summary: 'Delete an agent API key',
     tags: ['AgentApiKey'],
+
     requestBody: {
       content: {
         'application/json': {

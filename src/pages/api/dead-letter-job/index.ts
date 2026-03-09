@@ -48,7 +48,6 @@ export const GET = defineApi(
       actorId: true,
       actorType: true,
     };
-
     const result = await DeadLetterJobService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -542,6 +541,7 @@ export const GET = defineApi(
         description: 'Filter by actorType (eq)',
       },
     ],
+
     responses: {
       200: {
         description: 'OK',
@@ -603,7 +603,6 @@ export const POST = defineApi(
       actorId: z.string().optional(),
       actorType: z.string().optional(),
     });
-
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -617,7 +616,6 @@ export const POST = defineApi(
       actorId: true,
       actorType: true,
     };
-
     const result = await DeadLetterJobService.create(validated, select, actor);
 
     if (!result.success) {

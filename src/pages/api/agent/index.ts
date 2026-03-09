@@ -51,7 +51,6 @@ export const GET = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
-
     const result = await AgentService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
@@ -573,6 +572,7 @@ export const GET = defineApi(
         description: 'Filter by apiKeys (eq)',
       },
     ],
+
     responses: {
       200: {
         description: 'OK',
@@ -634,7 +634,6 @@ export const POST = defineApi(
       status: z.nativeEnum(OrchestratorModuleTypes.AgentStatus).optional(),
       role: z.nativeEnum(OrchestratorModuleTypes.AgentRole).optional(),
     });
-
     const validated = schema.parse(body);
     const select = {
       id: true,
@@ -649,7 +648,6 @@ export const POST = defineApi(
       createdAt: true,
       apiKeys: { take: 10 },
     };
-
     const result = await AgentService.create(validated, select, actor);
 
     if (!result.success) {

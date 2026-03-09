@@ -155,14 +155,18 @@ describe('OrchestrationService', () => {
 
   describe('complete', () => {
     it('should complete a job', async () => {
-      const mockJob = { id: 'job-1', status: 'COMPLETED' };
-      vi.mocked(db.job.update).mockResolvedValue(mockJob as unknown as Job);
+      const mockJob = { id: 'job-1', status: 'RUNNING', actorId: 'actor-1' };
+      vi.mocked(db.job.findUnique).mockResolvedValue(mockJob as unknown as Job);
+      vi.mocked(db.job.update).mockResolvedValue({
+        ...mockJob,
+        status: 'COMPLETED',
+      } as unknown as Job);
 
       const result = await OrchestrationService.complete('job-1', { result: 'ok' });
 
       expect(result.success).toBe(true);
-      expect(result.data).toBe(mockJob);
-      expect(HookSystem.dispatch).toHaveBeenCalledWith('job.completed', mockJob);
+      expect(result.data.status).toBe('COMPLETED');
+      expect(HookSystem.dispatch).toHaveBeenCalledWith('job.completed', expect.anything());
     });
 
     it('should perform security check if actorId is provided (authorized)', async () => {
@@ -246,6 +250,7 @@ describe('OrchestrationService', () => {
     });
 
     it('should handle update errors', async () => {
+      vi.mocked(db.job.findUnique).mockResolvedValue({ id: 'job-1' } as unknown as Job);
       vi.mocked(db.job.update).mockRejectedValue(new Error('Update failed'));
 
       const result = await OrchestrationService.complete('job-1', { result: 'ok' });
