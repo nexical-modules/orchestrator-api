@@ -39,7 +39,6 @@ describe('DeadLetterJob API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-       
       const actor = await client.as('user', { role: 'USER_ADMIN' });
 
       // Cleanup and seed specific count
