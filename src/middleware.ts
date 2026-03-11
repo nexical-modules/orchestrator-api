@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY
-import type { APIContext, MiddlewareNext } from 'astro';
 import { db } from '@/lib/core/db';
+import type { APIContext, MiddlewareNext } from 'astro';
 import crypto from 'node:crypto';
 export async function onRequest(context: APIContext, next: MiddlewareNext) {
   const publicRoutes: string[] = [];

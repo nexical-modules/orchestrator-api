@@ -1,9 +1,9 @@
 // GENERATED CODE - THE SIGNATURE IS MANAGED BY THE GENERATOR. YOU MAY MODIFY THE IMPLEMENTATION AND ADD CUSTOM IMPORTS.
 import { roleRegistry } from '@/lib/registries/role-registry';
-import { AgentApiKeyService } from '../services/agent-api-key-service';
 import type { ServiceResponse } from '@/types/service';
 import type { APIContext } from 'astro';
-import type { DeleteAgentApiKeyDTO, AgentApiKey } from '../sdk/types';
+import type { AgentApiKey, DeleteAgentApiKeyDTO } from '../sdk/types';
+import { AgentApiKeyService } from '../services/agent-api-key-service';
 
 export class DeleteAgentApiKeyAction {
   public static async run(

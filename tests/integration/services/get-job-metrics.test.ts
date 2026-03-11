@@ -1,7 +1,7 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
-import { GetJobMetricsAction } from '../../../src/actions/get-job-metrics';
+import { describe, expect, it } from 'vitest';
 import { createMockContext } from '../../../../../tests/integration/helpers/context';
+import { GetJobMetricsAction } from '../../../src/actions/get-job-metrics';
 
 describe('GetJobMetricsAction - Service Integration', () => {
   it('should return correct job metrics', async () => {

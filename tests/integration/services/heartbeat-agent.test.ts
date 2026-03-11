@@ -1,8 +1,8 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { createMockContext } from '../../../../../tests/integration/helpers/context';
 import { HeartbeatAgentAction } from '../../../src/actions/heartbeat-agent';
 import type { HeartbeatDTO } from '../../../src/sdk';
-import { createMockContext } from '../../../../../tests/integration/helpers/context';
 
 describe('HeartbeatAgentAction - Service Integration', () => {
   it('should update agent heartbeat', async () => {

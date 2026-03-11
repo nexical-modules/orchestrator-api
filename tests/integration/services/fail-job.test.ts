@@ -1,8 +1,8 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { createMockContext } from '../../../../../tests/integration/helpers/context';
 import { FailJobAction } from '../../../src/actions/fail-job';
 import type { FailJobDTO } from '../../../src/sdk';
-import { createMockContext } from '../../../../../tests/integration/helpers/context';
 
 describe('FailJobAction - Service Integration', () => {
   it('should fail a running job and schedule a retry', async () => {

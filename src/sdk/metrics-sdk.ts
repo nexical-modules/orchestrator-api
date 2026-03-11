@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
-import type { JobMetrics, AgentMetrics } from './types.js';
+import type { AgentMetrics, JobMetrics } from './types.js';
 /** SDK client for Metrics. */
 export class MetricsSDK extends BaseResource {
   public async getJobMetrics(): Promise<{ success: boolean; data: JobMetrics; error?: string }> {

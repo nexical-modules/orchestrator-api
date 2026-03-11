@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY
-import { JobProcessor, type ProcessorConfig, type AgentJob } from '@nexical/agent';
+import { JobProcessor, type AgentJob, type ProcessorConfig } from '@nexical/agent';
 import { z } from 'zod';
 
 export class EchoProcessor extends JobProcessor<unknown> {

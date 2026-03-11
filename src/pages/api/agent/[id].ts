@@ -1,9 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY
+import { OrchestratorModuleTypes } from '@/lib/api';
 import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
-import { z } from 'zod';
 import { AgentService } from '@modules/orchestrator-api/src/services/agent-service';
-import { OrchestratorModuleTypes } from '@/lib/api';
+import { z } from 'zod';
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;

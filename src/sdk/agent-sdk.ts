@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
-import type { Agent, RegisterAgentDTO, HeartbeatDTO } from './types.js';
+import type { Agent, HeartbeatDTO, RegisterAgentDTO } from './types.js';
 /** SDK client for Agent. */
 export class AgentSDK extends BaseResource {
   public async list(params?: {

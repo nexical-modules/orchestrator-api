@@ -1,8 +1,8 @@
 // GENERATED CODE - THE SIGNATURE IS MANAGED BY THE GENERATOR. YOU MAY MODIFY THE IMPLEMENTATION AND ADD CUSTOM IMPORTS.
+import { db } from '@/lib/core/db';
 import type { ServiceResponse } from '@/types/service';
 import type { APIContext } from 'astro';
-import type { RegisterAgentDTO, Agent } from '../sdk/types';
-import { db } from '@/lib/core/db';
+import type { Agent, RegisterAgentDTO } from '../sdk/types';
 
 export class RegisterAgentAction {
   public static async run(

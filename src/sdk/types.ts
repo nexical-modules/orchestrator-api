@@ -82,4 +82,4 @@ export enum AgentRole {
   AGENT_ADMIN = 'AGENT_ADMIN',
   AGENT_JOB_OWNER = 'AGENT_JOB_OWNER',
 }
-export type { Job, JobLog, Agent, AgentApiKey, DeadLetterJob } from '@prisma/client';
+export type { Agent, AgentApiKey, DeadLetterJob, Job, JobLog } from '@prisma/client';

@@ -1,8 +1,8 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { createMockContext } from '../../../../../tests/integration/helpers/context';
 import { UpdateProgressJobAction } from '../../../src/actions/update-progress-job';
 import type { UpdateProgressDTO } from '../../../src/sdk';
-import { createMockContext } from '../../../../../tests/integration/helpers/context';
 
 describe('UpdateProgressJobAction - Service Integration', () => {
   it('should update progress of a running job', async () => {

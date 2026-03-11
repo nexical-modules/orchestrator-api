@@ -1,8 +1,8 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { createMockContext } from '../../../../../tests/integration/helpers/context';
 import { CancelJobAction } from '../../../src/actions/cancel-job';
 import type { CancelJobDTO } from '../../../src/sdk';
-import { createMockContext } from '../../../../../tests/integration/helpers/context';
 
 describe('CancelJobAction - Service Integration', () => {
   it('should cancel a pending job', async () => {

@@ -1,8 +1,8 @@
 // GENERATED CODE - THE SIGNATURE IS MANAGED BY THE GENERATOR. YOU MAY MODIFY THE IMPLEMENTATION AND ADD CUSTOM IMPORTS.
 // Manual Action - Cancel Job
-import type { APIContext } from 'astro';
 import type { ServiceResponse } from '@/types/service';
-import type { Job, CancelJobDTO } from '../sdk/types';
+import type { APIContext } from 'astro';
+import type { CancelJobDTO, Job } from '../sdk/types';
 import { OrchestrationService } from '../services/orchestration-service';
 
 /**

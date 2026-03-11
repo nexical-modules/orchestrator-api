@@ -1,9 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY
-import { db } from '@/lib/core/db';
-import type { ServiceResponse } from '@/types/service';
-import { HookSystem } from '@/lib/modules/hooks';
-import type { Agent, Prisma } from '@prisma/client';
 import type { ApiActor } from '@/lib/api/api-docs';
+import { db } from '@/lib/core/db';
+import { HookSystem } from '@/lib/modules/hooks';
+import type { ServiceResponse } from '@/types/service';
+import type { Agent, Prisma } from '@prisma/client';
 /** Service class for Agent-related business logic. */
 export class AgentService {
   public static async list(

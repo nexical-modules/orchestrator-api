@@ -1,7 +1,7 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
-import { GetAgentMetricsAction } from '../../../src/actions/get-agent-metrics';
+import { describe, expect, it } from 'vitest';
 import { createMockContext } from '../../../../../tests/integration/helpers/context';
+import { GetAgentMetricsAction } from '../../../src/actions/get-agent-metrics';
 
 describe('GetAgentMetricsAction - Service Integration', () => {
   it('should return correct agent metrics', async () => {

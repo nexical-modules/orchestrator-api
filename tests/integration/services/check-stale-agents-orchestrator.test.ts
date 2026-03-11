@@ -1,7 +1,7 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
-import { CheckStaleAgentsOrchestratorAction } from '../../../src/actions/check-stale-agents-orchestrator';
+import { describe, expect, it } from 'vitest';
 import { createMockContext } from '../../../../../tests/integration/helpers/context';
+import { CheckStaleAgentsOrchestratorAction } from '../../../src/actions/check-stale-agents-orchestrator';
 
 describe('CheckStaleAgentsOrchestratorAction - Service Integration', () => {
   it('should mark stale agents as offline and release their jobs', async () => {

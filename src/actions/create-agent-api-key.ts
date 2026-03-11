@@ -1,10 +1,10 @@
 // GENERATED CODE - THE SIGNATURE IS MANAGED BY THE GENERATOR. YOU MAY MODIFY THE IMPLEMENTATION AND ADD CUSTOM IMPORTS.
-import { randomBytes, createHash } from 'node:crypto';
 import { roleRegistry } from '@/lib/registries/role-registry';
-import { AgentApiKeyService } from '../services/agent-api-key-service';
 import type { ServiceResponse } from '@/types/service';
 import type { APIContext } from 'astro';
+import { createHash, randomBytes } from 'node:crypto';
 import type { CreateAgentApiKeyDTO, CreateAgentApiKeyResponseDTO } from '../sdk/types';
+import { AgentApiKeyService } from '../services/agent-api-key-service';
 
 export class CreateAgentApiKeyAction {
   private static KEY_PREFIX = 'sk_agent_';

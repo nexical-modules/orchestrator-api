@@ -1,10 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY
 // Manual Route - Update Job Progress
+import type { OrchestratorModuleTypes } from '@/lib/api';
 import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
-import { UpdateProgressJobAction } from '@modules/orchestrator-api/src/actions/update-progress-job';
 import { HookSystem } from '@/lib/modules/hooks';
-import type { OrchestratorModuleTypes } from '@/lib/api';
+import { UpdateProgressJobAction } from '@modules/orchestrator-api/src/actions/update-progress-job';
 export const POST = defineApi(
   async (context, actor) => {
     // 1. Body Parsing (Input)

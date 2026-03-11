@@ -1,8 +1,8 @@
 // INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { createMockContext } from '../../../../../tests/integration/helpers/context';
 import { RegisterAgentAction } from '../../../src/actions/register-agent';
 import type { RegisterAgentDTO } from '../../../src/sdk';
-import { createMockContext } from '../../../../../tests/integration/helpers/context';
 
 describe('RegisterAgentAction - Service Integration', () => {
   it('should register a new agent', async () => {
