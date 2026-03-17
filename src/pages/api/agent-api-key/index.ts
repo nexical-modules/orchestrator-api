@@ -4,6 +4,7 @@ import { ApiGuard } from '@/lib/api/api-guard';
 import { parseQuery } from '@/lib/api/api-query';
 import { HookSystem } from '@/lib/modules/hooks';
 import { AgentApiKeyService } from '@modules/orchestrator-api/src/services/agent-api-key-service';
+
 export const GET = defineApi(
   async (context, actor) => {
     const filterOptions = {
@@ -49,7 +50,7 @@ export const GET = defineApi(
     const result = await AgentApiKeyService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     const data = result.data || [];

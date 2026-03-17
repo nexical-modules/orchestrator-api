@@ -3,6 +3,7 @@ import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { JobLogService } from '@modules/orchestrator-api/src/services/job-log-service';
 import { z } from 'zod';
+
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
@@ -21,20 +22,11 @@ export const GET = defineApi(
     const result = await JobLogService.get(id, select, actor);
 
     if (!result.success) {
-      if (
-        result.error?.code === 'NOT_FOUND' ||
-        (typeof result.error === 'string' && result.error.includes('not_found'))
-      ) {
-        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
-      }
-      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     if (!result.data) {
-      return new Response(
-        JSON.stringify({ error: { code: 'NOT_FOUND', message: 'JobLog not found' } }),
-        { status: 404 },
-      );
+      throw new Error('JobLog not found');
     }
 
     return { success: true, data: result.data };
@@ -95,13 +87,7 @@ export const PUT = defineApi(
     const result = await JobLogService.update(id, validated, select, actor);
 
     if (!result.success) {
-      if (
-        result.error?.code === 'NOT_FOUND' ||
-        (typeof result.error === 'string' && result.error.includes('not_found'))
-      ) {
-        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
-      }
-      return new Response(JSON.stringify({ error: result.error }), { status: 400 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     return new Response(JSON.stringify({ success: true, data: result.data }), { status: 200 });
@@ -160,13 +146,7 @@ export const DELETE = defineApi(
     const result = await JobLogService.delete(id, actor);
 
     if (!result.success) {
-      if (
-        result.error?.code === 'NOT_FOUND' ||
-        (typeof result.error === 'string' && result.error.includes('not_found'))
-      ) {
-        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
-      }
-      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     return { success: true };

@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { CancelJobDTO, CompleteJobDTO, FailJobDTO, Job, UpdateProgressDTO } from './types.js';
+
 /** SDK client for Job. */
 export class JobSDK extends BaseResource {
   public async list(params?: {
@@ -26,41 +27,49 @@ export class JobSDK extends BaseResource {
     });
     return this._request('GET', `/job${query}`);
   }
+
   public async get(id: string): Promise<{ success: boolean; data: Job; error?: string }> {
     return this._request('GET', `/job/${id}`);
   }
+
   public async create(
     data: Partial<Job>,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
     return this._request('POST', `/job`, data);
   }
+
   public async update(
     id: string,
     data: Partial<Job>,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
     return this._request('PUT', `/job/${id}`, data);
   }
+
   public async delete(id: string): Promise<{ success: boolean; error?: string }> {
     return this._request('DELETE', `/job/${id}`);
   }
+
   public async completeJob(
     id: string,
     data: CompleteJobDTO,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
     return this._request('POST', `/job/${id}/complete`, data);
   }
+
   public async failJob(
     id: string,
     data: FailJobDTO,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
     return this._request('POST', `/job/${id}/fail`, data);
   }
+
   public async cancelJob(
     id: string,
     data: CancelJobDTO,
   ): Promise<{ success: boolean; data: Job; error?: string }> {
     return this._request('POST', `/job/${id}/cancel`, data);
   }
+
   public async updateProgress(
     id: string,
     data: UpdateProgressDTO,

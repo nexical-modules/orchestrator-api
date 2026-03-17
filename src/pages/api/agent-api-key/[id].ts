@@ -2,6 +2,7 @@
 import { defineApi } from '@/lib/api/api-docs';
 import { ApiGuard } from '@/lib/api/api-guard';
 import { AgentApiKeyService } from '@modules/orchestrator-api/src/services/agent-api-key-service';
+
 export const GET = defineApi(
   async (context, actor) => {
     const { id } = context.params;
@@ -23,20 +24,11 @@ export const GET = defineApi(
     const result = await AgentApiKeyService.get(id, select, actor);
 
     if (!result.success) {
-      if (
-        result.error?.code === 'NOT_FOUND' ||
-        (typeof result.error === 'string' && result.error.includes('not_found'))
-      ) {
-        return new Response(JSON.stringify({ error: result.error }), { status: 404 });
-      }
-      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     if (!result.data) {
-      return new Response(
-        JSON.stringify({ error: { code: 'NOT_FOUND', message: 'AgentApiKey not found' } }),
-        { status: 404 },
-      );
+      throw new Error('AgentApiKey not found');
     }
 
     return { success: true, data: result.data };

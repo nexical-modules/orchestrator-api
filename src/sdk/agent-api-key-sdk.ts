@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { AgentApiKey, CreateAgentApiKeyDTO, CreateAgentApiKeyResponseDTO } from './types.js';
+
 /** SDK client for AgentApiKey. */
 export class AgentApiKeySDK extends BaseResource {
   public async list(params?: {
@@ -26,28 +27,17 @@ export class AgentApiKeySDK extends BaseResource {
     });
     return this._request('GET', `/agent-api-key${query}`);
   }
+
   public async get(id: string): Promise<{ success: boolean; data: AgentApiKey; error?: string }> {
     return this._request('GET', `/agent-api-key/${id}`);
   }
-  public async create(
-    data: Partial<AgentApiKey>,
-  ): Promise<{ success: boolean; data: AgentApiKey; error?: string }> {
-    return this._request('POST', `/agent-api-key`, data);
-  }
-  public async update(
-    id: string,
-    data: Partial<AgentApiKey>,
-  ): Promise<{ success: boolean; data: AgentApiKey; error?: string }> {
-    return this._request('PUT', `/agent-api-key/${id}`, data);
-  }
-  public async delete(id: string): Promise<{ success: boolean; error?: string }> {
-    return this._request('DELETE', `/agent-api-key/${id}`);
-  }
+
   public async createAgentApiKey(
     data: CreateAgentApiKeyDTO,
   ): Promise<{ success: boolean; data: CreateAgentApiKeyResponseDTO; error?: string }> {
     return this._request('POST', `/agent-api-key/keys`, data);
   }
+
   public async deleteAgentApiKey(
     id: string,
   ): Promise<{ success: boolean; data: AgentApiKey; error?: string }> {

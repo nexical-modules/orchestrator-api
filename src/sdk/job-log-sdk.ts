@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { JobLog } from './types.js';
+
 /** SDK client for JobLog. */
 export class JobLogSDK extends BaseResource {
   public async list(params?: {
@@ -26,20 +27,24 @@ export class JobLogSDK extends BaseResource {
     });
     return this._request('GET', `/job-log${query}`);
   }
+
   public async get(id: string): Promise<{ success: boolean; data: JobLog; error?: string }> {
     return this._request('GET', `/job-log/${id}`);
   }
+
   public async create(
     data: Partial<JobLog>,
   ): Promise<{ success: boolean; data: JobLog; error?: string }> {
     return this._request('POST', `/job-log`, data);
   }
+
   public async update(
     id: string,
     data: Partial<JobLog>,
   ): Promise<{ success: boolean; data: JobLog; error?: string }> {
     return this._request('PUT', `/job-log/${id}`, data);
   }
+
   public async delete(id: string): Promise<{ success: boolean; error?: string }> {
     return this._request('DELETE', `/job-log/${id}`);
   }

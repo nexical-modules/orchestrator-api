@@ -6,7 +6,12 @@ import { JobMetricsService } from '../services/job-metrics-service';
 
 export class GetJobMetricsAction {
   public static async run(_input: void, context: APIContext): Promise<ServiceResponse<JobMetrics>> {
-    const metrics = await JobMetricsService.getJobMetrics();
-    return { success: true, data: metrics };
+    try {
+      const result = await JobMetricsService.getJobMetrics();
+      return result;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, error: message || 'Failed to fetch job metrics' };
+    }
   }
 }

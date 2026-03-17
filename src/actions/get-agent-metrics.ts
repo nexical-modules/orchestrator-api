@@ -9,7 +9,12 @@ export class GetAgentMetricsAction {
     _input: void,
     context: APIContext,
   ): Promise<ServiceResponse<AgentMetrics>> {
-    const metrics = await JobMetricsService.getAgentMetrics();
-    return { success: true, data: metrics };
+    try {
+      const result = await JobMetricsService.getAgentMetrics();
+      return result;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, error: message || 'Failed to fetch agent metrics' };
+    }
   }
 }

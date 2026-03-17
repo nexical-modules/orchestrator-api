@@ -59,7 +59,10 @@ describe('Orchestration Flow', () => {
     // 3. Poll
     const pollRes = await client.post('/api/orchestrator/poll', {
       capabilities: ['fail.job'],
+      agentId: 'test-agent',
     });
+    // Poll should return the job
+    expect(pollRes.body.data[0], `Job ${jobId} not found in poll`).toBeDefined();
     expect(pollRes.body.data[0].id).toBe(jobId);
 
     // 4. Fail the Job
@@ -86,18 +89,17 @@ describe('Orchestration Flow', () => {
 
     const mockWorker = {
       jobType: 'agent.run',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      handler: async (job: any, context: any) => {
+
+      handler: async (job: Record<string, unknown>, context: Record<string, unknown>) => {
         // Emulate work
         await context.api.orchestrator.job.completeJob(job.id, { result: { y: 2 } });
       },
     };
 
     // Run the agent worker
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await AgentRunner.run(mockWorker as any, jobId, {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      agentToken: (client as any).bearerToken,
+
+    await AgentRunner.run(mockWorker as unknown as Record<string, unknown>, jobId, {
+      agentToken: (client as unknown as Record<string, unknown>).bearerToken as string,
       baseUrl: TestServer.getUrl() + '/api',
     });
 

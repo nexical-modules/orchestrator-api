@@ -36,7 +36,7 @@ export class JobMetricsService {
   /**
    * Get current job metrics snapshot.
    */
-  static async getJobMetrics(): Promise<JobMetrics> {
+  static async getJobMetrics(): Promise<ServiceResponse<JobMetrics>> {
     try {
       const [total, statusCounts, _avgData, retryData] = await Promise.all([
         db.job.count(),
@@ -82,26 +82,29 @@ export class JobMetricsService {
       const avgCompletionTimeMs = undefined; // Would require date math in query
 
       return {
-        total,
-        pending,
-        running,
-        completed,
-        failed,
-        cancelled,
-        avgCompletionTimeMs,
-        retryRate,
-        successRate,
+        success: true,
+        data: {
+          total,
+          pending,
+          running,
+          completed,
+          failed,
+          cancelled,
+          avgCompletionTimeMs,
+          retryRate,
+          successRate,
+        },
       };
     } catch (error) {
       Logger.error('JobMetricsService.getJobMetrics Error:', error);
-      throw error;
+      return { success: false, error: 'jobMetrics.service.error.get_failed' };
     }
   }
 
   /**
    * Get current agent metrics snapshot.
    */
-  static async getAgentMetrics(): Promise<AgentMetrics> {
+  static async getAgentMetrics(): Promise<ServiceResponse<AgentMetrics>> {
     try {
       const [total, statusCounts, jobsLast24h] = await Promise.all([
         db.agent.count(),
@@ -125,15 +128,18 @@ export class JobMetricsService {
       }
 
       return {
-        total,
-        online: statusMap['ONLINE'] || 0,
-        offline: statusMap['OFFLINE'] || 0,
-        busy: statusMap['BUSY'] || 0,
-        jobsProcessedLast24h: jobsLast24h,
+        success: true,
+        data: {
+          total,
+          online: statusMap['ONLINE'] || 0,
+          offline: statusMap['OFFLINE'] || 0,
+          busy: statusMap['BUSY'] || 0,
+          jobsProcessedLast24h: jobsLast24h,
+        },
       };
     } catch (error) {
       Logger.error('JobMetricsService.getAgentMetrics Error:', error);
-      throw error;
+      return { success: false, error: 'agentMetrics.service.error.get_failed' };
     }
   }
 
@@ -141,20 +147,22 @@ export class JobMetricsService {
    * Emit metrics to dashboard hooks for real-time updates.
    */
   static async emitMetrics(): Promise<void> {
-    const [jobMetrics, agentMetrics] = await Promise.all([
-      this.getJobMetrics(),
-      this.getAgentMetrics(),
-    ]);
+    const [jobRes, agentRes] = await Promise.all([this.getJobMetrics(), this.getAgentMetrics()]);
+
+    if (!jobRes.success || !agentRes.success) {
+      Logger.error('JobMetricsService.emitMetrics Failed: Could not fetch metrics');
+      return;
+    }
 
     await HookSystem.dispatch('orchestrator.metrics', {
-      jobs: jobMetrics,
-      agents: agentMetrics,
+      jobs: jobRes.data,
+      agents: agentRes.data,
       timestamp: new Date().toISOString(),
     });
 
     Logger.debug('JobMetricsService: Metrics emitted', {
-      jobs: jobMetrics,
-      agents: agentMetrics,
+      jobs: jobRes.data,
+      agents: agentRes.data,
     });
   }
 }

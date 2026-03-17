@@ -2,7 +2,10 @@ import { db } from '@/lib/core/db';
 import { Logger } from '@/lib/core/logger';
 import type { ServiceResponse } from '@/types/service';
 import { HookSystem } from '@/lib/modules/hooks';
-import type { Prisma, Agent, Job } from '@prisma/client';
+import { Prisma, type Agent, type Job } from '@prisma/client';
+import { JobService } from './job-service';
+import { JobMetricsService, type JobMetrics, type AgentMetrics } from './job-metrics-service';
+import type { ApiActor } from '@/lib/api/api-docs';
 
 // Re-defining interface if not exported from Prisma or types
 export interface AgentJobType {
@@ -112,8 +115,6 @@ export class OrchestrationService {
 
       // Security check
       if (actorId) {
-        // Authorization: Owner or Locker
-        // Allow completion if actor OWNS the job OR if actor LOCKED the job (Agent logic)
         const isOwner = job.actorId === actorId;
         const isLocker = job.lockedBy === actorId;
 
@@ -126,8 +127,8 @@ export class OrchestrationService {
         where: { id },
         data: {
           status: 'COMPLETED',
-          result: result as Prisma.InputJsonValue,
           completedAt: new Date(),
+          result: result as Prisma.InputJsonValue,
           progress: 100,
         },
       });
@@ -437,5 +438,31 @@ export class OrchestrationService {
       Logger.error('OrchestrationService.updateProgress Error:', error);
       return { success: false, error: 'orchestrator.service.error.update_progress_failed' };
     }
+  }
+
+  /**
+   * Create a new job.
+   */
+  static async createJob(
+    data: Prisma.JobCreateInput,
+    actorId?: string,
+    actorType?: string,
+    actor?: ApiActor,
+  ): Promise<ServiceResponse<Job>> {
+    return JobService.create({ ...data, actorId, actorType }, undefined, actor);
+  }
+
+  /**
+   * Get job metrics.
+   */
+  static async getJobMetrics(): Promise<ServiceResponse<JobMetrics>> {
+    return JobMetricsService.getJobMetrics();
+  }
+
+  /**
+   * Get agent metrics.
+   */
+  static async getAgentMetrics(): Promise<ServiceResponse<AgentMetrics>> {
+    return JobMetricsService.getAgentMetrics();
   }
 }

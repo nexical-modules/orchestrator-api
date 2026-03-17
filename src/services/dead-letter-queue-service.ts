@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { db } from '@/lib/core/db';
 import { Logger } from '@/lib/core/logger';
 import { HookSystem } from '@/lib/modules/hooks';
@@ -66,7 +67,7 @@ export class DeadLetterQueueService {
       return { success: true, data: dlqEntry as DeadLetterEntry };
     } catch (error) {
       Logger.error('DeadLetterQueueService.archive Error:', error);
-      return { success: false, error: 'deadletter.service.error.archive_failed' };
+      return { success: false, error: 'deadLetterQueue.service.error.archive_failed' };
     }
   }
 
@@ -92,7 +93,7 @@ export class DeadLetterQueueService {
       return { success: true, data: entries as DeadLetterEntry[] };
     } catch (error) {
       Logger.error('DeadLetterQueueService.list Error:', error);
-      return { success: false, error: 'deadletter.service.error.list_failed' };
+      return { success: false, error: 'deadLetterQueue.service.error.list_failed' };
     }
   }
 
@@ -103,24 +104,32 @@ export class DeadLetterQueueService {
     try {
       const dlqEntry = await db.deadLetterJob.findUnique({ where: { id } });
       if (!dlqEntry) {
-        return { success: false, error: 'deadletter.service.error.not_found' };
+        Logger.warn('[DeadLetterQueueService] Retry: DLQ Entry not found', { id });
+        return { success: false, error: 'deadLetterQueue.service.error.not_found' };
       }
 
-      // Create new job from dead-letter entry
+      Logger.info('[DeadLetterQueueService] Retry: Found DLQ Entry', {
+        type: dlqEntry.type,
+        originalJobId: dlqEntry.originalJobId,
+      });
+
       const newJob = await db.job.create({
         data: {
           type: dlqEntry.type,
-          payload: dlqEntry.payload ?? {},
+          payload: dlqEntry.payload as Prisma.InputJsonValue,
+          status: 'PENDING',
+          maxRetries: 3,
+          retryCount: 0,
           actorId: dlqEntry.actorId,
           actorType: dlqEntry.actorType,
-          status: 'PENDING',
-          retryCount: 0,
-          maxRetries: 3,
         },
       });
 
-      // Remove from dead-letter queue
-      await db.deadLetterJob.delete({ where: { id } });
+      Logger.info('[DeadLetterQueueService] Retry: Job created', { newJobId: newJob.id });
+
+      await db.deadLetterJob.delete({ where: { id: dlqEntry.id } });
+
+      Logger.info('[DeadLetterQueueService] Retry: Success', { newJobId: newJob.id });
 
       Logger.info('DeadLetterQueueService.retry: Job retried', {
         dlqId: id,
@@ -136,7 +145,7 @@ export class DeadLetterQueueService {
       return { success: true, data: { newJobId: newJob.id } };
     } catch (error) {
       Logger.error('DeadLetterQueueService.retry Error:', error);
-      return { success: false, error: 'deadletter.service.error.retry_failed' };
+      return { success: false, error: 'deadLetterQueue.service.error.retry_failed' };
     }
   }
 
@@ -159,7 +168,7 @@ export class DeadLetterQueueService {
       return { success: true, data: { deleted: result.count } };
     } catch (error) {
       Logger.error('DeadLetterQueueService.purge Error:', error);
-      return { success: false, error: 'deadletter.service.error.purge_failed' };
+      return { success: false, error: 'deadLetterQueue.service.error.purge_failed' };
     }
   }
 }

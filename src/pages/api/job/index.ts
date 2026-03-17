@@ -6,6 +6,7 @@ import { parseQuery } from '@/lib/api/api-query';
 import { HookSystem } from '@/lib/modules/hooks';
 import { JobService } from '@modules/orchestrator-api/src/services/job-service';
 import { z } from 'zod';
+
 export const GET = defineApi(
   async (context, actor) => {
     const filterOptions = {
@@ -70,7 +71,7 @@ export const GET = defineApi(
     const result = await JobService.list({ where, take, skip, orderBy, select }, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), { status: 500 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     const data = result.data || [];
@@ -1141,7 +1142,7 @@ export const POST = defineApi(
     const result = await JobService.create(validated, select, actor);
 
     if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error }), { status: 400 });
+      throw new Error(result.error || 'Internal Server Error');
     }
 
     return new Response(JSON.stringify({ success: true, data: result.data }), { status: 201 });

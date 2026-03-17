@@ -1,153 +1,309 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { JobService } from '../../../src/services/job-service';
+// GENERATED CODE - DO NOT MODIFY
 import { db } from '@/lib/core/db';
-import { HookSystem } from '@/lib/modules/hooks';
 import { Logger } from '@/lib/core/logger';
-import type { Job, Prisma } from '@prisma/client';
+import { HookSystem } from '@/lib/modules/hooks';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { JobService } from '../../../src/services/job-service';
 
-vi.mock('@/lib/core/db', () => ({
-  db: {
-    $transaction: vi.fn(),
-    job: {
-      findMany: vi.fn(),
-      findUnique: vi.fn(),
-      count: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    },
+vi.mock('@/lib/core/config', () => ({
+  config: {
+    PUBLIC_API_URL: 'http://localhost:3000',
+    NODE_ENV: 'test',
   },
+  createConfig: vi.fn().mockImplementation((schema) => ({
+    parse: vi.fn().mockImplementation((d) => d),
+    ...schema,
+  })),
+  getProcessEnv: vi.fn().mockImplementation((k) => k),
 }));
+
+vi.mock('@/lib/core/db', () => {
+  const mockModelProps = {
+    id: '1',
+    email: 'test@example.com',
+    name: 'test',
+    status: 'test-enum',
+    role: 'TEAM_MEMBER',
+    token: 'test-token',
+    expires: new Date(Date.now() + 86400000),
+    actorId: 'test',
+    lockedBy: 'test',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    type: 'test',
+    userId: 'test',
+    actorType: 'test',
+    payload: {},
+    result: {},
+    error: {},
+    progress: 1,
+    lockedAt: new Date(),
+    startedAt: new Date(),
+    completedAt: new Date(),
+    retryCount: 1,
+    maxRetries: 1,
+    nextRetryAt: new Date(),
+  };
+
+  const isExistenceCheck = (where: Record<string, unknown>): boolean => {
+    if (!where) return false;
+    if (where.id) return false; // If searching by ID, assume we want the record to exist
+    const fields = [
+      'email',
+      'username',
+      'teamId_userId',
+      'userId_teamId',
+      'teamId_email',
+      'email_teamId',
+      // 'token', // Removed token from existence check as it's often used to fetch existing invitations
+    ];
+    const whereKeys = Object.keys(where);
+    if (whereKeys.some((k) => fields.includes(k))) return true;
+    if (whereKeys.some((k) => k.includes('_'))) return true;
+    if (where.OR && Array.isArray(where.OR))
+      return (where.OR as Record<string, unknown>[]).some((c) => isExistenceCheck(c));
+    if (where.AND && Array.isArray(where.AND))
+      return (where.AND as Record<string, unknown>[]).some((c) => isExistenceCheck(c));
+    if (where.userId && where.teamId) return true;
+    return false;
+  };
+
+  const baseMockModel = {
+    findMany: () => Promise.resolve([mockModelProps]),
+    findUnique: (args: { where: Record<string, unknown> }) => {
+      if (isExistenceCheck(args?.where) && !args?.where?.id) return null;
+      return {
+        ...(mockModelProps as Record<string, unknown>),
+        ...args?.where,
+      };
+    },
+    findFirst: (args: { where: Record<string, unknown> }) => {
+      if (isExistenceCheck(args?.where) && !args?.where?.id) return null;
+      return {
+        ...(mockModelProps as Record<string, unknown>),
+        ...args?.where,
+      };
+    },
+    create: () => Promise.resolve(mockModelProps),
+    update: () => Promise.resolve(mockModelProps),
+    delete: () => Promise.resolve(mockModelProps),
+    count: () => Promise.resolve(1),
+    upsert: () => Promise.resolve(mockModelProps),
+    updateMany: () => Promise.resolve({ count: 1 }),
+    deleteMany: () => Promise.resolve({ count: 1 }),
+    groupBy: () => Promise.resolve([{ _count: { id: 1 }, status: 'ACTIVE' }]),
+    aggregate: () => Promise.resolve({ _count: { id: 1 }, _avg: { value: 0 } }),
+  };
+
+  const mockModel = {
+    findMany: vi.fn(),
+    findUnique: vi.fn(),
+    findFirst: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    count: vi.fn(),
+    upsert: vi.fn(),
+    updateMany: vi.fn(),
+    deleteMany: vi.fn(),
+    groupBy: vi.fn(),
+    aggregate: vi.fn(),
+    ...(mockModelProps as Record<string, unknown>),
+  };
+
+  const handler = {
+    get: (target: Record<string, unknown>, prop: string): unknown => {
+      if (prop === '$transaction') {
+        return vi.fn().mockImplementation(async (input) => {
+          if (Array.isArray(input)) return Promise.all(input);
+          return typeof input === 'function'
+            ? input(new Proxy({}, handler as ProxyHandler<object>))
+            : input;
+        });
+      }
+      if (typeof prop === 'string' && !prop.startsWith('$')) {
+        return mockModel;
+      }
+      return target[prop];
+    },
+  };
+
+  const resetImplementations = () => {
+    Object.keys(baseMockModel).forEach((key) => {
+      (mockModel as Record<string, import('vitest').Mock>)[key].mockImplementation(
+        (baseMockModel as Record<string, unknown>)[key] as (...args: unknown[]) => unknown,
+      );
+    });
+  };
+
+  resetImplementations();
+
+  (globalThis as unknown as Record<string, () => void>)._resetJobServiceMocks =
+    resetImplementations;
+  return {
+    db: new Proxy({}, handler),
+  };
+});
 
 vi.mock('@/lib/core/logger', () => ({
   Logger: {
     error: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
   },
 }));
 
 vi.mock('@/lib/modules/hooks', () => ({
   HookSystem: {
     dispatch: vi.fn(),
-    filter: vi.fn((event, data) => Promise.resolve(data)),
+    filter: vi.fn(),
+    on: vi.fn(),
   },
 }));
 
 describe('JobService', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    const globalAny = globalThis as unknown as Record<string, () => void>;
+    if (globalAny._resetJobServiceMocks) {
+      globalAny._resetJobServiceMocks();
+    }
+
+    // Restore HookSystem implementations
+    vi.mocked(HookSystem.dispatch).mockResolvedValue(undefined);
+    vi.mocked(HookSystem.filter).mockImplementation((_name, data) => Promise.resolve(data));
+
+    // Restore Logger implementations
+    vi.mocked(Logger.error).mockImplementation(() => {});
+    vi.mocked(Logger.info).mockImplementation(() => {});
+    vi.mocked(Logger.warn).mockImplementation(() => {});
+    vi.mocked(Logger.debug).mockImplementation(() => {});
   });
 
   describe('list', () => {
-    it('should list jobs', async () => {
-      vi.mocked(db.$transaction).mockResolvedValue([[], 0]);
-      await JobService.list();
-      expect(HookSystem.filter).toHaveBeenCalledWith('job.beforeList', expect.anything());
-      expect(db.$transaction).toHaveBeenCalled();
+    it('should return a list of Jobs', async () => {
+      const mockData = [{ id: '1' }];
+      vi.mocked(db.job.findMany).mockResolvedValue(
+        mockData as unknown as Record<string, unknown>[],
+      );
+
+      const result = await JobService.list();
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockData);
+      expect(db.job.findMany).toHaveBeenCalled();
     });
 
-    it('should handle list errors', async () => {
-      vi.mocked(db.$transaction).mockRejectedValue(new Error('error'));
+    it('should handle errors when listing', async () => {
+      vi.mocked(db.job.findMany).mockRejectedValue(new Error('DB Error'));
+
       const result = await JobService.list();
+
       expect(result.success).toBe(false);
+      expect(result.error).toBe('job.service.error.list_failed');
       expect(Logger.error).toHaveBeenCalled();
     });
   });
 
   describe('get', () => {
-    it('should get a job', async () => {
-      vi.mocked(db.job.findUnique).mockResolvedValue({ id: '1' } as unknown as Job);
+    it('should return a single Job', async () => {
+      const mockData = { id: '1' };
+      vi.mocked(db.job.findUnique).mockResolvedValue(
+        mockData as unknown as Record<string, unknown>,
+      );
+
       const result = await JobService.get('1');
+
       expect(result.success).toBe(true);
-      expect(HookSystem.filter).toHaveBeenCalledWith('job.read', expect.anything(), {
-        actor: undefined,
-      });
+      expect(result.data).toEqual(mockData);
+      expect(db.job.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: '1' },
+        }),
+      );
     });
 
-    it('should return not found', async () => {
+    it('should handle not found', async () => {
       vi.mocked(db.job.findUnique).mockResolvedValue(null);
+
       const result = await JobService.get('1');
+
       expect(result.success).toBe(false);
+      expect(result.error).toBe('job.service.error.not_found');
     });
 
-    it('should handle get errors', async () => {
-      vi.mocked(db.job.findUnique).mockRejectedValue(new Error('error'));
+    it('should handle errors when getting', async () => {
+      vi.mocked(db.job.findUnique).mockRejectedValue(new Error('DB Error'));
+
       const result = await JobService.get('1');
+
       expect(result.success).toBe(false);
-      expect(Logger.error).toHaveBeenCalled();
+      expect(result.error).toBe('job.service.error.get_failed');
     });
   });
 
   describe('create', () => {
-    it('should create a job', async () => {
-      vi.mocked(db.$transaction).mockImplementation(
-        async (cb: (tx: Prisma.TransactionClient) => Promise<unknown>) =>
-          cb(db as unknown as Prisma.TransactionClient),
-      );
-      vi.mocked(db.job.create).mockResolvedValue({ id: '1' } as unknown as Job);
-      const createData: Prisma.JobCreateInput = { type: 'test', payload: {} };
-      const result = await JobService.create(createData);
+    it('should create a new Job', async () => {
+      const mockData = { id: '1', name: 'test' };
+      vi.mocked(db.job.create).mockResolvedValue(mockData as unknown as Record<string, unknown>);
+
+      const result = await JobService.create({ name: 'test' } as Record<string, unknown>);
+
       expect(result.success).toBe(true);
-      expect(HookSystem.dispatch).toHaveBeenCalledWith('job.created', expect.anything());
+      expect(result.data).toEqual(mockData);
+      expect(db.job.create).toHaveBeenCalled();
     });
 
-    it('should handle create errors', async () => {
-      vi.mocked(db.$transaction).mockRejectedValue(new Error('error'));
-      const result = await JobService.create({} as unknown as Prisma.JobCreateInput);
+    it('should handle errors when creating', async () => {
+      vi.mocked(db.job.create).mockRejectedValue(new Error('DB Error'));
+
+      const result = await JobService.create({} as Record<string, unknown>);
+
       expect(result.success).toBe(false);
-      expect(Logger.error).toHaveBeenCalled();
+      expect(result.error).toBe('job.service.error.create_failed');
     });
   });
 
   describe('update', () => {
-    it('should update a job', async () => {
-      vi.mocked(db.$transaction).mockImplementation(
-        async (cb: (tx: Prisma.TransactionClient) => Promise<unknown>) =>
-          cb(db as unknown as Prisma.TransactionClient),
-      );
-      vi.mocked(db.job.update).mockResolvedValue({ id: '1' } as unknown as Job);
-      const updateData: Prisma.JobUpdateInput = { status: 'COMPLETED' };
-      const result = await JobService.update('1', updateData);
+    it('should update an existing Job', async () => {
+      const mockData = { id: '1', name: 'updated' };
+      vi.mocked(db.job.update).mockResolvedValue(mockData as unknown as Record<string, unknown>);
+
+      const result = await JobService.update('1', { name: 'updated' } as Record<string, unknown>);
+
       expect(result.success).toBe(true);
-      expect(HookSystem.dispatch).toHaveBeenCalledWith('job.updated', expect.anything());
-    });
-
-    it('should handle update errors', async () => {
-      vi.mocked(db.$transaction).mockRejectedValue(new Error('error'));
-      const result = await JobService.update('1', {} as unknown as Prisma.JobUpdateInput);
-      expect(result.success).toBe(false);
-      expect(Logger.error).toHaveBeenCalled();
-    });
-
-    it('should handle update with authenticated actor', async () => {
-      vi.mocked(db.$transaction).mockImplementation(
-        async (cb: (tx: Prisma.TransactionClient) => Promise<unknown>) =>
-          cb(db as unknown as Prisma.TransactionClient),
-      );
-      vi.mocked(db.job.update).mockResolvedValue({ id: '1' } as unknown as Job);
-      const actor = { id: 'u1' };
-      const updateData: Prisma.JobUpdateInput = { status: 'COMPLETED' };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await JobService.update('1', updateData, undefined, actor as unknown as any);
+      expect(result.data).toEqual(mockData);
       expect(db.job.update).toHaveBeenCalled();
+    });
+
+    it('should handle errors when updating', async () => {
+      vi.mocked(db.job.update).mockRejectedValue(new Error('DB Error'));
+
+      const result = await JobService.update('1', {} as Record<string, unknown>);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('job.service.error.update_failed');
     });
   });
 
   describe('delete', () => {
-    it('should delete a job', async () => {
-      vi.mocked(db.$transaction).mockImplementation(
-        async (cb: (tx: Prisma.TransactionClient) => Promise<unknown>) =>
-          cb(db as unknown as Prisma.TransactionClient),
-      );
+    it('should delete an Job', async () => {
+      vi.mocked(db.job.delete).mockResolvedValue({} as unknown as Record<string, unknown>);
+
       const result = await JobService.delete('1');
+
       expect(result.success).toBe(true);
-      expect(HookSystem.dispatch).toHaveBeenCalledWith('job.deleted', { id: '1' });
+      expect(db.job.delete).toHaveBeenCalled();
     });
 
-    it('should handle delete errors', async () => {
-      vi.mocked(db.$transaction).mockRejectedValue(new Error('error'));
+    it('should handle errors when deleting', async () => {
+      vi.mocked(db.job.delete).mockRejectedValue(new Error('DB Error'));
+
       const result = await JobService.delete('1');
+
       expect(result.success).toBe(false);
-      expect(Logger.error).toHaveBeenCalled();
+      expect(result.error).toBe('job.service.error.delete_failed');
     });
   });
 });

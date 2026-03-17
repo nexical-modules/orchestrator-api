@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY
 import { BaseResource } from '@nexical/sdk-core';
 import type { Agent, HeartbeatDTO, RegisterAgentDTO } from './types.js';
+
 /** SDK client for Agent. */
 export class AgentSDK extends BaseResource {
   public async list(params?: {
@@ -26,28 +27,34 @@ export class AgentSDK extends BaseResource {
     });
     return this._request('GET', `/agent${query}`);
   }
+
   public async get(id: string): Promise<{ success: boolean; data: Agent; error?: string }> {
     return this._request('GET', `/agent/${id}`);
   }
+
   public async create(
     data: Partial<Agent>,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
     return this._request('POST', `/agent`, data);
   }
+
   public async update(
     id: string,
     data: Partial<Agent>,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
     return this._request('PUT', `/agent/${id}`, data);
   }
+
   public async delete(id: string): Promise<{ success: boolean; error?: string }> {
     return this._request('DELETE', `/agent/${id}`);
   }
+
   public async registerAgent(
     data: RegisterAgentDTO,
   ): Promise<{ success: boolean; data: Agent; error?: string }> {
     return this._request('POST', `/agent/register`, data);
   }
+
   public async heartbeat(
     id: string,
     data: HeartbeatDTO,
