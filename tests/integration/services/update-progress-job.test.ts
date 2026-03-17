@@ -1,26 +1,54 @@
-// INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
 import { createMockContext } from '@tests/integration/helpers/context';
-import { describe, expect, it } from 'vitest';
+import { Factory } from '@tests/integration/lib/factory';
+import { describe, expect, it, beforeAll } from 'vitest';
 import { UpdateProgressJobAction } from '../../../src/actions/update-progress-job';
-import type { UpdateProgressDTO } from '../../../src/sdk';
+import { init } from '../../../src/server-init';
 
 describe('UpdateProgressJobAction - Service Integration', () => {
-  it.skip('should execute successfully', async () => {
-    // 1. Setup prerequisite state using DataFactory
-    // const prerequisite = await Factory.create('someModel', { ... });
+  beforeAll(async () => {
+    await init();
+  });
 
-    // 2. Prepare Action Input
-    const input: UpdateProgressDTO = {} as unknown as UpdateProgressDTO; // TODO: Provide valid mock data
+  it('should allow an admin to update any job progress', async () => {
+    const job = await Factory.create('job', { status: 'RUNNING', progress: 0 });
+    const ctx = await createMockContext('USER_ADMIN', 'user');
 
-    // 3. Prepare Mock Context with Actor
-    const ctx = await createMockContext();
-    const result = await UpdateProgressJobAction.run(input, ctx);
+    const result = await UpdateProgressJobAction.run(
+      {
+        id: job.id,
+        progress: 50,
+      },
+      ctx,
+    );
 
-    // 4. Verify Database state explicitly using Prisma
-    // const record = await Factory.prisma.someModel.findUnique({ where: { id: ... } });
-    // expect(record).toBeDefined();
-
-    // 5. Verify the Action's direct output
     expect(result.success).toBe(true);
+
+    const updatedJob = await Factory.prisma.job.findUnique({ where: { id: job.id } });
+    expect(updatedJob?.progress).toBe(50);
+  });
+
+  it('should allow a job owner to update their own job progress', async () => {
+    const userCtx = await createMockContext('USER_EMPLOYEE', 'user');
+    const user = userCtx.locals.actor as any;
+
+    const job = await Factory.create('job', {
+      status: 'RUNNING',
+      actorId: user.id,
+      lockedBy: user.id,
+      progress: 10,
+    });
+
+    const result = await UpdateProgressJobAction.run(
+      {
+        id: job.id,
+        progress: 80,
+      },
+      userCtx,
+    );
+
+    expect(result.success).toBe(true);
+
+    const updatedJob = await Factory.prisma.job.findUnique({ where: { id: job.id } });
+    expect(updatedJob?.progress).toBe(80);
   });
 });

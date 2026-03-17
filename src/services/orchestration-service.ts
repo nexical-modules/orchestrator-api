@@ -75,6 +75,9 @@ export class OrchestrationService {
           payload: updated.payload,
           status: updated.status,
           retryCount: updated.retryCount,
+          lockedBy: updated.lockedBy,
+          lockedAt: updated.lockedAt,
+          startedAt: updated.startedAt,
         };
       });
 
@@ -418,6 +421,9 @@ export class OrchestrationService {
 
       // Authorization: Only the locker can update progress
       if (actorId && job.lockedBy !== actorId) {
+        Logger.warn(
+          `[OrchestrationService.updateProgress] Unauthorized: Job ${id} lockedBy ${job.lockedBy} but actor is ${actorId}`,
+        );
         return { success: false, error: 'orchestrator.service.error.unauthorized' };
       }
 

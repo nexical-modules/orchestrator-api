@@ -17,6 +17,7 @@ export class DeleteAgentApiKeyAction {
     try {
       await roleRegistry.check('AGENT_ADMIN', context, {});
 
+      const keyToReturn = await AgentApiKeyService.get(input.id);
       const result = await AgentApiKeyService.delete(input.id);
 
       if (!result.success) {
@@ -26,7 +27,7 @@ export class DeleteAgentApiKeyAction {
         };
       }
 
-      return { success: true, data: result.data };
+      return { success: true, data: keyToReturn.data as AgentApiKey };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       return { success: false, error: message };

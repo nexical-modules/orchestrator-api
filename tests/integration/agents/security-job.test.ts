@@ -79,6 +79,7 @@ describe('Job Security Integration', () => {
 
     // Attempt to update status to COMPLETED
     await clientA.put(`/api/job/${job.id}`, {
+      type: 'test.job',
       status: 'COMPLETED',
       result: { hacked: true },
     });

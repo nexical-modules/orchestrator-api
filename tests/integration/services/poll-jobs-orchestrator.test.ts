@@ -1,26 +1,35 @@
-// INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
 import { createMockContext } from '@tests/integration/helpers/context';
-import { describe, expect, it } from 'vitest';
+import { Factory } from '@tests/integration/lib/factory';
+import { describe, expect, it, beforeAll } from 'vitest';
 import { PollJobsOrchestratorAction } from '../../../src/actions/poll-jobs-orchestrator';
-import type { PollJobsDTO } from '../../../src/sdk';
+import { init } from '../../../src/server-init';
 
 describe('PollJobsOrchestratorAction - Service Integration', () => {
-  it.skip('should execute successfully', async () => {
-    // 1. Setup prerequisite state using DataFactory
-    // const prerequisite = await Factory.create('someModel', { ... });
+  beforeAll(async () => {
+    await init();
+  });
 
-    // 2. Prepare Action Input
-    const input: PollJobsDTO = {} as unknown as PollJobsDTO; // TODO: Provide valid mock data
+  it('should allow an agent to pick up a pending job', async () => {
+    const job = await Factory.create('job', {
+      status: 'PENDING',
+      type: 'test-type',
+      nextRetryAt: null,
+    });
+    const ctx = await createMockContext('AGENT_ADMIN', 'agent'); // Use an agent actor for polling
+    const actor = ctx.locals.actor as any;
 
-    // 3. Prepare Mock Context with Actor
-    const ctx = await createMockContext();
-    const result = await PollJobsOrchestratorAction.run(input, ctx);
+    const result = await PollJobsOrchestratorAction.run(
+      {
+        agentId: actor.id,
+        capabilities: ['test-type'],
+      },
+      ctx,
+    );
 
-    // 4. Verify Database state explicitly using Prisma
-    // const record = await Factory.prisma.someModel.findUnique({ where: { id: ... } });
-    // expect(record).toBeDefined();
-
-    // 5. Verify the Action's direct output
     expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(1);
+    expect(result.data?.[0].id).toBe(job.id);
+    expect(result.data?.[0].status).toBe('RUNNING');
+    expect(result.data?.[0].lockedBy).toBe(actor.id);
   });
 });

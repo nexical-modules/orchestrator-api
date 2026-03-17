@@ -1,26 +1,36 @@
-// INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
 import { createMockContext } from '@tests/integration/helpers/context';
-import { describe, expect, it } from 'vitest';
+import { Factory } from '@tests/integration/lib/factory';
+import { describe, expect, it, beforeAll } from 'vitest';
 import { CancelJobAction } from '../../../src/actions/cancel-job';
-import type { CancelJobDTO } from '../../../src/sdk';
+import { init } from '../../../src/server-init';
 
 describe('CancelJobAction - Service Integration', () => {
-  it.skip('should execute successfully', async () => {
-    // 1. Setup prerequisite state using DataFactory
-    // const prerequisite = await Factory.create('someModel', { ... });
+  beforeAll(async () => {
+    await init();
+  });
 
-    // 2. Prepare Action Input
-    const input: CancelJobDTO = {} as unknown as CancelJobDTO; // TODO: Provide valid mock data
+  it('should allow an admin to cancel any job', async () => {
+    const job = await Factory.create('job', { status: 'PENDING' });
+    const ctx = await createMockContext('USER_ADMIN', 'user');
 
-    // 3. Prepare Mock Context with Actor
-    const ctx = await createMockContext();
-    const result = await CancelJobAction.run(input, ctx);
+    const result = await CancelJobAction.run({ id: job.id }, ctx);
 
-    // 4. Verify Database state explicitly using Prisma
-    // const record = await Factory.prisma.someModel.findUnique({ where: { id: ... } });
-    // expect(record).toBeDefined();
-
-    // 5. Verify the Action's direct output
     expect(result.success).toBe(true);
+    expect(result.data?.status).toBe('CANCELLED');
+  });
+
+  it('should allow a job owner to cancel their own job', async () => {
+    const userCtx = await createMockContext('USER_EMPLOYEE', 'user');
+    const user = userCtx.locals.actor as any;
+
+    const job = await Factory.create('job', {
+      status: 'PENDING',
+      actorId: user.id,
+    });
+
+    const result = await CancelJobAction.run({ id: job.id }, userCtx);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.status).toBe('CANCELLED');
   });
 });

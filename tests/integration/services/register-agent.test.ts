@@ -1,26 +1,55 @@
-// INITIAL GENERATED CODE - REVIEW AND MODIFY AS NEEDED FOR SERVICE INTEGRATION TESTS
 import { createMockContext } from '@tests/integration/helpers/context';
-import { describe, expect, it } from 'vitest';
+import { Factory } from '@tests/integration/lib/factory';
+import { describe, expect, it, beforeAll } from 'vitest';
 import { RegisterAgentAction } from '../../../src/actions/register-agent';
-import type { RegisterAgentDTO } from '../../../src/sdk';
+import { init } from '../../../src/server-init';
 
 describe('RegisterAgentAction - Service Integration', () => {
-  it.skip('should execute successfully', async () => {
-    // 1. Setup prerequisite state using DataFactory
-    // const prerequisite = await Factory.create('someModel', { ... });
+  beforeAll(async () => {
+    await init();
+  });
 
-    // 2. Prepare Action Input
-    const input: RegisterAgentDTO = {} as unknown as RegisterAgentDTO; // TODO: Provide valid mock data
+  it('should allow registering a new agent', async () => {
+    const ctx = await createMockContext('USER_ADMIN', 'user');
 
-    // 3. Prepare Mock Context with Actor
-    const ctx = await createMockContext();
-    const result = await RegisterAgentAction.run(input, ctx);
+    const result = await RegisterAgentAction.run(
+      {
+        id: 'test-agent-1',
+        name: 'Test Agent',
+        hostname: 'test-host',
+        capabilities: ['test-cap'],
+      },
+      ctx,
+    );
 
-    // 4. Verify Database state explicitly using Prisma
-    // const record = await Factory.prisma.someModel.findUnique({ where: { id: ... } });
-    // expect(record).toBeDefined();
-
-    // 5. Verify the Action's direct output
     expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('test-agent-1');
+    expect(result.data?.status).toBe('ONLINE');
+
+    const agent = await Factory.prisma.agent.findUnique({ where: { id: 'test-agent-1' } });
+    expect(agent).toBeDefined();
+    expect(agent?.hostname).toBe('test-host');
+  });
+
+  it('should allow upserting an existing agent', async () => {
+    await Factory.create('agent', { id: 'existing-agent', hostname: 'old-host' });
+    const ctx = await createMockContext('USER_ADMIN', 'user');
+
+    const result = await RegisterAgentAction.run(
+      {
+        id: 'existing-agent',
+        name: 'New Name',
+        hostname: 'new-host',
+        capabilities: ['new-cap'],
+      },
+      ctx,
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.data?.hostname).toBe('new-host');
+
+    const agent = await Factory.prisma.agent.findUnique({ where: { id: 'existing-agent' } });
+    expect(agent?.hostname).toBe('new-host');
+    expect(agent?.name).toBe('New Name');
   });
 });
