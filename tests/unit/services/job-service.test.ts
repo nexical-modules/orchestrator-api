@@ -19,24 +19,17 @@ vi.mock('@/lib/core/config', () => ({
 
 vi.mock('@/lib/core/db', () => {
   const mockModelProps = {
-    id: '1',
-    email: 'test@example.com',
-    name: 'test',
-    status: 'test-enum',
-    role: 'TEAM_MEMBER',
-    token: 'test-token',
-    expires: new Date(Date.now() + 86400000),
-    actorId: 'test',
-    lockedBy: 'test',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    id: 'job_test',
     type: 'test',
     userId: 'test',
+    actorId: 'test',
     actorType: 'test',
     payload: {},
     result: {},
     error: {},
+    status: 'test-enum',
     progress: 1,
+    lockedBy: 'test',
     lockedAt: new Date(),
     startedAt: new Date(),
     completedAt: new Date(),
@@ -188,7 +181,28 @@ describe('JobService', () => {
         mockData as unknown as Record<string, unknown>[],
       );
 
-      const result = await JobService.list();
+      const result = await JobService.list(
+        {
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'test-enum',
+          progress: 1,
+          lockedBy: 'test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>,
+        'job_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -198,7 +212,28 @@ describe('JobService', () => {
     it('should handle errors when listing', async () => {
       vi.mocked(db.job.findMany).mockRejectedValue(new Error('DB Error'));
 
-      const result = await JobService.list();
+      const result = await JobService.list(
+        {
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'test-enum',
+          progress: 1,
+          lockedBy: 'test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>,
+        'job_test' as unknown,
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('job.service.error.list_failed');
@@ -213,7 +248,7 @@ describe('JobService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await JobService.get('1');
+      const result = await JobService.get('1', 'job_test' as unknown, 'job_test' as unknown);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -248,7 +283,25 @@ describe('JobService', () => {
       const mockData = { id: '1', name: 'test' };
       vi.mocked(db.job.create).mockResolvedValue(mockData as unknown as Record<string, unknown>);
 
-      const result = await JobService.create({ name: 'test' } as Record<string, unknown>);
+      const result = await JobService.create({
+        id: 'job_test',
+        type: 'test',
+        userId: 'test',
+        actorId: 'test',
+        actorType: 'test',
+        payload: {},
+        result: {},
+        error: {},
+        status: 'test-enum',
+        progress: 1,
+        lockedBy: 'test',
+        lockedAt: new Date(),
+        startedAt: new Date(),
+        completedAt: new Date(),
+        retryCount: 1,
+        maxRetries: 1,
+        nextRetryAt: new Date(),
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -270,7 +323,25 @@ describe('JobService', () => {
       const mockData = { id: '1', name: 'updated' };
       vi.mocked(db.job.update).mockResolvedValue(mockData as unknown as Record<string, unknown>);
 
-      const result = await JobService.update('1', { name: 'updated' } as Record<string, unknown>);
+      const result = await JobService.update('1', {
+        id: 'job_test',
+        type: 'test',
+        userId: 'test',
+        actorId: 'test',
+        actorType: 'test',
+        payload: {},
+        result: {},
+        error: {},
+        status: 'test-enum',
+        progress: 1,
+        lockedBy: 'test',
+        lockedAt: new Date(),
+        startedAt: new Date(),
+        completedAt: new Date(),
+        retryCount: 1,
+        maxRetries: 1,
+        nextRetryAt: new Date(),
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);

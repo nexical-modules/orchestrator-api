@@ -19,17 +19,7 @@ vi.mock('@/lib/core/config', () => ({
 
 vi.mock('@/lib/core/db', () => {
   const mockModelProps = {
-    id: '1',
-    email: 'test@example.com',
-    name: 'test',
-    status: 'RUNNING',
-    role: 'TEAM_MEMBER',
-    token: 'test-token',
-    expires: new Date(Date.now() + 86400000),
-    actorId: 'test',
-    lockedBy: 'ne_pat_test',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    id: 'deadLetterJob_test',
     originalJobId: 'test',
     type: 'test',
     payload: {},
@@ -37,6 +27,7 @@ vi.mock('@/lib/core/db', () => {
     failedAt: new Date(),
     retryCount: 1,
     reason: 'test',
+    actorId: 'test',
     actorType: 'test',
   };
 
@@ -183,7 +174,21 @@ describe('DeadLetterJobService', () => {
         mockData as unknown as Record<string, unknown>[],
       );
 
-      const result = await DeadLetterJobService.list();
+      const result = await DeadLetterJobService.list(
+        {
+          id: 'deadLetterJob_test',
+          originalJobId: 'test',
+          type: 'test',
+          payload: {},
+          error: {},
+          failedAt: new Date(),
+          retryCount: 1,
+          reason: 'test',
+          actorId: 'test',
+          actorType: 'test',
+        } as Record<string, unknown>,
+        'deadLetterJob_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -193,7 +198,21 @@ describe('DeadLetterJobService', () => {
     it('should handle errors when listing', async () => {
       vi.mocked(db.deadLetterJob.findMany).mockRejectedValue(new Error('DB Error'));
 
-      const result = await DeadLetterJobService.list();
+      const result = await DeadLetterJobService.list(
+        {
+          id: 'deadLetterJob_test',
+          originalJobId: 'test',
+          type: 'test',
+          payload: {},
+          error: {},
+          failedAt: new Date(),
+          retryCount: 1,
+          reason: 'test',
+          actorId: 'test',
+          actorType: 'test',
+        } as Record<string, unknown>,
+        'deadLetterJob_test' as unknown,
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('deadLetterJob.service.error.list_failed');
@@ -208,7 +227,11 @@ describe('DeadLetterJobService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await DeadLetterJobService.get('1');
+      const result = await DeadLetterJobService.get(
+        '1',
+        'deadLetterJob_test' as unknown,
+        'deadLetterJob_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -245,7 +268,18 @@ describe('DeadLetterJobService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await DeadLetterJobService.create({ name: 'test' } as Record<string, unknown>);
+      const result = await DeadLetterJobService.create({
+        id: 'deadLetterJob_test',
+        originalJobId: 'test',
+        type: 'test',
+        payload: {},
+        error: {},
+        failedAt: new Date(),
+        retryCount: 1,
+        reason: 'test',
+        actorId: 'test',
+        actorType: 'test',
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -269,10 +303,18 @@ describe('DeadLetterJobService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await DeadLetterJobService.update('1', { name: 'updated' } as Record<
-        string,
-        unknown
-      >);
+      const result = await DeadLetterJobService.update('1', {
+        id: 'deadLetterJob_test',
+        originalJobId: 'test',
+        type: 'test',
+        payload: {},
+        error: {},
+        failedAt: new Date(),
+        retryCount: 1,
+        reason: 'test',
+        actorId: 'test',
+        actorType: 'test',
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);

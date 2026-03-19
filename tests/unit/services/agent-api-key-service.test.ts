@@ -19,17 +19,8 @@ vi.mock('@/lib/core/config', () => ({
 
 vi.mock('@/lib/core/db', () => {
   const mockModelProps = {
-    id: '1',
-    email: 'test@example.com',
+    id: 'agentApiKey_test',
     name: 'test',
-    status: 'PENDING',
-    role: 'TEAM_MEMBER',
-    token: 'test-token',
-    expires: new Date(Date.now() + 86400000),
-    actorId: 'ne_pat_test',
-    lockedBy: 'ne_pat_test',
-    createdAt: new Date(),
-    updatedAt: new Date(),
     hashedKey: 'test',
     prefix: 'test',
     lastUsedAt: new Date(),
@@ -180,7 +171,18 @@ describe('AgentApiKeyService', () => {
         mockData as unknown as Record<string, unknown>[],
       );
 
-      const result = await AgentApiKeyService.list();
+      const result = await AgentApiKeyService.list(
+        {
+          id: 'agentApiKey_test',
+          name: 'test',
+          hashedKey: 'test',
+          prefix: 'test',
+          lastUsedAt: new Date(),
+          expiresAt: new Date(),
+          agentId: 'test',
+        } as Record<string, unknown>,
+        'agentApiKey_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -190,7 +192,18 @@ describe('AgentApiKeyService', () => {
     it('should handle errors when listing', async () => {
       vi.mocked(db.agentApiKey.findMany).mockRejectedValue(new Error('DB Error'));
 
-      const result = await AgentApiKeyService.list();
+      const result = await AgentApiKeyService.list(
+        {
+          id: 'agentApiKey_test',
+          name: 'test',
+          hashedKey: 'test',
+          prefix: 'test',
+          lastUsedAt: new Date(),
+          expiresAt: new Date(),
+          agentId: 'test',
+        } as Record<string, unknown>,
+        'agentApiKey_test' as unknown,
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('agentApiKey.service.error.list_failed');
@@ -205,7 +218,11 @@ describe('AgentApiKeyService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await AgentApiKeyService.get('1');
+      const result = await AgentApiKeyService.get(
+        '1',
+        'agentApiKey_test' as unknown,
+        'agentApiKey_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -242,7 +259,15 @@ describe('AgentApiKeyService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await AgentApiKeyService.create({ name: 'test' } as Record<string, unknown>);
+      const result = await AgentApiKeyService.create({
+        id: 'agentApiKey_test',
+        name: 'test',
+        hashedKey: 'test',
+        prefix: 'test',
+        lastUsedAt: new Date(),
+        expiresAt: new Date(),
+        agentId: 'test',
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -266,10 +291,15 @@ describe('AgentApiKeyService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await AgentApiKeyService.update('1', { name: 'updated' } as Record<
-        string,
-        unknown
-      >);
+      const result = await AgentApiKeyService.update('1', {
+        id: 'agentApiKey_test',
+        name: 'test',
+        hashedKey: 'test',
+        prefix: 'test',
+        lastUsedAt: new Date(),
+        expiresAt: new Date(),
+        agentId: 'test',
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);

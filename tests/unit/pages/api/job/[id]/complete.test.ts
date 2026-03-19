@@ -16,7 +16,7 @@ describe('Job API - POST ../../../../../../src/pages/api/job/[id]/complete', () 
 
   it('should call CompleteJobAction and return success', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? '?id=test-id&email=test@example.com&username=testuser&name=Test&token=test-token&hostname=localhost&agentId=agent-1&teamId=team-1&userId=user-1&type=TASK&status=ACTIVE&reason=Test%20Reason&amount=100&count=10&limit=10&offset=0&search='
+      ? `?id=${encodeURIComponent(String('test-id'))}&type=${encodeURIComponent(String('test'))}&userId=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&result=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&status=${encodeURIComponent(String('test-enum'))}&progress=${encodeURIComponent(String(100))}&lockedBy=${encodeURIComponent(String('test'))}&lockedAt=${encodeURIComponent(String(new Date().toISOString()))}&startedAt=${encodeURIComponent(String(new Date().toISOString()))}&completedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&maxRetries=${encodeURIComponent(String(100))}&nextRetryAt=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -30,27 +30,22 @@ describe('Job API - POST ../../../../../../src/pages/api/job/[id]/complete', () 
       method: 'POST',
       body: JSON.stringify({
         id: 'test-id',
-        email: 'test@example.com',
-        username: 'testuser',
-        name: 'Test',
-        password: 'password',
-        confirmPassword: 'password',
-        token: 'test-token',
-        progress: 50,
-        hostname: 'localhost',
-        agentId: 'agent-1',
-        teamId: 'team-1',
-        userId: 'user-1',
-        type: 'TASK',
-        status: 'ACTIVE',
-        capabilities: [],
-        payload: { test: true },
-        reason: 'Test Reason',
-        amount: 100,
-        count: 10,
-        limit: 10,
-        offset: 0,
-        search: '',
+        type: 'test',
+        userId: 'test',
+        actorId: 'test',
+        actorType: 'test',
+        payload: {},
+        result: {},
+        error: {},
+        status: 'test-enum',
+        progress: 100,
+        lockedBy: 'test',
+        lockedAt: new Date().toISOString(),
+        startedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString(),
+        retryCount: 100,
+        maxRetries: 100,
+        nextRetryAt: new Date().toISOString(),
       }),
     });
 
@@ -72,7 +67,7 @@ describe('Job API - POST ../../../../../../src/pages/api/job/[id]/complete', () 
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? '?id=test-id&email=test@example.com&username=testuser&name=Test&token=test-token&hostname=localhost&agentId=agent-1&teamId=team-1&userId=user-1&type=TASK&status=ACTIVE&reason=Test%20Reason&amount=100&count=10&limit=10&offset=0&search='
+      ? `?id=${encodeURIComponent(String('test-id'))}&type=${encodeURIComponent(String('test'))}&userId=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&result=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&status=${encodeURIComponent(String('test-enum'))}&progress=${encodeURIComponent(String(100))}&lockedBy=${encodeURIComponent(String('test'))}&lockedAt=${encodeURIComponent(String(new Date().toISOString()))}&startedAt=${encodeURIComponent(String(new Date().toISOString()))}&completedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&maxRetries=${encodeURIComponent(String(100))}&nextRetryAt=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -99,7 +94,7 @@ describe('Job API - POST ../../../../../../src/pages/api/job/[id]/complete', () 
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? '?id=test-id&email=test@example.com&username=testuser&name=Test&token=test-token&hostname=localhost&agentId=agent-1&teamId=team-1&userId=user-1&type=TASK&status=ACTIVE&reason=Test%20Reason&amount=100&count=10&limit=10&offset=0&search='
+      ? `?id=${encodeURIComponent(String('test-id'))}&type=${encodeURIComponent(String('test'))}&userId=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&result=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&status=${encodeURIComponent(String('test-enum'))}&progress=${encodeURIComponent(String(100))}&lockedBy=${encodeURIComponent(String('test'))}&lockedAt=${encodeURIComponent(String(new Date().toISOString()))}&startedAt=${encodeURIComponent(String(new Date().toISOString()))}&completedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&maxRetries=${encodeURIComponent(String(100))}&nextRetryAt=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -113,27 +108,22 @@ describe('Job API - POST ../../../../../../src/pages/api/job/[id]/complete', () 
       method: 'POST',
       body: JSON.stringify({
         id: 'test-id',
-        email: 'test@example.com',
-        username: 'testuser',
-        name: 'Test',
-        password: 'password',
-        confirmPassword: 'password',
-        token: 'test-token',
-        progress: 50,
-        hostname: 'localhost',
-        agentId: 'agent-1',
-        teamId: 'team-1',
-        userId: 'user-1',
-        type: 'TASK',
-        status: 'ACTIVE',
-        capabilities: [],
-        payload: { test: true },
-        reason: 'Test Reason',
-        amount: 100,
-        count: 10,
-        limit: 10,
-        offset: 0,
-        search: '',
+        type: 'test',
+        userId: 'test',
+        actorId: 'test',
+        actorType: 'test',
+        payload: {},
+        result: {},
+        error: {},
+        status: 'test-enum',
+        progress: 100,
+        lockedBy: 'test',
+        lockedAt: new Date().toISOString(),
+        startedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString(),
+        retryCount: 100,
+        maxRetries: 100,
+        nextRetryAt: new Date().toISOString(),
       }),
     });
 

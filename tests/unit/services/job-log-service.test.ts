@@ -19,17 +19,7 @@ vi.mock('@/lib/core/config', () => ({
 
 vi.mock('@/lib/core/db', () => {
   const mockModelProps = {
-    id: '1',
-    email: 'test@example.com',
-    name: 'test',
-    status: 'PENDING',
-    role: 'TEAM_MEMBER',
-    token: 'test-token',
-    expires: new Date(Date.now() + 86400000),
-    actorId: 'ne_pat_test',
-    lockedBy: 'ne_pat_test',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    id: 'jobLog_test',
     jobId: 'test',
     level: 'test',
     message: 'test',
@@ -179,7 +169,16 @@ describe('JobLogService', () => {
         mockData as unknown as Record<string, unknown>[],
       );
 
-      const result = await JobLogService.list();
+      const result = await JobLogService.list(
+        {
+          id: 'jobLog_test',
+          jobId: 'test',
+          level: 'test',
+          message: 'test',
+          timestamp: new Date(),
+        } as Record<string, unknown>,
+        'jobLog_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -189,7 +188,16 @@ describe('JobLogService', () => {
     it('should handle errors when listing', async () => {
       vi.mocked(db.jobLog.findMany).mockRejectedValue(new Error('DB Error'));
 
-      const result = await JobLogService.list();
+      const result = await JobLogService.list(
+        {
+          id: 'jobLog_test',
+          jobId: 'test',
+          level: 'test',
+          message: 'test',
+          timestamp: new Date(),
+        } as Record<string, unknown>,
+        'jobLog_test' as unknown,
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('jobLog.service.error.list_failed');
@@ -204,7 +212,11 @@ describe('JobLogService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await JobLogService.get('1');
+      const result = await JobLogService.get(
+        '1',
+        'jobLog_test' as unknown,
+        'jobLog_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -239,7 +251,13 @@ describe('JobLogService', () => {
       const mockData = { id: '1', name: 'test' };
       vi.mocked(db.jobLog.create).mockResolvedValue(mockData as unknown as Record<string, unknown>);
 
-      const result = await JobLogService.create({ name: 'test' } as Record<string, unknown>);
+      const result = await JobLogService.create({
+        id: 'jobLog_test',
+        jobId: 'test',
+        level: 'test',
+        message: 'test',
+        timestamp: new Date(),
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -261,10 +279,13 @@ describe('JobLogService', () => {
       const mockData = { id: '1', name: 'updated' };
       vi.mocked(db.jobLog.update).mockResolvedValue(mockData as unknown as Record<string, unknown>);
 
-      const result = await JobLogService.update('1', { name: 'updated' } as Record<
-        string,
-        unknown
-      >);
+      const result = await JobLogService.update('1', {
+        id: 'jobLog_test',
+        jobId: 'test',
+        level: 'test',
+        message: 'test',
+        timestamp: new Date(),
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);

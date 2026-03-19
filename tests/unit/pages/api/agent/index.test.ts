@@ -16,7 +16,7 @@ describe('Agent API - GET ../../../../../src/pages/api/agent/index', () => {
 
   it('should call AgentService and return success', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? '?id=test-id&email=test@example.com&username=testuser&name=Test&token=test-token&hostname=localhost&agentId=agent-1&teamId=team-1&userId=user-1&type=TASK&status=ACTIVE&reason=Test%20Reason&amount=100&count=10&limit=10&offset=0&search='
+      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -61,7 +61,7 @@ describe('Agent API - GET ../../../../../src/pages/api/agent/index', () => {
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? '?id=test-id&email=test@example.com&username=testuser&name=Test&token=test-token&hostname=localhost&agentId=agent-1&teamId=team-1&userId=user-1&type=TASK&status=ACTIVE&reason=Test%20Reason&amount=100&count=10&limit=10&offset=0&search='
+      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('Agent API - GET ../../../../../src/pages/api/agent/index', () => {
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? '?id=test-id&email=test@example.com&username=testuser&name=Test&token=test-token&hostname=localhost&agentId=agent-1&teamId=team-1&userId=user-1&type=TASK&status=ACTIVE&reason=Test%20Reason&amount=100&count=10&limit=10&offset=0&search='
+      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 

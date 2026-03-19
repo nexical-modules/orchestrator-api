@@ -19,17 +19,16 @@ vi.mock('@/lib/core/config', () => ({
 
 vi.mock('@/lib/core/db', () => {
   const mockModelProps = {
-    id: '1',
-    email: 'test@example.com',
-    name: 'test',
-    status: 'PENDING',
-    role: 'TEAM_MEMBER',
-    token: 'test-token',
-    expires: new Date(Date.now() + 86400000),
-    actorId: 'ne_pat_test',
-    lockedBy: 'ne_pat_test',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    id: 'jobMetrics_test',
+    total: 1,
+    pending: 1,
+    running: 1,
+    completed: 1,
+    failed: 1,
+    cancelled: 1,
+    avgCompletionTimeMs: 1,
+    retryRate: 1,
+    successRate: 1,
   };
 
   const isExistenceCheck = (where: Record<string, unknown>): boolean => {

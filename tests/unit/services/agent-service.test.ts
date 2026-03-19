@@ -19,21 +19,14 @@ vi.mock('@/lib/core/config', () => ({
 
 vi.mock('@/lib/core/db', () => {
   const mockModelProps = {
-    id: '1',
-    email: 'test@example.com',
+    id: 'agent_test',
     name: 'test',
-    status: 'test-enum',
-    role: 'test-enum',
-    token: 'test-token',
-    expires: new Date(Date.now() + 86400000),
-    actorId: 'ne_pat_test',
-    lockedBy: 'ne_pat_test',
-    createdAt: new Date(),
-    updatedAt: new Date(),
     hashedKey: 'test',
     prefix: 'test',
     hostname: 'test',
     lastHeartbeat: new Date(),
+    status: 'test-enum',
+    role: 'test-enum',
   };
 
   const isExistenceCheck = (where: Record<string, unknown>): boolean => {
@@ -179,7 +172,19 @@ describe('AgentService', () => {
         mockData as unknown as Record<string, unknown>[],
       );
 
-      const result = await AgentService.list();
+      const result = await AgentService.list(
+        {
+          id: 'agent_test',
+          name: 'test',
+          hashedKey: 'test',
+          prefix: 'test',
+          hostname: 'test',
+          lastHeartbeat: new Date(),
+          status: 'test-enum',
+          role: 'test-enum',
+        } as Record<string, unknown>,
+        'agent_test' as unknown,
+      );
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -189,7 +194,19 @@ describe('AgentService', () => {
     it('should handle errors when listing', async () => {
       vi.mocked(db.agent.findMany).mockRejectedValue(new Error('DB Error'));
 
-      const result = await AgentService.list();
+      const result = await AgentService.list(
+        {
+          id: 'agent_test',
+          name: 'test',
+          hashedKey: 'test',
+          prefix: 'test',
+          hostname: 'test',
+          lastHeartbeat: new Date(),
+          status: 'test-enum',
+          role: 'test-enum',
+        } as Record<string, unknown>,
+        'agent_test' as unknown,
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('agent.service.error.list_failed');
@@ -204,7 +221,7 @@ describe('AgentService', () => {
         mockData as unknown as Record<string, unknown>,
       );
 
-      const result = await AgentService.get('1');
+      const result = await AgentService.get('1', 'agent_test' as unknown, 'agent_test' as unknown);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -239,7 +256,16 @@ describe('AgentService', () => {
       const mockData = { id: '1', name: 'test' };
       vi.mocked(db.agent.create).mockResolvedValue(mockData as unknown as Record<string, unknown>);
 
-      const result = await AgentService.create({ name: 'test' } as Record<string, unknown>);
+      const result = await AgentService.create({
+        id: 'agent_test',
+        name: 'test',
+        hashedKey: 'test',
+        prefix: 'test',
+        hostname: 'test',
+        lastHeartbeat: new Date(),
+        status: 'test-enum',
+        role: 'test-enum',
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -261,7 +287,16 @@ describe('AgentService', () => {
       const mockData = { id: '1', name: 'updated' };
       vi.mocked(db.agent.update).mockResolvedValue(mockData as unknown as Record<string, unknown>);
 
-      const result = await AgentService.update('1', { name: 'updated' } as Record<string, unknown>);
+      const result = await AgentService.update('1', {
+        id: 'agent_test',
+        name: 'test',
+        hashedKey: 'test',
+        prefix: 'test',
+        hostname: 'test',
+        lastHeartbeat: new Date(),
+        status: 'test-enum',
+        role: 'test-enum',
+      } as Record<string, unknown>);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
