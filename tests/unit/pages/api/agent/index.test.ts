@@ -16,7 +16,7 @@ describe('Agent API - GET ../../../../../src/pages/api/agent/index', () => {
 
   it('should call AgentService and return success', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('ONLINE'))}&role=${encodeURIComponent(String('AGENT_ADMIN'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -61,7 +61,7 @@ describe('Agent API - GET ../../../../../src/pages/api/agent/index', () => {
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('ONLINE'))}&role=${encodeURIComponent(String('AGENT_ADMIN'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('Agent API - GET ../../../../../src/pages/api/agent/index', () => {
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('ONLINE'))}&role=${encodeURIComponent(String('AGENT_ADMIN'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 

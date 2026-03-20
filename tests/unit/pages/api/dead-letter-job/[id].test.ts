@@ -16,7 +16,7 @@ describe('DeadLetterJob API - GET ../../../../../src/pages/api/dead-letter-job/[
 
   it('should call DeadLetterJobService and return success', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&originalJobId=${encodeURIComponent(String('test'))}&type=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&failedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&reason=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}`
+      ? `?originalJobId=${encodeURIComponent(String('test'))}&type=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&failedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&reason=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -61,7 +61,7 @@ describe('DeadLetterJob API - GET ../../../../../src/pages/api/dead-letter-job/[
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&originalJobId=${encodeURIComponent(String('test'))}&type=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&failedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&reason=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}`
+      ? `?originalJobId=${encodeURIComponent(String('test'))}&type=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&failedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&reason=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('DeadLetterJob API - GET ../../../../../src/pages/api/dead-letter-job/[
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&originalJobId=${encodeURIComponent(String('test'))}&type=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&failedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&reason=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}`
+      ? `?originalJobId=${encodeURIComponent(String('test'))}&type=${encodeURIComponent(String('test'))}&payload=${encodeURIComponent(String({}))}&error=${encodeURIComponent(String({}))}&failedAt=${encodeURIComponent(String(new Date().toISOString()))}&retryCount=${encodeURIComponent(String(100))}&reason=${encodeURIComponent(String('test'))}&actorId=${encodeURIComponent(String('test'))}&actorType=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 

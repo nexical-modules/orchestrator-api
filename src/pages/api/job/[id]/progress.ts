@@ -15,7 +15,7 @@ export const POST = defineApi(
 
     const zodSchema = z.object({
       id: z.string(),
-      progress: z.number().int(),
+      progress: z.coerce.number().int(),
     });
     const body = (
       zodSchema ? zodSchema.parse(rawInput) : rawInput

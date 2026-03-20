@@ -107,13 +107,13 @@ export const PUT = defineApi(
       result: z.unknown().optional(),
       error: z.unknown().optional(),
       status: z.nativeEnum(OrchestratorModuleTypes.JobStatus).optional(),
-      progress: z.number().int().optional(),
+      progress: z.coerce.number().int().optional(),
       lockedBy: z.string().optional(),
       lockedAt: z.string().datetime().optional(),
       startedAt: z.string().datetime().optional(),
       completedAt: z.string().datetime().optional(),
-      retryCount: z.number().int().optional(),
-      maxRetries: z.number().int().optional(),
+      retryCount: z.coerce.number().int().optional(),
+      maxRetries: z.coerce.number().int().optional(),
       nextRetryAt: z.string().datetime().optional(),
     });
     const validated = schema.parse(body);

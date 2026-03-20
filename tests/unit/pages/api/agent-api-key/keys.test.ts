@@ -16,7 +16,7 @@ describe('AgentApiKey API - POST ../../../../../src/pages/api/agent-api-key/keys
 
   it('should call CreateAgentApiKeyAction and return success', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
+      ? `?agentId=${encodeURIComponent(String('test'))}&name=${encodeURIComponent(String('test'))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -28,15 +28,7 @@ describe('AgentApiKey API - POST ../../../../../src/pages/api/agent-api-key/keys
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({
-        id: 'test-id',
-        name: 'test',
-        hashedKey: 'test',
-        prefix: 'test',
-        lastUsedAt: new Date().toISOString(),
-        expiresAt: new Date().toISOString(),
-        agentId: 'test',
-      }),
+      body: JSON.stringify({ agentId: 'test', name: 'test', expiresAt: new Date().toISOString() }),
     });
 
     vi.mocked(CreateAgentApiKeyAction.run).mockResolvedValue({
@@ -57,7 +49,7 @@ describe('AgentApiKey API - POST ../../../../../src/pages/api/agent-api-key/keys
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
+      ? `?agentId=${encodeURIComponent(String('test'))}&name=${encodeURIComponent(String('test'))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -84,7 +76,7 @@ describe('AgentApiKey API - POST ../../../../../src/pages/api/agent-api-key/keys
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
+      ? `?agentId=${encodeURIComponent(String('test'))}&name=${encodeURIComponent(String('test'))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -96,15 +88,7 @@ describe('AgentApiKey API - POST ../../../../../src/pages/api/agent-api-key/keys
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({
-        id: 'test-id',
-        name: 'test',
-        hashedKey: 'test',
-        prefix: 'test',
-        lastUsedAt: new Date().toISOString(),
-        expiresAt: new Date().toISOString(),
-        agentId: 'test',
-      }),
+      body: JSON.stringify({ agentId: 'test', name: 'test', expiresAt: new Date().toISOString() }),
     });
 
     vi.mocked(CreateAgentApiKeyAction.run).mockResolvedValue({

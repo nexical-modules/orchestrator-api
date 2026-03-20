@@ -34,6 +34,7 @@ describe('Job API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       // Cleanup and seed specific count

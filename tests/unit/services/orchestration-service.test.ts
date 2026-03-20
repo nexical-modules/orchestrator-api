@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY
+import { db } from '@/lib/core/db';
 import { Logger } from '@/lib/core/logger';
 import { HookSystem } from '@/lib/modules/hooks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,7 +18,25 @@ vi.mock('@/lib/core/config', () => ({
 }));
 
 vi.mock('@/lib/core/db', () => {
-  const mockModelProps = { id: 'orchestration_test', name: 'Test' };
+  const mockModelProps = {
+    id: 'job_test',
+    type: 'test',
+    userId: 'test',
+    actorId: 'job_test',
+    actorType: 'test',
+    payload: {},
+    result: {},
+    error: {},
+    status: 'PENDING',
+    progress: 1,
+    lockedBy: 'job_test',
+    lockedAt: new Date(),
+    startedAt: new Date(),
+    completedAt: new Date(),
+    retryCount: 1,
+    maxRetries: 1,
+    nextRetryAt: new Date(),
+  };
 
   const isExistenceCheck = (where: Record<string, unknown>): boolean => {
     if (!where) return false;
@@ -159,7 +178,7 @@ describe('OrchestrationService', () => {
     it('should run poll successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).poll('agent-1', ['TASK'] as unknown[], 'orchestration_test', 'user');
+      ).poll('agent-1', ['TASK'] as unknown[], 'job_test', 'user');
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -170,9 +189,16 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in poll', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).poll('agent-1', ['TASK'] as unknown[], 'orchestration_test', 'user');
+        ).poll('agent-1', ['TASK'] as unknown[], 'job_test', 'user');
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -187,12 +213,7 @@ describe('OrchestrationService', () => {
     it('should run complete successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).complete(
-        'orchestration_test',
-        { result: 'ok' } as Record<string, unknown>,
-        'orchestration_test',
-        'user',
-      );
+      ).complete('job_test', { result: 'ok' } as Record<string, unknown>, 'job_test', 'user');
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -203,14 +224,16 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in complete', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).complete(
-          'orchestration_test',
-          { result: 'ok' } as Record<string, unknown>,
-          'orchestration_test',
-          'user',
-        );
+        ).complete('job_test', { result: 'ok' } as Record<string, unknown>, 'job_test', 'user');
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -225,12 +248,7 @@ describe('OrchestrationService', () => {
     it('should run fail successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).fail(
-        'orchestration_test',
-        { result: 'ok' } as Record<string, unknown>,
-        'orchestration_test',
-        'user',
-      );
+      ).fail('job_test', { result: 'ok' } as Record<string, unknown>, 'job_test', 'user');
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -241,14 +259,16 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in fail', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).fail(
-          'orchestration_test',
-          { result: 'ok' } as Record<string, unknown>,
-          'orchestration_test',
-          'user',
-        );
+        ).fail('job_test', { result: 'ok' } as Record<string, unknown>, 'job_test', 'user');
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -263,7 +283,7 @@ describe('OrchestrationService', () => {
     it('should run cancel successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).cancel('orchestration_test' as unknown, 'orchestration_test' as unknown);
+      ).cancel('job_test' as unknown, 'job_test' as unknown);
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -274,9 +294,16 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in cancel', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).cancel('orchestration_test' as unknown, 'orchestration_test' as unknown);
+        ).cancel('job_test' as unknown, 'job_test' as unknown);
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -291,7 +318,25 @@ describe('OrchestrationService', () => {
     it('should run registerAgent successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).registerAgent({ id: 'orchestration_test', name: 'Test' } as Record<string, unknown>);
+      ).registerAgent({
+        id: 'job_test',
+        type: 'test',
+        userId: 'test',
+        actorId: 'job_test',
+        actorType: 'test',
+        payload: {},
+        result: {},
+        error: {},
+        status: 'PENDING',
+        progress: 1,
+        lockedBy: 'job_test',
+        lockedAt: new Date(),
+        startedAt: new Date(),
+        completedAt: new Date(),
+        retryCount: 1,
+        maxRetries: 1,
+        nextRetryAt: new Date(),
+      } as Record<string, unknown>);
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -302,9 +347,34 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in registerAgent', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).registerAgent({ id: 'orchestration_test', name: 'Test' } as Record<string, unknown>);
+        ).registerAgent({
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'job_test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'PENDING',
+          progress: 1,
+          lockedBy: 'job_test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>);
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -319,7 +389,25 @@ describe('OrchestrationService', () => {
     it('should run checkStaleAgents successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).checkStaleAgents({ id: 'orchestration_test', name: 'Test' } as Record<string, unknown>);
+      ).checkStaleAgents({
+        id: 'job_test',
+        type: 'test',
+        userId: 'test',
+        actorId: 'job_test',
+        actorType: 'test',
+        payload: {},
+        result: {},
+        error: {},
+        status: 'PENDING',
+        progress: 1,
+        lockedBy: 'job_test',
+        lockedAt: new Date(),
+        startedAt: new Date(),
+        completedAt: new Date(),
+        retryCount: 1,
+        maxRetries: 1,
+        nextRetryAt: new Date(),
+      } as Record<string, unknown>);
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -330,9 +418,34 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in checkStaleAgents', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).checkStaleAgents({ id: 'orchestration_test', name: 'Test' } as Record<string, unknown>);
+        ).checkStaleAgents({
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'job_test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'PENDING',
+          progress: 1,
+          lockedBy: 'job_test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>);
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -347,7 +460,7 @@ describe('OrchestrationService', () => {
     it('should run heartbeat successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).heartbeat('orchestration_test' as unknown);
+      ).heartbeat('job_test' as unknown);
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -358,9 +471,16 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in heartbeat', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).heartbeat('orchestration_test' as unknown);
+        ).heartbeat('job_test' as unknown);
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -375,7 +495,7 @@ describe('OrchestrationService', () => {
     it('should run updateProgress successfully', async () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-      ).updateProgress('orchestration_test', 50, 'orchestration_test');
+      ).updateProgress('job_test', 50, 'job_test');
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
           (result as Record<string, unknown>).success,
@@ -386,9 +506,16 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in updateProgress', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
-        ).updateProgress('orchestration_test', 50, 'orchestration_test');
+        ).updateProgress('job_test', 50, 'job_test');
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
         }
@@ -404,10 +531,82 @@ describe('OrchestrationService', () => {
       const result = await (
         OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
       ).createJob(
-        { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
-        { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
-        { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
-        { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
+        {
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'job_test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'PENDING',
+          progress: 1,
+          lockedBy: 'job_test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>,
+        {
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'job_test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'PENDING',
+          progress: 1,
+          lockedBy: 'job_test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>,
+        {
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'job_test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'PENDING',
+          progress: 1,
+          lockedBy: 'job_test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>,
+        {
+          id: 'job_test',
+          type: 'test',
+          userId: 'test',
+          actorId: 'job_test',
+          actorType: 'test',
+          payload: {},
+          result: {},
+          error: {},
+          status: 'PENDING',
+          progress: 1,
+          lockedBy: 'job_test',
+          lockedAt: new Date(),
+          startedAt: new Date(),
+          completedAt: new Date(),
+          retryCount: 1,
+          maxRetries: 1,
+          nextRetryAt: new Date(),
+        } as Record<string, unknown>,
       );
       if (result && typeof result === 'object' && 'success' in result) {
         expect(
@@ -419,13 +618,92 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in createJob', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
         ).createJob(
-          { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
-          { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
-          { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
-          { id: 'orchestration_test', name: 'Test' } as Record<string, unknown>,
+          {
+            id: 'job_test',
+            type: 'test',
+            userId: 'test',
+            actorId: 'job_test',
+            actorType: 'test',
+            payload: {},
+            result: {},
+            error: {},
+            status: 'PENDING',
+            progress: 1,
+            lockedBy: 'job_test',
+            lockedAt: new Date(),
+            startedAt: new Date(),
+            completedAt: new Date(),
+            retryCount: 1,
+            maxRetries: 1,
+            nextRetryAt: new Date(),
+          } as Record<string, unknown>,
+          {
+            id: 'job_test',
+            type: 'test',
+            userId: 'test',
+            actorId: 'job_test',
+            actorType: 'test',
+            payload: {},
+            result: {},
+            error: {},
+            status: 'PENDING',
+            progress: 1,
+            lockedBy: 'job_test',
+            lockedAt: new Date(),
+            startedAt: new Date(),
+            completedAt: new Date(),
+            retryCount: 1,
+            maxRetries: 1,
+            nextRetryAt: new Date(),
+          } as Record<string, unknown>,
+          {
+            id: 'job_test',
+            type: 'test',
+            userId: 'test',
+            actorId: 'job_test',
+            actorType: 'test',
+            payload: {},
+            result: {},
+            error: {},
+            status: 'PENDING',
+            progress: 1,
+            lockedBy: 'job_test',
+            lockedAt: new Date(),
+            startedAt: new Date(),
+            completedAt: new Date(),
+            retryCount: 1,
+            maxRetries: 1,
+            nextRetryAt: new Date(),
+          } as Record<string, unknown>,
+          {
+            id: 'job_test',
+            type: 'test',
+            userId: 'test',
+            actorId: 'job_test',
+            actorType: 'test',
+            payload: {},
+            result: {},
+            error: {},
+            status: 'PENDING',
+            progress: 1,
+            lockedBy: 'job_test',
+            lockedAt: new Date(),
+            startedAt: new Date(),
+            completedAt: new Date(),
+            retryCount: 1,
+            maxRetries: 1,
+            nextRetryAt: new Date(),
+          } as Record<string, unknown>,
         );
         if (result && typeof result === 'object' && 'success' in result) {
           expect(result.success).toBe(false);
@@ -456,6 +734,13 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in getJobMetrics', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
         ).getJobMetrics();
@@ -488,6 +773,13 @@ describe('OrchestrationService', () => {
 
     it('should handle errors in getAgentMetrics', async () => {
       try {
+        try {
+          vi.mocked(db.job.findFirst).mockRejectedValueOnce(new Error('DB Error'));
+          vi.mocked(db.job.findUnique).mockRejectedValueOnce(new Error('DB Error'));
+        } catch {
+          // Ignore expected errors during setup
+        }
+
         const result = await (
           OrchestrationService as unknown as Record<string, (...args: unknown[]) => unknown>
         ).getAgentMetrics();

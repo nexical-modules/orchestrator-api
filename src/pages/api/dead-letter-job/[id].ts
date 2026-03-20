@@ -83,7 +83,7 @@ export const PUT = defineApi(
       payload: z.unknown().optional(),
       error: z.unknown().optional(),
       failedAt: z.string().datetime().optional(),
-      retryCount: z.number().int(),
+      retryCount: z.coerce.number().int(),
       reason: z.string().optional(),
       actorId: z.string().optional(),
       actorType: z.string().optional(),

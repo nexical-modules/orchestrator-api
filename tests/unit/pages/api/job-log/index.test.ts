@@ -16,7 +16,7 @@ describe('JobLog API - GET ../../../../../src/pages/api/job-log/index', () => {
 
   it('should call JobLogService and return success', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&jobId=${encodeURIComponent(String('test'))}&level=${encodeURIComponent(String('test'))}&message=${encodeURIComponent(String('test'))}&timestamp=${encodeURIComponent(String(new Date().toISOString()))}`
+      ? `?jobId=${encodeURIComponent(String('test'))}&level=${encodeURIComponent(String('test'))}&message=${encodeURIComponent(String('test'))}&timestamp=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -61,7 +61,7 @@ describe('JobLog API - GET ../../../../../src/pages/api/job-log/index', () => {
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&jobId=${encodeURIComponent(String('test'))}&level=${encodeURIComponent(String('test'))}&message=${encodeURIComponent(String('test'))}&timestamp=${encodeURIComponent(String(new Date().toISOString()))}`
+      ? `?jobId=${encodeURIComponent(String('test'))}&level=${encodeURIComponent(String('test'))}&message=${encodeURIComponent(String('test'))}&timestamp=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('JobLog API - GET ../../../../../src/pages/api/job-log/index', () => {
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&jobId=${encodeURIComponent(String('test'))}&level=${encodeURIComponent(String('test'))}&message=${encodeURIComponent(String('test'))}&timestamp=${encodeURIComponent(String(new Date().toISOString()))}`
+      ? `?jobId=${encodeURIComponent(String('test'))}&level=${encodeURIComponent(String('test'))}&message=${encodeURIComponent(String('test'))}&timestamp=${encodeURIComponent(String(new Date().toISOString()))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 

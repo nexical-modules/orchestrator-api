@@ -16,7 +16,7 @@ describe('AgentApiKey API - GET ../../../../../src/pages/api/agent-api-key/index
 
   it('should call AgentApiKeyService and return success', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -61,7 +61,7 @@ describe('AgentApiKey API - GET ../../../../../src/pages/api/agent-api-key/index
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('AgentApiKey API - GET ../../../../../src/pages/api/agent-api-key/index
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('GET'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&lastUsedAt=${encodeURIComponent(String(new Date().toISOString()))}&expiresAt=${encodeURIComponent(String(new Date().toISOString()))}&agentId=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 

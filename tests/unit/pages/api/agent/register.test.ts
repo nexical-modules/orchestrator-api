@@ -16,7 +16,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
   it('should call RegisterAgentAction and return success', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -28,16 +28,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({
-        id: 'test-id',
-        name: 'test',
-        hashedKey: 'test',
-        prefix: 'test',
-        hostname: 'test',
-        lastHeartbeat: new Date().toISOString(),
-        status: 'test-enum',
-        role: 'test-enum',
-      }),
+      body: JSON.stringify({ name: 'test', hostname: 'test', capabilities: ['test-item'] }),
     });
 
     vi.mocked(RegisterAgentAction.run).mockResolvedValue({
@@ -58,7 +49,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -85,7 +76,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -97,16 +88,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({
-        id: 'test-id',
-        name: 'test',
-        hashedKey: 'test',
-        prefix: 'test',
-        hostname: 'test',
-        lastHeartbeat: new Date().toISOString(),
-        status: 'test-enum',
-        role: 'test-enum',
-      }),
+      body: JSON.stringify({ name: 'test', hostname: 'test', capabilities: ['test-item'] }),
     });
 
     vi.mocked(RegisterAgentAction.run).mockResolvedValue({

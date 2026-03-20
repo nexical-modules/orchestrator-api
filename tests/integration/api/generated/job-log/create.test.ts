@@ -13,12 +13,10 @@ describe('JobLog API - Create', () => {
   // POST /api/job-log
   describe('POST /api/job-log', () => {
     it('should allow AGENT_JOB_OWNER to create jobLog', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
-      const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? (actor as unknown as { id: string }).id : undefined,
-        actorType: 'user',
-      });
+      const job_0 = await Factory.create('job', {});
       const payload = {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         jobId: job_0.id,
@@ -41,12 +39,9 @@ describe('JobLog API - Create', () => {
 
     it('should forbid non-admin/unauthorized users', async () => {
       client.useToken('invalid-token');
-
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = undefined as unknown;
-      const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? (actor as unknown as { id: string }).id : undefined,
-        actorType: 'user',
-      });
+      const job_0 = await Factory.create('job', {});
       const payload = {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         jobId: job_0.id,

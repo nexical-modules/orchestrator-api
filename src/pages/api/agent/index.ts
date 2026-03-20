@@ -660,6 +660,7 @@ export const POST = defineApi(
   {
     summary: 'Create Agent',
     tags: ['Agent'],
+
     requestBody: {
       content: {
         'application/json': {

@@ -15,9 +15,7 @@ describe('Agent API - POST ../../../../../../src/pages/api/agent/[id]/heartbeat'
   });
 
   it('should call HeartbeatAgentAction and return success', async () => {
-    const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
-      : '';
+    const query = ['GET', 'DELETE'].includes('POST'.toUpperCase()) ? `?` : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
     const mockContext = createMockAstroContext({
@@ -28,16 +26,7 @@ describe('Agent API - POST ../../../../../../src/pages/api/agent/[id]/heartbeat'
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({
-        id: 'test-id',
-        name: 'test',
-        hashedKey: 'test',
-        prefix: 'test',
-        hostname: 'test',
-        lastHeartbeat: new Date().toISOString(),
-        status: 'test-enum',
-        role: 'test-enum',
-      }),
+      body: JSON.stringify({}),
     });
 
     vi.mocked(HeartbeatAgentAction.run).mockResolvedValue({
@@ -57,9 +46,7 @@ describe('Agent API - POST ../../../../../../src/pages/api/agent/[id]/heartbeat'
   });
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
-    const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
-      : '';
+    const query = ['GET', 'DELETE'].includes('POST'.toUpperCase()) ? `?` : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
     const mockContext = createMockAstroContext({
@@ -84,9 +71,7 @@ describe('Agent API - POST ../../../../../../src/pages/api/agent/[id]/heartbeat'
   });
 
   it('should return 500 when action fails', async () => {
-    const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?id=${encodeURIComponent(String('test-id'))}&name=${encodeURIComponent(String('test'))}&hashedKey=${encodeURIComponent(String('test'))}&prefix=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&lastHeartbeat=${encodeURIComponent(String(new Date().toISOString()))}&status=${encodeURIComponent(String('test-enum'))}&role=${encodeURIComponent(String('test-enum'))}`
-      : '';
+    const query = ['GET', 'DELETE'].includes('POST'.toUpperCase()) ? `?` : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
     const mockContext = createMockAstroContext({
@@ -97,16 +82,7 @@ describe('Agent API - POST ../../../../../../src/pages/api/agent/[id]/heartbeat'
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({
-        id: 'test-id',
-        name: 'test',
-        hashedKey: 'test',
-        prefix: 'test',
-        hostname: 'test',
-        lastHeartbeat: new Date().toISOString(),
-        status: 'test-enum',
-        role: 'test-enum',
-      }),
+      body: JSON.stringify({}),
     });
 
     vi.mocked(HeartbeatAgentAction.run).mockResolvedValue({
