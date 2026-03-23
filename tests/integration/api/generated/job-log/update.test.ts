@@ -21,15 +21,15 @@ describe('JobLog API - Update', () => {
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {
-        level: 'level_test',
-        message: 'message_test',
-        timestamp: new Date(),
+        ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
       const updatePayload = {
-        level: 'level_updated',
-        message: 'message_updated',
-        timestamp: new Date().toISOString(),
+        ...{
+          level: 'level_updated',
+          message: 'message_updated',
+          timestamp: new Date().toISOString(),
+        },
         jobId: job_0.id,
       };
 

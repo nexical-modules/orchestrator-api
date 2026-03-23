@@ -15,7 +15,7 @@ describe('Orchestrator API - POST ../../../../../src/pages/api/orchestrator/poll
 
   it('should call PollJobsOrchestratorAction and return success', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?agentId=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}`
+      ? `?agentId=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -27,7 +27,7 @@ describe('Orchestrator API - POST ../../../../../src/pages/api/orchestrator/poll
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({ agentId: 'test', capabilities: ['test-item'] }),
+      body: JSON.stringify({ agentId: 'test' }),
     });
 
     vi.mocked(PollJobsOrchestratorAction.run).mockResolvedValue({
@@ -48,7 +48,7 @@ describe('Orchestrator API - POST ../../../../../src/pages/api/orchestrator/poll
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?agentId=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}`
+      ? `?agentId=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -75,7 +75,7 @@ describe('Orchestrator API - POST ../../../../../src/pages/api/orchestrator/poll
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?agentId=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String(['test-item']))}`
+      ? `?agentId=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('Orchestrator API - POST ../../../../../src/pages/api/orchestrator/poll
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({ agentId: 'test', capabilities: ['test-item'] }),
+      body: JSON.stringify({ agentId: 'test' }),
     });
 
     vi.mocked(PollJobsOrchestratorAction.run).mockResolvedValue({

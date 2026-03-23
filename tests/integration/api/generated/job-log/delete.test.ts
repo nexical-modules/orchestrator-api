@@ -21,9 +21,7 @@ describe('JobLog API - Delete', () => {
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {
-        level: 'level_test',
-        message: 'message_test',
-        timestamp: new Date(),
+        ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },
       });
 

@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY
+import { db } from '@/lib/core/db';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgentJobOwnerRole } from '../../../src/roles/agent_job_owner';
 
@@ -15,6 +16,9 @@ vi.mock('@/lib/core/db', () => ({
 describe('AgentJobOwnerRole', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    if (db.teamMember) {
+      vi.mocked(db.teamMember.findUnique).mockResolvedValue({ id: 'test-membership' } as any);
+    }
   });
   it('should be correctly defined', () => {
     const role = new AgentJobOwnerRole();
