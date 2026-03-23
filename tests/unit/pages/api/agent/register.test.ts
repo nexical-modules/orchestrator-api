@@ -7,7 +7,6 @@ import { RegisterAgentAction } from '../../../../../src/actions/register-agent';
 import { POST } from '../../../../../src/pages/api/agent/register';
 vi.mock('../../../../../src/actions/register-agent');
 vi.mock('@/lib/api/api-guard');
-
 describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
   beforeEach(() => {
     vi.resetAllMocks();

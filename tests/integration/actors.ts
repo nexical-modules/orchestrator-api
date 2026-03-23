@@ -23,8 +23,17 @@ export const actors = {
 
     dbKey = crypto.createHash('sha256').update(rawKey).digest('hex');
 
+    // Verify agent exists to avoid Prisma connect errors
+    const check = await Factory.prisma.agent.findUnique({ where: { id: actor.id } });
+    if (!check) {
+      throw new Error(
+        `[Actor] Agent ${actor.id} was "created" but not found in DB before APK creation.`,
+      );
+    }
+
     await Factory.create('agentApiKey', {
-      agent: { connect: { id: actor.id } },
+      agentId: actor.id,
+      agent: undefined,
       name: 'Test Token',
       hashedKey: dbKey,
       prefix: 'sk_agent_',
@@ -32,6 +41,6 @@ export const actors = {
 
     client.useToken(rawKey);
 
-    return actor;
+    return { ...actor, token: { rawKey } };
   },
 };

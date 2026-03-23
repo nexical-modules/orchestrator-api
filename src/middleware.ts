@@ -20,18 +20,21 @@ export async function onRequest(context: APIContext, next: MiddlewareNext) {
       context.locals.actor = {
         ...entity,
         type: 'agent',
-        role: entity && 'role' in entity ? (entity as { role: string }).role : 'AGENT_ADMIN',
+        role: (entity && 'role' in entity
+          ? (entity as { role: string }).role
+          : 'AGENT_ADMIN') as never,
       };
       context.locals.actorType = 'agent';
       return next();
     }
   }
-  const session = (context.locals as { session?: unknown }).session;
+  const session = (context.locals as { session?: { get: (key: string) => Promise<unknown> } })
+    .session;
   if (session) {
     const user = await session.get('user');
     if (user) {
       // Compatibility with Actor system
-      context.locals.actor = user;
+      context.locals.actor = user as App.Locals['actor'];
       context.locals.actorType = 'user';
     }
   }

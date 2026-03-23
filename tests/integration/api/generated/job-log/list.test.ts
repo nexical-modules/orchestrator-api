@@ -15,7 +15,7 @@ describe('JobLog API - List', () => {
     const baseData = {
       level: 'level_test',
       message: 'message_test',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     };
 
     it('should allow AGENT_JOB_OWNER to list jobLogs', async () => {
@@ -124,8 +124,8 @@ describe('JobLog API - List', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
-      const val1 = new Date(Date.now() - 100000).toISOString();
-      const val2 = new Date(Date.now() + 100000).toISOString();
+      const val1 = new Date(Date.now() - 100000);
+      const val2 = new Date(Date.now() + 100000);
 
       const data1 = { ...baseData, timestamp: val1 };
       const data2 = { ...baseData, timestamp: val2 };
@@ -133,10 +133,10 @@ describe('JobLog API - List', () => {
       await Factory.create('jobLog', { ...data1 });
       await Factory.create('jobLog', { ...data2 });
 
-      const res = await client.get('/api/job-log?timestamp=' + val1);
+      const res = await client.get('/api/job-log?timestamp=' + val1.toISOString());
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveLength(1);
-      expect(res.body.data[0].timestamp).toBe(val1);
+      expect(res.body.data[0].timestamp).toBe(val1.toISOString());
     });
   });
 });

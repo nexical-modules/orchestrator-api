@@ -13,7 +13,7 @@ describe('JobLog API - Update', () => {
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {
@@ -21,15 +21,15 @@ describe('JobLog API - Update', () => {
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {
-        ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
+        level: 'level_test',
+        message: 'message_test',
+        timestamp: new Date(),
         job: { connect: { id: job_0.id } },
       });
       const updatePayload = {
-        ...{
-          level: 'level_updated',
-          message: 'message_updated',
-          timestamp: new Date().toISOString(),
-        },
+        level: 'level_updated',
+        message: 'message_updated',
+        timestamp: new Date().toISOString(),
         jobId: job_0.id,
       };
 

@@ -13,7 +13,7 @@ describe('JobLog API - Delete', () => {
   // DELETE /api/job-log/[id]
   describe('DELETE /api/job-log/[id]', () => {
     it('should delete jobLog', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {
@@ -21,7 +21,9 @@ describe('JobLog API - Delete', () => {
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {
-        ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
+        level: 'level_test',
+        message: 'message_test',
+        timestamp: new Date(),
         job: { connect: { id: job_0.id } },
       });
 

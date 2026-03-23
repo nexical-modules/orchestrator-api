@@ -7,7 +7,6 @@ import { GET } from '../../../../../src/pages/api/agent-api-key/index';
 import { AgentApiKeyService } from '../../../../../src/services/agent-api-key-service';
 vi.mock('../../../../../src/services/agent-api-key-service');
 vi.mock('@/lib/api/api-guard');
-
 describe('AgentApiKey API - GET ../../../../../src/pages/api/agent-api-key/index', () => {
   beforeEach(() => {
     vi.resetAllMocks();

@@ -7,7 +7,6 @@ import { GET } from '../../../../../src/pages/api/job-log/[id]';
 import { JobLogService } from '../../../../../src/services/job-log-service';
 vi.mock('../../../../../src/services/job-log-service');
 vi.mock('@/lib/api/api-guard');
-
 describe('JobLog API - GET ../../../../../src/pages/api/job-log/[id]', () => {
   beforeEach(() => {
     vi.resetAllMocks();

@@ -7,7 +7,6 @@ import { PollJobsOrchestratorAction } from '../../../../../src/actions/poll-jobs
 import { POST } from '../../../../../src/pages/api/orchestrator/poll';
 vi.mock('../../../../../src/actions/poll-jobs-orchestrator');
 vi.mock('@/lib/api/api-guard');
-
 describe('Orchestrator API - POST ../../../../../src/pages/api/orchestrator/poll', () => {
   beforeEach(() => {
     vi.resetAllMocks();

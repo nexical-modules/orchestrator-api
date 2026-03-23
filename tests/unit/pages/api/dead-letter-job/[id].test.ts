@@ -7,7 +7,6 @@ import { GET } from '../../../../../src/pages/api/dead-letter-job/[id]';
 import { DeadLetterJobService } from '../../../../../src/services/dead-letter-job-service';
 vi.mock('../../../../../src/services/dead-letter-job-service');
 vi.mock('@/lib/api/api-guard');
-
 describe('DeadLetterJob API - GET ../../../../../src/pages/api/dead-letter-job/[id]', () => {
   beforeEach(() => {
     vi.resetAllMocks();

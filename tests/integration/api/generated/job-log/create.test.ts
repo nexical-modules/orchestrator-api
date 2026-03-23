@@ -13,10 +13,9 @@ describe('JobLog API - Create', () => {
   // POST /api/job-log
   describe('POST /api/job-log', () => {
     it('should allow AGENT_JOB_OWNER to create jobLog', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const actor = await client.as('agent', { role: 'AGENT_JOB_OWNER' });
 
-      const job_0 = await Factory.create('job', {});
+      const job_0 = await Factory.create('job', { actorId: actor.id, actorType: 'agent' });
       const payload = {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         jobId: job_0.id,
