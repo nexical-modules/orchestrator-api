@@ -13,10 +13,13 @@ describe('JobLog API - Get', () => {
   // GET /api/job-log/[id]
   describe('GET /api/job-log/[id]', () => {
     it('should retrieve a specific jobLog', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
-      const job_0 = await Factory.create('job', {});
+      const job_0 = await Factory.create('job', {
+        actorId: typeof actor !== 'undefined' ? actor.id : undefined,
+        actorType: 'user',
+      });
       const target = await Factory.create('jobLog', {
         ...{ level: 'level_test', message: 'message_test', timestamp: new Date().toISOString() },
         job: { connect: { id: job_0.id } },

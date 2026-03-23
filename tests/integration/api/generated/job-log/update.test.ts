@@ -13,7 +13,6 @@ describe('JobLog API - Update', () => {
   // PUT /api/job-log/[id]
   describe('PUT /api/job-log/[id]', () => {
     it('should update jobLog', async () => {
-       
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {

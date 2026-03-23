@@ -15,7 +15,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
   it('should call RegisterAgentAction and return success', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -27,7 +27,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({ name: 'test', hostname: 'test' }),
+      body: JSON.stringify({ name: 'test', hostname: 'test', capabilities: [] }),
     });
 
     vi.mocked(RegisterAgentAction.run).mockResolvedValue({
@@ -48,7 +48,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
   it('should return 400 when invalid input is provided (scaffold)', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -75,7 +75,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
   it('should return 500 when action fails', async () => {
     const query = ['GET', 'DELETE'].includes('POST'.toUpperCase())
-      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}`
+      ? `?name=${encodeURIComponent(String('test'))}&hostname=${encodeURIComponent(String('test'))}&capabilities=${encodeURIComponent(String('test'))}`
       : '';
     const fullUrl = 'http://localhost/api/test' + query;
 
@@ -87,7 +87,7 @@ describe('Agent API - POST ../../../../../src/pages/api/agent/register', () => {
 
     mockContext.request = new Request(fullUrl, {
       method: 'POST',
-      body: JSON.stringify({ name: 'test', hostname: 'test' }),
+      body: JSON.stringify({ name: 'test', hostname: 'test', capabilities: [] }),
     });
 
     vi.mocked(RegisterAgentAction.run).mockResolvedValue({
