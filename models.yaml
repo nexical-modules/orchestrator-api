@@ -27,6 +27,7 @@ enums:
 models:
   Job:
     role: AGENT_JOB_OWNER
+    traits: [actor-linked]
     test:
       actor: user
     fields:
