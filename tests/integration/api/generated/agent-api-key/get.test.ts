@@ -13,8 +13,7 @@ describe('AgentApiKey API - Get', () => {
   // GET /api/agent-api-key/[id]
   describe('GET /api/agent-api-key/[id]', () => {
     it('should retrieve a specific agentApiKey', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const agent_0 = await Factory.create('agent', {});
       const target = await Factory.create('agentApiKey', {
@@ -29,8 +28,7 @@ describe('AgentApiKey API - Get', () => {
     });
 
     it('should return 404 for missing id', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
       const res = await client.get('/api/agent-api-key/missing-id-123');
       expect(res.status).toBe(404);
     });

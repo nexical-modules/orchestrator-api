@@ -19,8 +19,7 @@ describe('JobLog API - List', () => {
     };
 
     it('should allow AGENT_JOB_OWNER to list jobLogs', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       // Cleanup first to ensure clean state
       await Factory.prisma.jobLog.deleteMany();
@@ -39,8 +38,7 @@ describe('JobLog API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       // Cleanup and seed specific count
       await Factory.prisma.jobLog.deleteMany();
@@ -77,8 +75,7 @@ describe('JobLog API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const val1 = 'level_' + Date.now() + '_A';
       const val2 = 'level_' + Date.now() + '_B';
@@ -99,8 +96,7 @@ describe('JobLog API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const val1 = 'message_' + Date.now() + '_A';
       const val2 = 'message_' + Date.now() + '_B';
@@ -121,8 +117,7 @@ describe('JobLog API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const val1 = new Date(Date.now() - 100000).toISOString();
       const val2 = new Date(Date.now() + 100000).toISOString();

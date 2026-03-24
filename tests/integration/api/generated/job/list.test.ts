@@ -22,8 +22,16 @@ describe('Job API - List', () => {
 
       // Seed data
       const _listSuffix = Date.now();
-      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...baseData, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...baseData,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...baseData,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job');
 
@@ -34,8 +42,7 @@ describe('Job API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       // Cleanup and seed specific count
       await Factory.prisma.job.deleteMany();
@@ -53,7 +60,7 @@ describe('Job API - List', () => {
       for (let i = 0; i < toCreate; i++) {
         const rec = await Factory.create('job', {
           ...baseData,
-          actorId: actor.id,
+          actorId: _actor ? (_actor as unknown as { id: string }).id : undefined,
           actorType: 'user',
         });
         createdIds.push(rec.id);
@@ -84,8 +91,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, type: val1 };
       const data2 = { ...baseData, type: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?type=' + val1);
       expect(res.status).toBe(200);
@@ -105,8 +120,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, progress: val1 };
       const data2 = { ...baseData, progress: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?progress=' + val1);
       expect(res.status).toBe(200);
@@ -126,8 +149,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, lockedBy: val1 };
       const data2 = { ...baseData, lockedBy: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?lockedBy=' + val1);
       expect(res.status).toBe(200);
@@ -147,8 +178,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, lockedAt: val1 };
       const data2 = { ...baseData, lockedAt: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?lockedAt=' + val1);
       expect(res.status).toBe(200);
@@ -168,8 +207,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, startedAt: val1 };
       const data2 = { ...baseData, startedAt: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?startedAt=' + val1);
       expect(res.status).toBe(200);
@@ -189,8 +236,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, completedAt: val1 };
       const data2 = { ...baseData, completedAt: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?completedAt=' + val1);
       expect(res.status).toBe(200);
@@ -210,8 +265,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, retryCount: val1 };
       const data2 = { ...baseData, retryCount: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?retryCount=' + val1);
       expect(res.status).toBe(200);
@@ -231,8 +294,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, maxRetries: val1 };
       const data2 = { ...baseData, maxRetries: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?maxRetries=' + val1);
       expect(res.status).toBe(200);
@@ -252,8 +323,16 @@ describe('Job API - List', () => {
       const data1 = { ...baseData, nextRetryAt: val1 };
       const data2 = { ...baseData, nextRetryAt: val2 };
 
-      await Factory.create('job', { ...data1, actorId: actor.id, actorType: 'user' });
-      await Factory.create('job', { ...data2, actorId: actor.id, actorType: 'user' });
+      await Factory.create('job', {
+        ...data1,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
+      await Factory.create('job', {
+        ...data2,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
+        actorType: 'user',
+      });
 
       const res = await client.get('/api/job?nextRetryAt=' + val1);
       expect(res.status).toBe(200);

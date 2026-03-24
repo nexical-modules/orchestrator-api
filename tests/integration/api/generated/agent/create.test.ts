@@ -13,8 +13,7 @@ describe('Agent API - Create', () => {
   // POST /api/agent
   describe('POST /api/agent', () => {
     it('should allow AGENT_ADMIN to create agent', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const payload = {
         hostname: 'hostname_test',
@@ -39,8 +38,7 @@ describe('Agent API - Create', () => {
 
     it('should forbid non-admin/unauthorized users', async () => {
       client.useToken('invalid-token');
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = undefined as unknown;
+      const _actor = undefined as unknown;
 
       const payload = {
         hostname: 'hostname_test',

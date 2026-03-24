@@ -13,11 +13,10 @@ describe('JobLog API - Get', () => {
   // GET /api/job-log/[id]
   describe('GET /api/job-log/[id]', () => {
     it('should retrieve a specific jobLog', async () => {
-       
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? actor.id : undefined,
+        actorId: _actor ? (_actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {
@@ -32,8 +31,7 @@ describe('JobLog API - Get', () => {
     });
 
     it('should return 404 for missing id', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
       const res = await client.get('/api/job-log/missing-id-123');
       expect(res.status).toBe(404);
     });

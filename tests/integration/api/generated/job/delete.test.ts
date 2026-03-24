@@ -17,7 +17,7 @@ describe('Job API - Delete', () => {
 
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
-        actorId: actor.id,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
 

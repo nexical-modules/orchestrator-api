@@ -19,8 +19,7 @@ describe('Agent API - List', () => {
     };
 
     it('should allow AGENT_ADMIN to list agents', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       // Cleanup first to ensure clean state
       await Factory.prisma.agent.deleteMany();
@@ -39,8 +38,7 @@ describe('Agent API - List', () => {
     });
 
     it('should verify pagination metadata', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       // Cleanup and seed specific count
       await Factory.prisma.agent.deleteMany();
@@ -77,8 +75,7 @@ describe('Agent API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const val1 = 'name_' + Date.now() + '_A';
       const val2 = 'name_' + Date.now() + '_B';
@@ -99,8 +96,7 @@ describe('Agent API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const val1 = 'hashedKey_' + Date.now() + '_A';
       const val2 = 'hashedKey_' + Date.now() + '_B';
@@ -121,8 +117,7 @@ describe('Agent API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const val1 = 'prefix_' + Date.now() + '_A';
       const val2 = 'prefix_' + Date.now() + '_B';
@@ -143,8 +138,7 @@ describe('Agent API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const val1 = 'hostname_' + Date.now() + '_A';
       const val2 = 'hostname_' + Date.now() + '_B';
@@ -165,8 +159,7 @@ describe('Agent API - List', () => {
       // Wait to avoid collisions
       await new Promise((r) => setTimeout(r, 10));
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const val1 = new Date(Date.now() - 100000).toISOString();
       const val2 = new Date(Date.now() + 100000).toISOString();

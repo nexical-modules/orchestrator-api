@@ -22,7 +22,7 @@ describe('DeadLetterJob API - Update', () => {
           failedAt: new Date().toISOString(),
           retryCount: 10,
         },
-        actorId: actor.id,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
       const updatePayload = {

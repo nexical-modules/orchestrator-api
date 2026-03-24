@@ -16,7 +16,7 @@ describe('JobLog API - Create', () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? (actor as unknown as { id: string }).id : undefined,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
       const payload = {
@@ -41,10 +41,9 @@ describe('JobLog API - Create', () => {
 
     it('should forbid non-admin/unauthorized users', async () => {
       client.useToken('invalid-token');
-       
       const actor = undefined as unknown;
       const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? (actor as unknown as { id: string }).id : undefined,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
       const payload = {

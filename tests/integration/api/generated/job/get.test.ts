@@ -17,7 +17,7 @@ describe('Job API - Get', () => {
 
       const target = await Factory.create('job', {
         ...{ type: 'type_test', progress: 10, retryCount: 10, maxRetries: 10 },
-        actorId: actor.id,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
 
@@ -28,8 +28,7 @@ describe('Job API - Get', () => {
     });
 
     it('should return 404 for missing id', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
       const res = await client.get('/api/job/missing-id-123');
       expect(res.status).toBe(404);
     });

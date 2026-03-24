@@ -13,11 +13,10 @@ describe('JobLog API - Delete', () => {
   // DELETE /api/job-log/[id]
   describe('DELETE /api/job-log/[id]', () => {
     it('should delete jobLog', async () => {
-       
-      const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
+      const _actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? actor.id : undefined,
+        actorId: _actor ? (_actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {

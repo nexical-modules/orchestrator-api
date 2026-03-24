@@ -13,8 +13,7 @@ describe('Agent API - Update', () => {
   // PUT /api/agent/[id]
   describe('PUT /api/agent/[id]', () => {
     it('should update agent', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const target = await Factory.create('agent', {
         ...{

@@ -16,7 +16,7 @@ describe('JobLog API - Update', () => {
       const actor = await client.as('user', { role: 'USER_EMPLOYEE' });
 
       const job_0 = await Factory.create('job', {
-        actorId: typeof actor !== 'undefined' ? actor.id : undefined,
+        actorId: actor ? (actor as unknown as { id: string }).id : undefined,
         actorType: 'user',
       });
       const target = await Factory.create('jobLog', {

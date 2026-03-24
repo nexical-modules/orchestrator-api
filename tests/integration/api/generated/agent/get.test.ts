@@ -13,8 +13,7 @@ describe('Agent API - Get', () => {
   // GET /api/agent/[id]
   describe('GET /api/agent/[id]', () => {
     it('should retrieve a specific agent', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
 
       const target = await Factory.create('agent', {
         ...{
@@ -31,8 +30,7 @@ describe('Agent API - Get', () => {
     });
 
     it('should return 404 for missing id', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const actor = await client.as('user', { role: 'USER_ADMIN' });
+      const _actor = await client.as('user', { role: 'USER_ADMIN' });
       const res = await client.get('/api/agent/missing-id-123');
       expect(res.status).toBe(404);
     });
