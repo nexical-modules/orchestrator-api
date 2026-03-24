@@ -3,7 +3,7 @@ import { db } from '@/lib/core/db';
 import type { APIContext, MiddlewareNext } from 'astro';
 import crypto from 'node:crypto';
 export async function onRequest(context: APIContext, next: MiddlewareNext) {
-  const publicRoutes: string[] = [];
+  const publicRoutes: string[] = ['/api/agent/register', '/api/agent/[id]/heartbeat'];
   if (publicRoutes.some((route) => context.url.pathname.startsWith(route))) return next();
   const authHeader = context.request.headers.get('Authorization');
   if (authHeader?.startsWith('Bearer sk_agent_')) {
